@@ -1,0 +1,57 @@
+{
+  "timeDivision": true,
+  "map": [
+    {
+      "type": 0,
+      "chn": 0,
+      "speed": {"min": 500, "max": 900}
+    },
+    {
+      "type": 1,
+      "chn": 1,
+      "speed": {"min": 500, "max": 900}
+    }
+  ],
+  "chn": [
+    {
+      "unlimited": true,
+      "locationSignal": [
+        {"pinNum": -1, "active": 0, "step": 0}
+      ],
+      "pinEna": {"num": -1, "active": 0},
+      "stepMax": 4096,
+      "stepDef": 2048,
+      "speedDef": 800,
+      "pinNum": [401, 400, 399, 398],
+      "stepOrder": [
+        [0, 0, 0, 1],
+        [0, 0, 1, 1],
+        [0, 0, 1, 0],
+        [0, 1, 1, 0],
+        [0, 1, 0, 0],
+        [1, 1, 0, 0],
+        [1, 0, 0, 0],
+        [1, 0, 0, 1]
+      ]
+    },
+    {
+      "unlimited": false,
+      "locationSignal": [],
+      "pinEna": {"num": -1, "active": 0},
+      "stepMax": 4096,
+      "stepDef": 2048,
+      "speedDef": 800,
+      "pinNum": [509, 508, 498, 499],
+      "stepOrder": [
+        [0, 0, 0, 1],
+        [0, 0, 1, 1],
+        [0, 0, 1, 0],
+        [0, 1, 1, 0],
+        [0, 1, 0, 0],
+        [1, 1, 0, 0],
+        [1, 0, 0, 0],
+        [1, 0, 0, 1]
+      ]
+    }
+  ]
+}

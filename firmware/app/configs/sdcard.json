@@ -1,0 +1,8 @@
+[
+  {
+    "mountPoint": "/mnt/sdcard",
+    "devMajor": "mmcblk0",
+    "devPart": "mmcblk0p1",
+    "devPartBak": "mmcblk0"
+  }
+]

@@ -1,0 +1,17 @@
+1.cmd 目录 升级相关
+cvi_update.c
+sf.c
+Makefile
+ep_xxxtea_aes.c
+
+2.include 目录  uboot参数相关
+cvipart.h
+
+3.lib 目录 修改md5加密相关
+md5.c
+
+4.sdk\build\boards\cv1821_wevb_0005b_spinor\u-boot 目录 gpio能力修改
+cvi_board_init.c
+
+5. build\cv1821_wevb_0005b_spinor 目录 配置文件
+.config

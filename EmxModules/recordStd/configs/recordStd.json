@@ -1,0 +1,36 @@
+{
+  "path": "/mnt/sdcard/recordStd",
+  "reservedSpace": 300,
+  "record": {
+    "vencChn": 0,
+    "aencChn": 0,
+    "mode": 0,
+    "splitTimeS": 60,
+    "schedule": {
+      "Mon": [],
+      "Tue": [],
+      "Wed": [],
+      "Thu": [],
+      "Fri": [],
+      "Sat": [],
+      "Sun": []
+    },
+    "preRecTimeS": 5,
+    "events": [{"type": 2, "chn": 0}]
+  },
+  "snap": {
+    "chn": 0,
+    "mode": 0,
+    "snapInvS": 10,
+    "schedule": {
+      "Mon": [],
+      "Tue": [],
+      "Wed": [],
+      "Thu": [],
+      "Fri": [],
+      "Sat": [],
+      "Sun": []
+    },
+    "events": [{"type": 2, "chn": 0}]
+  }
+}

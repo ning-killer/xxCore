@@ -1,0 +1,16 @@
+[
+  {
+    "attr": {
+      "VpssGrp": 0,
+      "VpssChn": 0
+    },
+    "range": {}
+  },
+  {
+    "attr": {
+      "VpssGrp": 2,
+      "VpssChn": 0
+    },
+    "range": {}
+  }
+]

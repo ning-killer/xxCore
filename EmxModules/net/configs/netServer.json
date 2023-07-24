@@ -1,0 +1,74 @@
+{
+  "main": "eth",
+  "internetCheck": {
+    "intervalS": 6,
+    "addr": [
+      {"addr": "www.baidu.com", "port": 80},
+      {"addr": "www.taobao.com", "port": 80}
+    ]
+  },
+  "dns": {
+    "manual": true,
+    "server": [
+      "8.8.8.8",
+      "223.5.5.5"
+    ],
+    "append": ["114.114.114.114"]
+  },
+  "dev": [
+    {
+      "name": "wifi",
+      "supported": false,
+      "interface": "wlan0",
+      "ena": true,
+      "mac": "",
+      "dhcp": true,
+      "ip4": "192.168.111.100",
+      "netmask4": "255.255.255.0",
+      "gateway4": "192.168.111.1",
+      "ip6": "",
+      "netmask6": "",
+      "gateway6": "",
+      "data": {
+        "mode": 2,
+        "ap": {
+          "ssid": "xiongTest",
+          "psk": "12345678",
+          "ip4": "192.168.222.1"
+        },
+        "sta": {
+          "ssid": "EMX_RD_2",
+          "psk": "12345678@emx"
+        }
+      }
+    },
+    {
+      "name": "eth",
+      "supported": true,
+      "interface": "eth0",
+      "ena": true,
+      "mac": "",
+      "dhcp": true,
+      "ip4": "192.168.111.100",
+      "netmask4": "255.255.255.0",
+      "gateway4": "192.168.111.1",
+      "ip6": "",
+      "netmask6": "",
+      "gateway6": ""
+    },
+    {
+      "name": "mobile",
+      "supported": false,
+      "interface": "eth1",
+      "ena": true,
+      "mac": "",
+      "dhcp": true,
+      "ip4": "192.168.111.100",
+      "netmask4": "255.255.255.0",
+      "gateway4": "192.168.111.1",
+      "ip6": "",
+      "netmask6": "",
+      "gateway6": ""
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+libvoipengine.a是包含mbedtls库的SDK
+libvoipengine_not_include_mbedtls.a是不包含mbedtls库的SDK
+
+DEMO默认使用的是libvoipengine.a库，建议厂家使用libvoipengine.a库

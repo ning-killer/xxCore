@@ -1,0 +1,50 @@
+{
+  "mdSensitivity": [30, 50, 80, 90, 100],
+  "vdSensitivity": [30, 43, 56, 69, 75],
+  "defCtx": {
+    "motionTrack": {
+      "ena": true,
+      "backTime": 15
+    },
+    "micMute": false,
+    "cameraEna": true,
+    "soundLightAlarm": {
+      "ena": true,
+      "volume": 100,
+      "mode": 1
+    },
+    "fullColorNightVision": {
+      "ena": true,
+      "mode": 3,
+      "intensity": 100
+    }
+  },
+  "feature": {
+    "wifi": true,
+    "ptz": true
+  },
+  "qrscan": {
+    "changeISP": true,
+    "ispChn": 0,
+    "isp": {
+      "expMode": 0,
+      "autoMaxExpGain": 6,
+      "compensation": 35,
+      "manualExpGain": 0,
+      "expTime": 1000,
+      "brightness": 50,
+      "sharpness": 128,
+      "hue": 50,
+      "contrast": 50,
+      "saturation": 50,
+      "deNoise": 128,
+      "gamma": 0,
+      "WBMode": 0,
+      "redGain": 128,
+      "blueGain": 128,
+      "antiFlicker": 50
+    }
+  }
+}
+
+

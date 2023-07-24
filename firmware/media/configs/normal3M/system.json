@@ -1,0 +1,258 @@
+{
+  "vbComment": "",
+  "vb": [
+    {"width": 2560, "height": 1440, "cnt": 1, "format": 19, "bitWidth": 0, "compress": 0, "align": 64},
+    {"width": 1280, "height": 720, "cnt": 2, "format": 19, "bitWidth": 0, "compress": 0, "align": 64},
+    {"width": 640, "height": 360, "cnt": 1, "format": 19, "bitWidth": 0, "compress": 0, "align": 64},
+    {"width": 640, "height": 360, "cnt": 2, "format": 15, "bitWidth": 0, "compress": 0, "align": 64},
+    {"width": 2560, "height": 1440, "cnt": 2, "format": 19, "bitWidth": 0, "compress": 0, "align": 64},
+    {"width": 896, "height": 512, "cnt": 2, "format": 2, "bitWidth": 0, "compress": 0, "align": 64}
+  ],
+  "vi": {
+    "ViVpssMode": [3],
+    "sensorCfg": "sensor_cfg_sc4336.ini",
+    "pipeAttr": [
+      {
+        "number": 0,
+        "bYuvSkip": false,
+        "u32MaxW": 2560,
+        "u32MaxH": 1440,
+        "pixFormat": 9,
+        "bitWidth": 2,
+        "s32SrcFrameRate": -1,
+        "s32DstFrameRate": -1,
+        "NrEn": true,
+        "bYuvBypassPath": false,
+        "enCompressMode": 1
+      }
+    ],
+    "defIsp": [
+      {"mode": 0, "bin": "sdr_day.bin"}
+    ],
+    "frameRate": [
+      {"pipe": 0, "rate": 15}
+    ],
+    "rotate": [
+      {"pipe": 0, "chn": 0, "flip": false, "mirror": false}
+    ],
+    "bind": []
+  },
+  "vpss": {
+    "ViVpssMode": 3,
+    "enMode": 2,
+    "aenInput": [0, 1],
+    "ViPipe": [0, 0],
+    "group": [
+      {
+        "vpssGrp": 0,
+        "attr": {
+          "s32SrcFrameRate": -1,
+          "s32DstFrameRate": -1,
+          "enPixelFormat": 19,
+          "u32MaxW": 2560,
+          "u32MaxH": 1440,
+          "u8VpssDev": 1
+        },
+        "chn": [
+          {
+            "u32Width": 2560,
+            "u32Height": 1440,
+            "enVideoFormat": 0,
+            "enPixelFormat": 19,
+            "s32SrcFrameRate": -1,
+            "s32DstFrameRate": -1,
+            "bMirror": false,
+            "bFlip": false,
+            "u32Depth": 1,
+            "normalize": {
+              "bEnable": false,
+              "factor": [0, 0, 0],
+              "mean": [0, 0, 0],
+              "rounding": 0
+            },
+            "aspect": {
+              "enMode": 0,
+              "bEnableBgColor": true,
+              "u32BgColor": 0,
+              "s32X": 0,
+              "s32Y": 0,
+              "u32Width": 0,
+              "u32Height": 0
+            }
+          },
+          {
+            "u32Width": 1280,
+            "u32Height": 720,
+            "enVideoFormat": 0,
+            "enPixelFormat": 19,
+            "s32SrcFrameRate": -1,
+            "s32DstFrameRate": -1,
+            "bMirror": false,
+            "bFlip": false,
+            "u32Depth": 0,
+            "normalize": {
+              "bEnable": false,
+              "factor": [0, 0, 0],
+              "mean": [0, 0, 0],
+              "rounding": 0
+            },
+            "aspect": {
+              "enMode": 1,
+              "bEnableBgColor": true,
+              "u32BgColor": 0,
+              "s32X": 0,
+              "s32Y": 0,
+              "u32Width": 1280,
+              "u32Height": 720
+            }
+          }
+        ],
+        "attachPool": [
+          {"chn": 0, "pool": 0},
+          {"chn": 1, "pool": 1}
+        ],
+        "bind": []
+      },
+      {
+        "vpssGrp": 2,
+        "attr": {
+          "s32SrcFrameRate": -1,
+          "s32DstFrameRate": -1,
+          "enPixelFormat": 19,
+          "u32MaxW": 1280,
+          "u32MaxH": 720,
+          "u8VpssDev": 0
+        },
+        "chn": [
+          {
+            "u32Width": 640,
+            "u32Height": 360,
+            "enVideoFormat": 0,
+            "enPixelFormat": 19,
+            "s32SrcFrameRate": -1,
+            "s32DstFrameRate": -1,
+            "bMirror": false,
+            "bFlip": false,
+            "u32Depth": 1,
+            "normalize": {
+              "bEnable": false,
+              "factor": [0, 0, 0],
+              "mean": [0, 0, 0],
+              "rounding": 0
+            },
+            "aspect": {
+              "enMode": 1,
+              "bEnableBgColor": true,
+              "u32BgColor": 0,
+              "s32X": 0,
+              "s32Y": 0,
+              "u32Width": 0,
+              "u32Height": 0
+            }
+          }
+        ],
+        "attachPool": [
+          {"chn": 0, "pool": 2}
+        ],
+        "bind": [
+          {"group": 0, "chn": 1}
+        ]
+      },
+      {
+        "vpssGrp": 4,
+        "attr": {
+          "s32SrcFrameRate": -1,
+          "s32DstFrameRate": -1,
+          "enPixelFormat": 19,
+          "u32MaxW": 1280,
+          "u32MaxH": 720,
+          "u8VpssDev": 0
+        },
+        "chn": [
+          {
+            "u32Width": 640,
+            "u32Height": 360,
+            "enVideoFormat": 0,
+            "enPixelFormat": 15,
+            "s32SrcFrameRate": 15,
+            "s32DstFrameRate": 10,
+            "bMirror": false,
+            "bFlip": false,
+            "u32Depth": 0,
+            "normalize": {
+              "bEnable": false,
+              "factor": [0, 0, 0],
+              "mean": [0, 0, 0],
+              "rounding": 0
+            },
+            "aspect": {
+              "enMode": 1,
+              "bEnableBgColor": true,
+              "u32BgColor": 0,
+              "s32X": 0,
+              "s32Y": 0,
+              "u32Width": 0,
+              "u32Height": 0
+            }
+          }
+        ],
+        "attachPool": [
+          {"chn": 0, "pool": 3}
+        ],
+        "bind": [
+          {"group": 0, "chn": 1}
+        ]
+      },
+      {
+        "vpssGrp": 5,
+        "attr": {
+          "s32SrcFrameRate": -1,
+          "s32DstFrameRate": -1,
+          "enPixelFormat": 19,
+          "u32MaxW": 1280,
+          "u32MaxH": 720,
+          "u8VpssDev": 0
+        },
+        "chn": [
+          {
+            "u32Width": 2560,
+            "u32Height": 1440,
+            "enVideoFormat": 0,
+            "enPixelFormat": 19,
+            "s32SrcFrameRate": 15,
+            "s32DstFrameRate": 15,
+            "bMirror": false,
+            "bFlip": false,
+            "u32Depth": 1,
+            "normalize": {
+              "bEnable": false,
+              "factor": [0, 0, 0],
+              "mean": [0, 0, 0],
+              "rounding": 0
+            },
+            "aspect": {
+              "enMode": 1,
+              "bEnableBgColor": true,
+              "u32BgColor": 0,
+              "s32X": 0,
+              "s32Y": 0,
+              "u32Width": 0,
+              "u32Height": 0
+            }
+          }
+        ],
+        "attachPool": [
+          {"chn": 0, "pool": 4}
+        ],
+        "bind": [
+          {"group": 0, "chn": 1}
+        ]
+      }
+    ],
+    "bindViVpss": [],
+    "bindVpssVpss": [],
+    "ScaleCoefLevel": [
+      {"group": 0, "chn": 0, "scaleCoef": 0}
+    ]
+  }
+}

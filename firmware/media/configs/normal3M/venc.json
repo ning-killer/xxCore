@@ -1,0 +1,71 @@
+[
+  {
+    "attr": {
+      "ViPipe": 0,
+      "VpssGrp": 0,
+      "VpssChn": 0,
+      "VencChn": 0,
+      "bind": false,
+      "modSizeKb": 1536,
+      "defFps": 15,
+      "u32BufSize": 0,
+      "bSingleCore": false,
+      "bByFrame": true,
+      "gopMode": 0,
+      "s32IPQpDelta": 4,
+      "u32BgInterval": 0,
+      "bRcnRefShareBuf": false,
+      "u32MinQp": 31,
+      "u32MaxQp": 51,
+      "u32MinIQp": 31,
+      "u32MaxIQp": 51,
+      "u32MaxIprop": 100,
+      "u32MinIprop": 1,
+      "s32MaxReEncodeTimes": 0,
+      "h264EntropyMode": 0,
+      "h264ChromaQpOffset": 0,
+      "h265CbQpOffset": 0,
+      "h265CrQpOffset": 0
+    },
+    "range": {
+      "resolution": [
+        {"w": 2560, "h": 1440},
+        {"w": 1920, "h": 1080}
+      ]
+    }
+  },
+  {
+    "attr": {
+      "ViPipe": 0,
+      "VpssGrp": 2,
+      "VpssChn": 0,
+      "VencChn": 1,
+      "bind": false,
+      "modSizeKb": 1536,
+      "defFps": 15,
+      "u32BufSize": 0,
+      "bSingleCore": false,
+      "bByFrame": true,
+      "gopMode": 0,
+      "s32IPQpDelta": 4,
+      "u32BgInterval": 0,
+      "bRcnRefShareBuf": false,
+      "u32MinQp": 31,
+      "u32MaxQp": 51,
+      "u32MinIQp": 31,
+      "u32MaxIQp": 51,
+      "u32MaxIprop": 100,
+      "u32MinIprop": 1,
+      "s32MaxReEncodeTimes": 0,
+      "h264EntropyMode": 0,
+      "h264ChromaQpOffset": 0,
+      "h265CbQpOffset": 0,
+      "h265CrQpOffset": 0
+    },
+    "range": {
+      "resolution": [
+        {"w": 640, "h": 360}
+      ]
+    }
+  }
+]

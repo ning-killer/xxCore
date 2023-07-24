@@ -1,0 +1,14 @@
+{
+  "inner": {
+    "type": "CM_HJQ_M4C7S17W0P0",
+    "version": "2.0.20230721.2"
+  },
+  "outer": {
+    "type": "CMSXJ40H",
+    "version": "2.0.2"
+  },
+  "hardware": {
+    "type": "EpCv182xGunVx",
+    "version": "1.0"
+  }
+}

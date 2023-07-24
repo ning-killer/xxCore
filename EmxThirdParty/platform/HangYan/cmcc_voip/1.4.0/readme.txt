@@ -1,0 +1,2 @@
+20211117:
+    CMCC_RTC_IOT_SDK_V1.4.0_Cvitek_gcc4.9.84_CV1821_32bit

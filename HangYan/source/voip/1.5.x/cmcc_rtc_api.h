@@ -1,0 +1,499 @@
+/*************************************************************
+ *
+ * This is a part of the CMCC RTC SDK.
+ * Copyright (C) 2021 CMCC
+ * All rights reserved.
+ *
+ *************************************************************/
+
+#ifndef __CMCC_RTC_API_H__
+#define __CMCC_RTC_API_H__
+
+#ifdef __cplusplus 
+extern "C" 
+{ 
+#endif
+
+#define __cmcc_api__
+
+/**
+ * cmcc extended option
+ */
+typedef enum {
+	/**
+     * 设置自动接听的标识
+	 * 说明：on_recv_call来电回调中，对于需要自动接听的来电，
+	 * 则接听前需要先设置自动接听的标识。
+	 * 具体参考提供的demo。
+     */
+	CMCC_OPT_AUTO_ANSWER_FLAG 			= 33, 
+	/**
+     * 使能H265编码协商
+	 * 说明：SDK默认不开启H265编码协商，如果需要启用H265编码协商功能，
+	 * 则需要开启H265编码协商功能。
+	 * 具体参考提供的demo。
+     */
+	CMCC_OPT_ENABLE_H265 				= 34,
+	/**
+	 * 设置主动挂断原因到SDK内部
+	 * 说明：默认情况下，用户主动挂断时，不用调此接口；被安防业务打断当前正在进行的通话时，
+	 * 需要调用此接口，"1"表示被安防告警打断后的挂断；"2"表示被安防对讲打断后的挂断
+	 * 具体参考提供的demo。
+     */
+	CMCC_OPT_HANGUP_WITH_REASON 		= 35,
+	/**
+	 * 使能音频OPUS编码协商功能
+	 * 说明：默认情况下，SDK内部开启OPUS编码协商功能。
+	 * 由于OPUS音频编码质量优于PCMA，故设备配置允许的情况下，建议不要关闭OPUS编码协商功能。
+	 * 具体参考提供的demo。
+     */
+	CMCC_OPT_ENABLE_OPUS_NEGOTIATE 		= 36,
+	/**
+	* 设置设备支持的最高分辨率
+	* 说明：目前SDK支持设置的分辨率为低清(640*360)，高清(1280*720)，超高清(1920*1080)，底层默认使用低清。
+	* 厂家发送视频流的分辨率原则上以协商结果为准，即以__on_recv_notify接口回调上去的分辨率为准。
+	* 特殊情况下，如果不能发送协商结果对应分辨率的流，则可以降一档分辨率。如协商结果为1080P，厂家不能发送1080P的流，则发送720P的流】
+	* 具体参考提供的demo CMCC_NOTIFY_VIDEO_RESOLUTION回调通知。
+	*/
+	CMCC_OPT_VIDEO_RESOLUTION 			= 37,
+	/**
+     * 设置政企模式
+	 * 说明：默认情况下，不开启政企模式。
+	 * 具体参考提供的demo。
+     */
+	CMCC_OPT_GOVERNMENT_ENTERPRISE 		= 38,
+	/**
+	 * 设置线程运行模式为轮询
+	 * 1.5.3版本开始信令发送线程调度模型改为事件驱动（信号量），通过设置轮询模式可以回退到以前版本的轮询调度模型
+	 * 事件驱动调度模型可以降低cpu使用率和功耗，除非出现调度BUG，否则不推荐回退为以前的轮询调度模型。
+	 */
+	CMCC_OPT_THREAD_MODE_LOOP 			= 39,
+
+	/**
+	 * 设置视频FEC功能
+	 * "0":关闭 FEC; "1":打开FEC
+	 */
+	CMCC_OPT_VIDEO_FEC               	= 40,
+	/**
+	 * 设置视频分辨率竖屏模式
+	 * "0":关闭竖屏模式; "1":打开竖屏模式， 底层默认都使用横屏模式，特殊厂家设备可开启竖屏模式
+	 */
+	CMCC_OPT_PORTRAIT					= 41,
+} cmcc_rtc_opt_;
+
+/**
+ * cmcc notify type
+ */
+typedef enum {
+	CMCC_NOTIFY_UNBIND 				= 0,	//解绑
+	CMCC_NOTIFY_BIND 				= 1,	//绑定
+	CMCC_NOTIFY_ENABLE 				= 2,	//启动
+	CMCC_NOTIFY_DISABLE 			= 3,	//禁用
+	CMCC_NOTIFY_OPEN 				= 4,	//开户
+	CMCC_NOTIFY_CLOSE 				= 5,	//销户
+	CMCC_NOTIFY_CONTACT 			= 6,	//通信录变更
+	CMCC_NOTIFY_LOG 				= 7, 	//日志上传
+	CMCC_NOTIFY_MISSED		 		= 8, 	//未接来电
+	CMCC_NOTIFY_TTS 				= 9, 	//TTS播报
+	CMCC_NOTIFY_IMS_TEXT_MSG 		= 10, 	//文字消息
+	CMCC_NOTIFY_RECORD_MSG 			= 13, 	//通话记录
+	CMCC_NOTIFY_TALK 				= 16, 	//对讲通知
+	CMCC_NOTIFY_PICTURE 			= 17, 	//图片通知
+	CMCC_NOTIFY_AUDIO 				= 18,	//音频通知
+	CMCC_NOTIFY_VIDEO 				= 19,	//视频通知
+
+	CMCC_NOTYFY_LOGOUT              = 22,   //下线通告 DISCONNECT
+    CMCC_NOTIFY_VIDEO_CODEC 		= 50,	//视频编码方式
+	CMCC_NOTIFY_VIDEO_RESOLUTION 	= 51,   //视频分辨率
+} cmcc_notify_t;
+
+/**
+ * CMCC RTC SDK call type
+ */
+typedef enum {
+    CMCC_CALL_TYPE_IMS_1V1_AUDIO = 20,		//音频呼叫类型
+	CMCC_CALL_TYPE_IMS_1V1_VIDEO = 21,		//视频呼叫类型
+} cmcc_call_type_t;
+
+/**
+ * CMCC RTC SDK event handler
+ */
+typedef struct {
+	/**
+     * 登录成功回调
+	 *
+	 * @注意：不能在回调中做阻塞操作
+     *
+     * @param[out] user      登录成功的用户
+     */
+    void (*on_login_success)(const char *user);
+	/**
+     * 登录失败回调
+	 *
+	 * @注意：不能在回调中做阻塞操作
+     *
+     * @param[out] user      登录失败的用户
+	 * @param[out] err_code  登录失败的错误码
+	 * @param[out] reason    登录失败的原因
+     */
+    void (*on_login_failed)(const char *user, int err_code, const char *reason);
+	/**
+     * 来电回调
+     *
+	 * @注意：不能在回调中做阻塞操作
+	 *
+     * @param[out] session     			会话id
+	 * @param[out] from  				来电号码
+	 * @param[out] displayname  		来电号码
+	 * @param[out] to           		被叫号码
+	 * @param[out] call_type    		会话类型
+	 * @param[out] json_call_control    会话控制
+	 * @说明：
+     * [1] json_call_control中有"answer_auto"字段，表示需要自动接听的来电，走自动接听逻辑；
+     * [2] json_call_control中没有"answer_auto"字段，表示非自动接听的来电，走手动接听逻辑；
+     * [3] json_call_control中有"app_broadcast"字段，表示云广播来电
+     * [4] json_call_control中有"app_talk"字段，表示安防对讲来电
+     *
+     * 备注：
+     * [1] 对于需要自动接听的来电，先调用cmcc_rtc_setopt接口，将自动接听的flag设置到sdk层，
+     *     然后再调用cmcc_rtc_pickup接口，接听来电；
+     * [2] 对于未带answer_auto的来电，需要手动接听；
+	 * 
+     */
+    void (*on_recv_call)(int session, const char *from, const char *displayname, const char *to, cmcc_call_type_t call_type, const char* json_call_control);
+	/**
+     * 回铃音回调（设备主动呼出时会收到此回调）
+     *
+	 * @注意：不能在回调中做阻塞操作
+	 *
+     * @param[out] session     			会话id
+	 * @param[out] from  				来电号码
+	 * @param[out] displayname  		来电号码
+	 * @param[out] to           		被叫号码
+	 * @param[out] early_media    		早期媒体
+	 * @说明：
+	 * [1]early_media=1表示平台会播放回铃音，设备端不用自己播放回铃音；
+	 * [2]early_media=0表示平台不播放回铃音，设备需要自己播放一个本地回铃音；
+	 * [3]设备主动呼出后，此回调可能出现多次，如果early_media为0时，
+	 *    设备自己播放本地回铃音；early_media为1时，设备停止播放本地回铃音。
+	 * 
+     */
+    void (*on_recv_ring)(int session, const char *from, const char *displayname, const char *to, int early_media);
+	/**
+     * 会话接通回调（设备主动呼出后，被叫接听来电，设备会收到此回调）
+     *
+	 * @注意：不能在回调中做阻塞操作
+	 *
+     * @param[out] session     			会话id
+	 * @param[out] from  				来电号码
+	 * @param[out] displayname  		来电号码
+	 * @param[out] to           		被叫号码
+	 * @param[out] call_type    		会话类型
+	 * 
+     */
+    void (*on_recv_answer)(int session, const char* from, const char* displayname, const char* to, cmcc_call_type_t call_type);
+	/**
+     * 会话挂断回调
+     *
+	 * @注意：不能在回调中做阻塞操作
+	 *
+     * @param[out] session    会话id
+	 * @param[out] err_code   来电号码
+	 * @param[out] reason     来电号码
+	 * @param[out] call_type  会话类型
+	 * 
+     */
+    void (*on_recv_hangup)(int session, int err_code, const char *reason, cmcc_call_type_t call_type);
+	/**
+     * 事件通知回调
+	 *
+	 * @注意：不能在回调中做阻塞操作
+	 *
+     * @param[out] notify_type    通知类型
+	 * @param[out] content   	  通知内容
+	 * 
+     */
+    void (*on_recv_notify)(cmcc_notify_t notify_type, const char *content);
+	/**
+     * 
+	 * 关键帧请求回调
+	 * @说明：如果接入厂家收到此回调事件后，需要发送一个关键帧给对端
+	 * 
+	 * @注意：不能在回调中做阻塞操作
+	 *
+     */
+	void (*on_recv_keyframe_request)();
+	/**
+     * dtmf通知回调
+     * @说明：通话过程中，手机端点击的DTMF数字按键通过此接口回调给接入厂家
+	 *
+	 * @注意：不能在回调中做阻塞操作
+	 *
+     * @param[out] value    按键值
+	 * 
+     */
+	void (*on_recv_dtmf)(int value);
+	/**
+     * 接收pcm音频数据回调
+	 * @说明：
+	 * 【编解码版本的SDK】使用此接口来接收PCM音频数据
+	 * 发送PCM音频数据接口见 on_recv_audio_pcm_data
+	 *
+	 * 特别注意：
+     * 【编解码版本的SDK】音频流对接的方式有两种：（1）在third_party_device.cc文件中对接；
+	 * （2）通过on_recv_audio_pcm_data和on_send_audio_pcm_data接口回调对接，具体使用见"SDK接口说明文档"
+	 * 如果提供给厂家的demo压缩文件中有third_party_device.cc等文件，则使用第一种对接方式。
+	 *
+     * @param[out] pcm_data  pcm音频数据（SDK回调给厂家的pcm数据）
+	 * @param[out] size   	 数据长度（SDK回调给厂家的pcm数据长度）
+	 *
+     */
+	void (*on_recv_audio_pcm_data)(char *pcm_data, int size);
+	/**
+     * 发送pcm音频数据回调
+	 * @说明：
+	 * 【编解码版本的SDK】使用此接口发送原始的PCM音频数据
+	 * 接收PCM音频数据接口见 on_recv_audio_pcm_data
+     *
+     * @param[out] pcm_data  pcm音频数据（厂家将需要发送的pcm数据拷贝到此参数，pcm_data必须为有效的正常数据）
+	 * @param[out] size   	 数据长度（底层回调实际需要的pcm数据长度，厂家依据此参数来发送pcm数据的长度）
+	 *
+     */
+	void (*on_send_audio_pcm_data)(char *pcm_data, int size);
+	/**
+     * 编码后的音频数据回调
+	 * @说明：
+	 * 【非编解码版本的SDK】使用此接口接收编码后的音频数据
+	 * 发送编码后的音频数据接口见 cmcc_rtc_send_audio
+	 * 提供编码音频数据（如PCMA数据）的接入厂家，SDK收到的音频流数据，通过此回调接口回调给厂家；
+	 * 默认提供的SDK都是编解码版本的SDK，提供原始音频数据（PCM数据）的接入厂家，忽略此回调接口和cmcc_rtc_send_audio接口
+     *
+     * @param[out] packet    音频数据包（编码的PCMA音频数据）
+	 * @param[out] size   	 数据长度
+	 * 
+     */
+	void (*on_recv_audio_packet)(char *packet, int size);
+} cmcc_rtc_event_handler_t;
+
+/**
+ * CMCC RTC SDK login params
+ */
+typedef struct {
+    const char *app_key;
+    const char *app_secret;
+    const char *device_id;  //设备ID
+} cmcc_rtc_login_params_t;
+
+/**
+ * CMCC RTC SDK device info
+ */
+typedef struct {
+	const char *os_version;			//操作系统版本号
+    const char *image_version;		//镜像版本号
+    const char *hardware_version;	//固件版本号
+    const char *device_model;		//设备信息
+    const char *sn;					//设备序列号
+    const char *cmei;				//设备cmei
+    const char *mac;				//设备mac地址
+    const char *chip_model;   		//芯片型号
+    const char *chip_uuid;    		//芯片序列号
+	const char *chip_brand;   		//芯片厂商
+} cmcc_rtc_device_info_t;
+
+/**
+ * CMCC RTC SDK log config
+ */
+typedef struct {
+	int log_size;					//日志大小
+	int console_log_enable;			//是否开启控制台输出
+	const char *log_path;			//日志存储路径，注意：日志文件必须是txt格式
+} cmcc_rtc_log_config_t;
+
+/**
+ * 初始化 CMCC RTC SDK.
+ *
+ * @param[in] device_info          设备信息
+ * @param[in] log_config           日志配置信息
+ *
+ * @param[in] event_handler        SDK事件回调信息
+ *
+ * @return
+ * - = 0: 成功
+ * - < 0: 失败
+ */
+__cmcc_api__ int cmcc_rtc_init(const cmcc_rtc_device_info_t *device_info,
+							   const cmcc_rtc_log_config_t *log_config,
+							   const cmcc_rtc_event_handler_t *event_handler);
+/**
+ * 释放 CMCC RTC SDK 分配的资源
+ *
+ * @return
+ * - = 0: 成功
+ * - < 0: 失败
+ */
+__cmcc_api__ int cmcc_rtc_fini(void);
+/**
+ * 获取 CMCC RTC SDK 版本号
+ *
+ * @return CMCC RTC SDK 版本号
+ */
+__cmcc_api__ const char* cmcc_rtc_get_version(void);
+
+/**
+ * 只获取账号信息,不登录 CMCC RTC 服务器，参数同cmcc_rtc_login
+ *
+ * @param[in] login_params      登录参数
+ *
+ * @return
+ * - = 0: 接口调用成功
+ * - < 0: 接口调用失败
+ * 		  说明：登录服务器成功与否，请参考相关登录事件回调
+ */
+__cmcc_api__ int cmcc_rtc_get_account(const cmcc_rtc_login_params_t *login_params);
+
+/**
+ * 登录 CMCC RTC 服务器
+ *
+ * @参数为空
+ *
+ * @return
+ * - = 0: 接口调用成功
+ * - < 0: 接口调用失败
+ * 		  说明：登录服务器成功与否，请参考相关登录事件回调
+ */
+__cmcc_api__ int cmcc_rtc_login2();
+
+/**
+ *  获取账号信息，同时登录 CMCC RTC 服务器
+ *
+ * @param[in] login_params      登录参数
+ * 
+ * @return
+ * - = 0: 接口调用成功
+ * - < 0: 接口调用失败
+ * 		  说明：登录服务器成功与否，请参考相关登录事件回调
+ */
+__cmcc_api__ int cmcc_rtc_login(const cmcc_rtc_login_params_t *login_params);
+/**
+ * 登出 CMCC RTC 服务器
+ * 
+ * @return
+ * - = 0: 成功
+ * - < 0: 失败
+ */
+__cmcc_api__ int cmcc_rtc_logout(void);
+/**
+ * 发起一个呼叫
+ *
+ * @param[in] callee      被叫号码 
+ * 
+ * @param[in] type        呼叫类型
+ * 
+ * @return
+ * - >= 0: 接口调用成功，返回 session id
+ * - < 0:  接口调用失败
+ */
+__cmcc_api__ int cmcc_rtc_callout(const char* callee, cmcc_call_type_t type);
+/**
+ * 接听来电通话
+ *
+ * @param[in] session      session id
+ * 
+ * @return
+ * - = 0:  接口调用成功
+ * - < 0:  接口调用失败
+ */
+__cmcc_api__ int cmcc_rtc_pickup(int session);
+/**
+ * 挂断通话
+ *
+ * @param[in] session      session id
+ * 
+ * @return
+ * - = 0:  接口调用成功
+ * - < 0:  接口调用失败
+ */
+__cmcc_api__ int cmcc_rtc_hangup(int session);
+/**
+ * 设置可选属性
+ *
+ * @param[in] opt      可选属性类型
+ * 
+ * @param[in] value    可选属性值
+ * 
+ * @return
+ * - = 0:  成功
+ * - < 0:  失败
+ */
+__cmcc_api__ int cmcc_rtc_setopt(cmcc_rtc_opt_ opt, const char* value);
+/**
+ * 通过电话号码获取通信录对应的昵称
+ *
+ * @param[in] number   电话号码
+ * 
+ * @return             返回电话号码对应的昵称，无昵称则返回入参号码
+ */
+__cmcc_api__ const char* cmcc_rtc_get_nickname_by_number(const char* number);
+/**
+ * 设置外部的音频处理模块
+ *
+ * @param[in] audio_module      外部音频处理模块对象
+ *
+ * @return
+ * - = 0:  成功
+ * - < 0:  失败
+ */
+__cmcc_api__ int cmcc_rtc_set_external_audio_module(void* audio_module);
+/**
+ * 通过通讯录昵称获取通讯录对应的电话号码
+ *
+ * @param[in] nickname 通讯录昵称
+ * 
+ * @return  返回昵称对应的电话号码，若昵称不存在则返回错误告警
+ */
+__cmcc_api__ const char* cmcc_rtc_get_number_by_nickname(const char* nickname);
+/**
+ * 上传SDK日志
+ *
+ * 
+ * @return
+ * - = 0:  成功
+ * - < 0:  失败
+ *
+ * @Deprecated: SDK内部已实现自动上传日志的功能
+ *
+ */
+__cmcc_api__ int cmcc_rtc_upload_logfile();
+/**
+ * 发送视频流接口
+ *
+ * @param[in] session   会话ID
+ * @param[in] data      视频流（根据媒体协商结果发送H264或H265编码流）
+ * @param[in] length    数据长度
+ * 
+ * @return
+ * - = 0:  成功
+ * - < 0:  失败
+ */
+__cmcc_api__ int cmcc_rtc_send_video(int session, char* data, int length);
+/**
+ * 发送编码后的音频数据接口
+ * @说明：
+ * 【非编解码版本的SDK】使用此接口发送编码后的音频流
+ * 接受编码后的音频数据接口见 on_recv_audio_packet
+ *
+ * @param[in] session   会话ID
+ * @param[in] data      编码后的音频数据（如PCMA编码音频数据）
+ * @param[in] length    数据长度 （数据固定长度为160字节）
+ * 
+ * @return
+ * - = 0:  成功
+ * - < 0:  失败
+ */
+__cmcc_api__ int cmcc_rtc_send_audio(int session, unsigned char* data, int length);
+
+#ifdef __cplusplus
+}
+#endif	
+
+#endif /* __CMCC_RTC_API_H__ */

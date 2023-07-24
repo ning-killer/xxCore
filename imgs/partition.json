@@ -1,0 +1,16 @@
+{
+  "flashImgSize": "74M",
+  "partitionTable": [
+    {"name": "boot","file": "boot.bin", "size": "2560K"},
+    {"name": "env", "size": "256K"},
+    {"name": "kernel.A", "file": "kernel.bin", "size": "4M"},
+    {"name": "rootfs.A", "file": "rootfs.bin", "size": "3M"},
+    {"name": "firmware.A", "file": "firmware.bin", "size": "20M"},
+    {"name": "kernel.B", "file": "kernel.bin", "size": "4M"},
+    {"name": "rootfs.B", "file": "rootfs.bin", "size": "3M"},
+    {"name": "firmware.B","file": "firmware.bin", "size": "20M"},
+    {"name": "config.A", "size": "8M"},
+    {"name": "config.B", "size": "8M"},
+    {"name": "update","size": "512K"}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "deviceVendor": "ChuangMi",
+  "deviceBrand": "CM",
+  "deviceType": "2320474",
+  "os": "Linux-4.9.37",
+  "reserve": "Eapil",
+  "chipFactory": "Cvitek",
+  "chipModel": "CV1821",
+  "chipUuid": "111095380000002",
+  "romSize": "16MB",
+  "ramSize": "128MB",
+  "power": "POE"
+}

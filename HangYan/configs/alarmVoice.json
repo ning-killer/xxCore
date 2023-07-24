@@ -1,0 +1,6 @@
+{
+  "ena": true,
+  "sensitivity": 90,
+  "map comment": "杭研下发灵敏度到声音检测db之间的映射",
+  "map": [76, 72, 64, 55, 40]
+}

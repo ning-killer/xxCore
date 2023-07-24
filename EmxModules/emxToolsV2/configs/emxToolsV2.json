@@ -1,0 +1,16 @@
+{
+  "bufferSizeKB": 64,
+  "broadcast": {
+    "maxClientNum": 16,
+    "portHost": 8941,
+    "portPeer": 8951
+  },
+  "config": {
+    "maxClientNum": 16,
+    "port": 8942
+  },
+  "file": {
+    "maxClientNum": 16,
+    "port": 8943
+  }
+}

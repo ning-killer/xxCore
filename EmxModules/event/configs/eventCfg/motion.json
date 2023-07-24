@@ -1,0 +1,6 @@
+[
+  {
+    "sensitivityAreaMap comment": "这里面积是千分比，画面最大 = 1000，分为10个阈值等级",
+    "sensitivityAreaMap": [600, 400, 100, 70, 36, 30, 20, 4, 2, 1]
+  }
+]

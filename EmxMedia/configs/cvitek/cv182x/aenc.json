@@ -1,0 +1,22 @@
+[
+  {
+    "attr": {
+      "AiDev": 0,
+      "AiChn": 0,
+      "AencChn": 0,
+      "bind": false,
+      "aioSampleRate": 8000,
+      "frameSize": 320,
+      "enWorkmode": 0,
+      "enSoundmode": 1,
+      "u32EXFlag": 0,
+      "u32FrmNum": 30,
+      "u32ChnCnt": 2,
+      "u32ClkSel": 0,
+      "enI2sType": 0,
+      "gain": {"min": 0, "max": 7},
+      "vqeType": 2
+    },
+    "range": {}
+  }
+]

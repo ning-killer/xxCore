@@ -1,0 +1,17 @@
+{
+  "codec": [0, 1],
+  "resolution": [
+    {"w": 3840, "h": 2160},
+    {"w": 2688, "h": 1520},
+    {"w": 2592, "h": 1520},
+    {"w": 1920, "h": 1080},
+    {"w": 1280, "h": 720}
+  ],
+  "fps": {"min": 10, "max": 30},
+  "bitRate": {"min": 64, "max": 16384},
+  "rcMode": [0, 1, 2],
+  "iFrameInv": {"min": 1, "max": 10},
+  "flip": [true, false],
+  "mirror": [true, false],
+  "drawRect": [true, false]
+}

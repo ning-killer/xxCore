@@ -1,0 +1,8 @@
+{
+  "codec": [0, 1, 2, 3, 4],
+  "bitRate": {"min": 16, "max": 320},
+  "sampleRate": [16000],
+  "volume": {"min": 0, "max": 100},
+  "frameSize": [160, 320, 640, 1024],
+  "bitWidth": [8, 16]
+}

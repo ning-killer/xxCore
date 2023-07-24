@@ -1,0 +1,7 @@
+{
+  "timeMs": {
+    "endJudge": 5000,
+    "continueMin": 10000,
+    "continueMax": 60000
+  }
+}

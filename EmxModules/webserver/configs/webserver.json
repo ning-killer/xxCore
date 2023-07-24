@@ -1,0 +1,22 @@
+{
+  "port": 8000,
+  "user": [
+    {
+      "role": "admin",
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "role": "operator",
+      "username": "乔伊波伊",
+      "password": "21321312421"
+    },
+    {
+      "role": "normal",
+      "username": "大雄",
+      "password": "hahahahahaha"
+    }
+  ]
+}
+
+

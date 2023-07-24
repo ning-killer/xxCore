@@ -1,0 +1,22 @@
+#!/bin/sh
+EmxCoreServer -b
+sleep 1
+NetServer -b
+sleep 1
+NtpClient -b
+sleep 1
+EmxMediaServer -b
+sleep 1
+SDCardServer -b
+sleep 1
+RtspServer -b
+sleep 1
+UpdateServer -b
+sleep 1
+NightVisionServer -b
+sleep 1
+EmxAgeingServer -b
+sleep 1
+EmxFctToolsV1 -b
+sleep 1
+EapilMain -b

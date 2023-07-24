@@ -1,0 +1,22 @@
+{
+  "port": 8110,
+  "user": [
+    {
+      "level": 0,
+      "name": "admin",
+      "password": "21321312421"
+    },
+    {
+      "level": 1,
+      "name": "123",
+      "password": "21321312421"
+    },
+    {
+      "level": 2,
+      "name": "456",
+      "password": "21321312421"
+    }
+  ]
+}
+
+

@@ -1,0 +1,4 @@
+20220221:
+    CMCC_RTC_IoT_SDK_V1.5.1.3_rc_Cvitek_CV1821-gcc6.4.0-32bit
+20211222:
+    CMCC_RTC_IoT_SDK_V1.5.1.3_rc_hisi-3518EV300-gcc6.3.0-32bit

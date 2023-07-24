@@ -1,0 +1,5 @@
+#!/bin/sh
+insmod ssv6x5x.ko
+insmod wlan_ecr6600u_usb.ko
+
+exit $?

@@ -1,0 +1,16 @@
+[
+  {
+    "pipe": 0,
+    "infoInvMs": 200,
+    "wdrMode": 0,
+    "pq": {
+      "day": "sdr_day.bin",
+      "night": "sdr_ir.bin",
+      "nightWithLight": "sdr_white.bin"
+    },
+    "fps": {
+      "day": 15,
+      "night": 15
+    }
+  }
+]

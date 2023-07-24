@@ -1,0 +1,25 @@
+[
+  {
+    "enWorkstate": 0,
+    "aec": {
+      "ena": true,
+      "para_aec_filter_len": 13,
+      "para_aes_std_thrd": 32,
+      "para_aes_supp_coeff": 70
+    },
+    "agc": {
+      "ena": true,
+      "para_agc_max_gain": 1,
+      "para_agc_target_high": 2,
+      "para_agc_target_low": 6,
+      "para_agc_vad_enable": true,
+      "para_agc_vad_cnt": 13,
+      "para_agc_cut6_enable": 1
+    },
+    "anr": {
+      "ena": true,
+      "para_nr_snr_coeff": 15,
+      "para_nr_noise_coeff": 2
+    }
+  }
+]

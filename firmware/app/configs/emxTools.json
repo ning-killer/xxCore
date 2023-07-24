@@ -1,0 +1,24 @@
+{
+  "runAfterLaunching": true,
+  "detection": {
+    "ena": true,
+    "maxClientNum": 16,
+    "port": 4942,
+    "bufferSizeKB": 4
+  },
+  "config": {
+    "ena": true,
+    "maxClientNum": 16,
+    "port": 4941,
+    "bufferSizeKB": 64
+  },
+  "stream": {
+    "ena": false,
+    "maxClientNum": 16,
+    "port": 8090,
+    "maxSendBufferKB": 256
+  },
+  "factory": {
+    "platformType": "HJQV2"
+  }
+}

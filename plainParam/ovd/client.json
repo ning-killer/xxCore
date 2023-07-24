@@ -1,0 +1,21 @@
+{
+  "netParam": {
+    "passDomain": "media01.opensight.cn",
+    "passPort": 9999,
+    "Secure_PassPort": 9080,
+    "p2p_passDomain": "",
+    "p2p_passPort": 0,
+    "turnDomain": "",
+    "turnPort": 0,
+    "probeDomain": "",
+    "probePort": 0,
+    "probeSecurePort": 0,
+    "hibernationDomain": "",
+    "hibernationPort": 0,
+    "hibernationHBInterval": 0,
+    "maxP2PSession": 4
+  },
+  "enable_servicschedule": 1,
+  "servicescheduleurl": "https://video.komect.com/ovp/getServerAddr",
+  "cafilepath": ""
+}

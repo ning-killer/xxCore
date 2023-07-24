@@ -1,0 +1,20 @@
+{
+  "expMode": [0, 1],
+  "autoMaxExpGain": {"min": 0, "max": 6},
+  "compensation": {"min": 0, "max": 255},
+  "manualExpGain": {"min": 0, "max": 6},
+  "expTime": {"min": 0, "max": 10000},
+  "brightness": {"min": 0, "max": 255},
+  "sharpness": {"min": 0, "max": 255},
+  "hue": {"min": 0, "max": 255},
+  "contrast": {"min": 0, "max": 255},
+  "saturation": {"min": 0, "max": 255},
+  "deNoise": {"min": 0, "max": 255},
+  "wbMode": [0, 1],
+  "redGain": {"min": 0, "max": 255},
+  "blueGain": {"min": 0, "max": 255},
+  "antiFlickerHz": [50, 60],
+  "forceAntiFlickerEna": [0, 1]
+}
+
+

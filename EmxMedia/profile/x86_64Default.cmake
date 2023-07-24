@@ -1,0 +1,3 @@
+set(HARDWARE_PLATFORM pc)
+set(CHIP x86_64)
+

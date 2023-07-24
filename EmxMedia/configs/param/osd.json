@@ -1,0 +1,198 @@
+[
+  {
+    "time": [
+      {
+        "ena": true,
+        "size": 48,
+        "thickness": 1,
+        "layer": 1,
+        "font": "font.ttf",
+        "format": 0,
+        "margin": {
+          "horizon": {
+            "rate": 0,
+            "align": 2
+          },
+          "vertical": {
+            "rate": 0,
+            "align": 2
+          }
+        }
+      }
+    ],
+    "text": [
+      {
+        "ena": true,
+        "size": 58,
+        "thickness": 1,
+        "layer": 1,
+        "font": "font.ttf",
+        "content": "IPCam 0-0",
+        "margin": {
+          "horizon": {
+            "rate": 0,
+            "align": 0
+          },
+          "vertical": {
+            "rate": 0,
+            "align": 0
+          }
+        }
+      },
+      {
+        "ena": true,
+        "size": 68,
+        "thickness": 1,
+        "layer": 1,
+        "font": "font.ttf",
+        "content": "摄像机 0-1",
+        "margin": {
+          "horizon": {
+            "rate": 0,
+            "align": 0
+          },
+          "vertical": {
+            "rate": 0,
+            "align": 1
+          }
+        }
+      },
+      {
+        "ena": true,
+        "size": 78,
+        "thickness": 1,
+        "layer": 1,
+        "font": "font.ttf",
+        "content": "摄像机0-2",
+        "margin": {
+          "horizon": {
+            "rate": 0,
+            "align": 1
+          },
+          "vertical": {
+            "rate": 0,
+            "align": 0
+          }
+        }
+      },
+      {
+        "ena": true,
+        "size": 64,
+        "thickness": 1,
+        "layer": 1,
+        "font": "font.ttf",
+        "content": "IPCam0-3",
+        "margin": {
+          "horizon": {
+            "rate": 50,
+            "align": 1
+          },
+          "vertical": {
+            "rate": 0,
+            "align": 1
+          }
+        }
+      }
+    ],
+    "image": [
+      {
+        "ena": true,
+        "layer": 0,
+        "width": 230,
+        "height": 60,
+        "alpha": 255,
+        "path": "/mnt/nfs/app/configs/logo/2304x1296.rgba",
+        "margin": {
+          "horizon": {
+            "rate": 0,
+            "align": 1
+          },
+          "vertical": {
+            "rate": 0,
+            "align": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "time": [
+      {
+        "ena": true,
+        "size": 16,
+        "thickness": 1,
+        "layer": 1,
+        "font": "font.ttf",
+        "format": 0,
+        "margin": {
+          "horizon": {
+            "rate": 0,
+            "align": 0
+          },
+          "vertical": {
+            "rate": 0,
+            "align": 0
+          }
+        }
+      }
+    ],
+    "text": [
+      {
+        "ena": true,
+        "size": 16,
+        "thickness": 1,
+        "layer": 1,
+        "font": "font.ttf",
+        "content": "Minor IPC 通道 text 0",
+        "margin": {
+          "horizon": {
+            "rate": 0,
+            "align": 1
+          },
+          "vertical": {
+            "rate": 0,
+            "align": 0
+          }
+        }
+      },
+      {
+        "ena": true,
+        "size": 16,
+        "thickness": 1,
+        "layer": 1,
+        "font": "font.ttf",
+        "content": "Minor IPC 通道 text 1",
+        "margin": {
+          "horizon": {
+            "rate": 0,
+            "align": 0
+          },
+          "vertical": {
+            "rate": 0,
+            "align": 1
+          }
+        }
+      }
+    ],
+    "image": [
+      {
+        "ena": true,
+        "layer": 0,
+        "width": 66,
+        "height": 18,
+        "alpha": 255,
+        "path": "/mnt/nfs/app/configs/logo/640x360.rgba",
+        "margin": {
+          "horizon": {
+            "rate": 0,
+            "align": 1
+          },
+          "vertical": {
+            "rate": 0,
+            "align": 1
+          }
+        }
+      }
+    ]
+  }
+]

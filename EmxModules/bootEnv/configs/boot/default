@@ -1,0 +1,42 @@
+APP_PART_OFFSET=0x3D0000
+APP_PART_SIZE=0x9B0000
+BOOT_PART_OFFSET=0x80000
+BOOT_PART_SIZE=0x260000
+CONFIGS_PART_OFFSET=0xF80000
+CONFIGS_PART_SIZE=0x80000
+ROOTFS_PART_OFFSET=0x2E0000
+ROOTFS_PART_SIZE=0x100000
+SPARE_PART_OFFSET=0xD80000
+SPARE_PART_SIZE=0x200000
+baudrate=115200
+bootcmd=cvi_update || run norboot
+bootdelay=1
+consoledev=ttyS0
+fdtcontroladdr=8772cb70
+fip_PART_OFFSET=0x0
+fip_PART_SIZE=0x60000
+gatewayip=192.168.0.11
+hostname=unknown
+ipaddr=192.168.0.3
+mem=0x8000000
+mtdids=nor1=flash-0
+mtdparts=mtdparts=10000000.cvi-spif:384K(boot),128K(env),2432K(kernel),1M(rootfs),5824K(media),3M(app.A),3M(app.B),448K(data)
+netdev=eth0
+netmask=255.255.255.0
+nfsboot=setenv bootargs root=/dev/nfs init=/init rw nfsroot=$serverip:$rootpath,v3,tcp ip=$ipaddr:$serverip:$gatewayip:$netmask:$hostname:$netdev:off console=$consoledev,$baudrate $othbootargs;setenv kernel_name Image;setenv kernel_addr 0x100080000;setenv fdt_name cv1835_asic_evb.dtb;setenv fdt_addr 0x102000000;tftp ${kernel_addr} ${kernel_name}; tftp ${fdt_addr} ${fdt_name}; fdt addr ${fdt_addr}; fdt resize; booti ${kernel_addr} - ${fdt_addr}
+nor1=flash-0
+norboot=setenv bootargs mem=${mem} ${root} ${mtdparts} console=$consoledev,$baudrate $othbootargs systemSelect=${systemSelect};sf probe;sf read ${uimage_addr} ${BOOT_PART_OFFSET} ${BOOT_PART_SIZE};bootm ${uimage_addr}#config@cv1821_wevb_0005b_spinor;
+othbootargs=earlycon loglevel=4
+partition={"flashImgSize":"16M","partitionTable":[{"name":"boot","file":"fip.bin","size":"384K"},{"name":"env","size":"128K"},{"name":"kernel","file":"kernel.bin","size":"2432K"},{"name":"rootfs","file":"rootfs.bin","size":"1M"},{"name":"media","file":"media.bin","size":"5824K"},{"name":"app.A","file":"app.bin","size":"3M"},{"name":"app.B","file":"app.bin","size":"3M"},{"name":"data","size":"448K"}]}
+ramboot=setenv bootargs console=$consoledev,$baudrate $othbootargs;echo run Ramboot...;if test $? -eq 0; then bootm ${uimage_addr}#config@cv1821_wevb_0005b_spinor;fi;
+root=rootfstype=squashfs root=/dev/mtdblock3
+rootpath=/home/share/nfsroot
+sdboot=setenv bootargs console=$consoledev,$baudrate $othbootargs;mmc dev 1;if test $? -eq 0; then fatload mmc 1:1 ${uimage_addr} sdboot.itb;if test $? -eq 0; then bootm ${uimage_addr}#config@cv1821_wevb_0005b_spinor;fi;fi;
+serverip=192.168.56.101
+stderr=serial
+stdin=serial
+stdout=serial
+systemSelect=A
+spare=0
+uimage_addr=0x82000000
+usbboot=setenv bootargs console=$consoledev,$baudrate $othbootargs;mw.l  0xe00fc04 0x4D474E31;cmp.l 0xe00fc08 0xe00fc04 1;if test $? -eq 0; then echo usbboot...;mw.l 0xe00fc00 0x0;mw.l 0xe00fc04 0x0;mw.l 0xe00fc08 0x0;cvi_utask;bootm ${uimage_addr}#config@cv1821_wevb_0005b_spinor;fi;

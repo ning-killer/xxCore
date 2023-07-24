@@ -1,0 +1,26 @@
+[
+  {
+    "codec": 1,
+    "width": 2304,
+    "height": 1296,
+    "fps": 15,
+    "bitRate": 1300,
+    "rcMode": 2,
+    "iFrameInv": 4,
+    "flip": false,
+    "mirror": false,
+    "drawRect": false
+  },
+  {
+    "codec": 0,
+    "width": 640,
+    "height": 360,
+    "fps": 15,
+    "bitRate": 285,
+    "rcMode": 2,
+    "iFrameInv": 4,
+    "flip": false,
+    "mirror": false,
+    "drawRect": false
+  }
+]

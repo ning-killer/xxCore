@@ -1,0 +1,22 @@
+{
+  "legacy": false,
+  "log": {
+    "shared": {
+      "async": false,
+      "level": 4
+    },
+    "normal": {
+      "maxSizeKB": 128,
+      "path": "/tmp/eapilNormal.log"
+    },
+    "flash": {
+      "maxSizeKB": 32,
+      "path": "/tmp/eapilFlash.log"
+    }
+  },
+  "param": {
+    "normal": "/root/configs/normal",
+    "backup": "/root/configs/backup",
+    "default": "/root/firmware/app/param"
+  }
+}

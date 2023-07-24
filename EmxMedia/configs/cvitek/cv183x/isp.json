@@ -1,0 +1,30 @@
+[
+  {
+    "pipe": 0,
+    "infoInvMs": 200,
+    "wdrMode": 0,
+    "pq": {
+      "day": "04c10_sdr_day.bin",
+      "night": "04c10_sdr_day.bin",
+      "nightWithLight": "04c10_sdr_day.bin"
+    },
+    "fps": {
+      "day": 25,
+      "night": 15
+    }
+  },
+  {
+    "pipe": 1,
+    "infoInvMs": 200,
+    "wdrMode": 0,
+    "pq": {
+      "day": "04c10_sdr_day.bin",
+      "night": "04c10_sdr_day.bin",
+      "nightWithLight": "04c10_sdr_day.bin"
+    },
+    "fps": {
+      "day": 25,
+      "night": 15
+    }
+  }
+]

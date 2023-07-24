@@ -1,0 +1,66 @@
+{
+  "schedule": {
+    "onOff": false,
+    "startTime": "00:00:00",
+    "endTime": "00:00:00",
+    "repeat": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "once": false,
+    "onceStartTime": "1970-00-00T00:00:00",
+    "onceEndTime": "1970-00-00T00:00:00",
+    "manual": true,
+    "manualTime": "1970-00-00T00:00:00"
+  },
+  "ovdZone": [
+    {
+      "areaId": 0,
+      "point": [
+        {
+          "pointId": 0,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "pointId": 1,
+          "x": 10000,
+          "y": 0
+        },
+        {
+          "pointId": 2,
+          "x": 10000,
+          "y": 10000
+        },
+        {
+          "pointId": 3,
+          "x": 0,
+          "y": 10000
+        }
+      ]
+    }
+  ],
+  "strategy": {
+    "speech": {
+      "ena": true,
+      "volume": 60,
+      "repeat": 3,
+      "url": "https://oss4.komect.com/voicelib/default/5AlertAreaLeaveAsSoonAsPossible.wav?voiceId=1",
+      "playVoiceA": true
+    },
+    "light": {
+      "ena": true,
+      "mode": 1,
+      "duration": 3
+    },
+    "buzz": {
+      "ena": false,
+      "duration": 0
+    }
+  }
+}

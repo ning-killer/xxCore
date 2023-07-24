@@ -1,0 +1,74 @@
+{
+  "have_ptz": false,
+  "support_ptz_preset": false,
+  "have_battery": false,
+  "have_audio_out": false,
+  "have_voice_out": true,
+  "have_trace": false,
+  "have_ivrs": true,
+  "ovdAICapInfo": {
+    "AIface": {
+      "face": true,
+      "faceExposureAdjust": true,
+      "CaptureModeList": "quality,quick",
+      "alarm_zone": 1
+    },
+    "AIkitchen": {
+      "kitchen_detection": false,
+      "CaptureModeList": "",
+      "ClothesColorList": "",
+      "alarm_zone": 0
+    },
+    "AIvehicle": {
+      "vehicle_detection": false,
+      "CaptureModeList": "",
+      "alarm_zone": 0
+    }
+  },
+  "ovdCapInfo_alarms": {
+    "have_alarms_io": false,
+    "have_alarms_face": true,
+    "support_alarms_face_zone": 1,
+    "have_alarms_cry": false,
+    "have_alarms_voice": true,
+    "have_alarms_motion": true,
+    "support_alarms_motion_zone": 1,
+    "have_alarms_body": false,
+    "support_alarms_body_zone": false,
+    "have_alarms_cross": false,
+    "have_alarms_pir": false,
+    "have_alarms_pir_staymode": false,
+    "have_alarms_lossLock": false,
+    "have_alarms_alertarea": true,
+    "support_alarms_alertarea_zone": true
+  },
+  "ovdlinkage_mode": {
+    "alertarea": "speech,light",
+    "vehicle_detection": ""
+  },
+  "log_upload_https": true,
+  "firmware_download_https": true,
+  "video_encrypt": false,
+  "have_switch": true,
+  "have_sd": true,
+  "have_led": true,
+  "have_support_softprobe": true,
+  "have_auto_reboot": true,
+  "video_quality": "sd,hd,fhd",
+  "video_formats_supportlists": "h264,h265",
+  "support_set_video_formats": true,
+  "have_voiceout_volume": true,
+  "have_doorbell_volume": false,
+  "support_set_normal_nightvision_mode": false,
+  "support_set_color_nightvision_mode": true,
+  "osd_text": true,
+  "osd_logo": true,
+  "enable_hjkh": true,
+  "hjkh_mode": {
+    "preference_call": false,
+    "set_calling_number": false,
+    "not_disturb_mode": false,
+    "not_disturb_device_mode": false,
+    "auto_hangup": false
+  }
+}

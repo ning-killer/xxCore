@@ -1,0 +1,6 @@
+0.确保基于的CoreMedia和Modules版本符合预期
+1.运行updateVersion.py生成新的版本信息
+2.梳理与上次版本发布tag之间的所有更改，并编辑change.log,
+3.commit
+4.创建tag，以版本号命名
+5.push all

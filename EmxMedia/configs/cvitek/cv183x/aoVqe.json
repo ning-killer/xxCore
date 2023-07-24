@@ -1,0 +1,21 @@
+[
+  {
+    "ena": true,
+    "enWorkstate": 0,
+    "agc": {
+      "ena": true,
+      "bUsrMode": 0,
+      "s8TargetLevel": -2,
+      "s8NoiseFloor": -50,
+      "s8MaxGain": 17,
+      "s8AdjustSpeed": 10,
+      "s8ImproveSNR": 2,
+      "s8UseHighPassFilt": 0,
+      "s8OutputMode": 1,
+      "s16NoiseSupSwitch": 1
+    },
+    "eq": {"s8GaindB": [10, 10, 10, 10, 10, 0, 0, 0, 0, 0]},
+    "hpf": {"ena": true, "bUsrMode": 1, "enHpfFreq": 150},
+    "anr": {"ena": true, "bUsrMode": 0, "s16NrIntensity": 25, "s16NoiseDbThr": 50, "s8SpProSwitch": 0}
+  }
+]

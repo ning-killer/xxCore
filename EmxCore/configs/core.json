@@ -1,0 +1,22 @@
+{
+  "output": false,
+  "log": {
+    "shared": {
+      "async": false,
+      "level": 5
+    },
+    "normal": {
+      "maxSizeKB": 128,
+      "path": "/tmp/emxNormal.log"
+    },
+    "flash": {
+      "maxSizeKB": 32,
+      "path": "/tmp/emxFlash.log"
+    }
+  },
+  "param": {
+    "normal": "/root/data/normal",
+    "backup": "/root/data/backup",
+    "default": "/root/firmware/app/configs/param"
+  }
+}

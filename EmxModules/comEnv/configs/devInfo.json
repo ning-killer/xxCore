@@ -1,0 +1,14 @@
+{
+  "inner": {
+    "type": "EP_CT_M4C7S3W0P0",
+    "version": "2.0.20220911.20"
+  },
+  "outer": {
+    "type": "EP20-CT-Dev",
+    "version": "0.0.2"
+  },
+  "hardware": {
+    "type": "EpCv182xGunV1",
+    "version": "v1.0"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "vbComment": "",
+  "vb": [
+    {"width": 2560, "height": 1440, "cnt": 12, "format": 13, "bitWidth": 0, "compress": 0, "align": 64}
+  ],
+  "vi": {
+    "ViVpssMode": [],
+    "sensorCfg": "sensor_cfg.ini",
+    "pipeAttr": [
+      {
+        "number": 0,
+        "bYuvSkip": false,
+        "u32MaxW": 2560,
+        "u32MaxH": 1440,
+        "pixFormat": 10,
+        "bitWidth": 2,
+        "s32SrcFrameRate": -1,
+        "s32DstFrameRate": -1,
+        "NrEn": true,
+        "bYuvBypassPath": false,
+        "enCompressMode": 0
+      },
+      {
+        "number": 1,
+        "bYuvSkip": false,
+        "u32MaxW": 2560,
+        "u32MaxH": 1440,
+        "pixFormat": 10,
+        "bitWidth": 2,
+        "s32SrcFrameRate": -1,
+        "s32DstFrameRate": -1,
+        "NrEn": true,
+        "bYuvBypassPath": false,
+        "enCompressMode": 0
+      }
+    ],
+    "defIsp": [
+      {"mode": 0, "bin": "04c10_sdr_day.bin"}
+    ],
+    "frameRate": [
+      {"pipe": 0, "rate": 25},
+      {"pipe": 1, "rate": 25}
+    ],
+    "rotate": [
+      {"pipe": 0, "chn": 0, "flip": false, "mirror": false,"rotation": 0},
+      {"pipe": 0, "chn": 1, "flip": false, "mirror": false,"rotation": 0}
+    ],
+    "bind": []
+  }
+}

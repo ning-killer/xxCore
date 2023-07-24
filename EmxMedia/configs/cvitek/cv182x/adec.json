@@ -1,0 +1,37 @@
+[
+  {
+    "attr": {
+      "AoDev": 0,
+      "AoChn": 0,
+      "AdecChn": 0,
+      "bind": false,
+      "aioSampleRate": 8000,
+      "frameSize": 1024,
+      "enWorkmode": 0,
+      "enSoundmode": 0,
+      "u32EXFlag": 0,
+      "u32FrmNum": 30,
+      "u32ChnCnt": 1,
+      "u32ClkSel": 0,
+      "enI2sType": 0,
+      "silentTimeMs": 1200,
+      "gain": {"min": 0, "max": 32},
+      "spkAmpCtrl": {
+        "autoMute": true,
+        "gpioList": [
+          {
+            "num": 400,
+            "active": 1,
+            "default": 0
+          },
+          {
+            "num": 495,
+            "active": 1,
+            "default": 0
+          }
+        ]
+      }
+    },
+    "range": {}
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "manual comment": "是否使能手动模式 false:自动;true:手动",
+  "manual": false,
+  "autoMode comment": "自动模式   0:红外夜视;1:全彩夜视",
+  "autoMode": 0,
+  "manualMode comment": "手动模式   0:白天模式;1:红外夜视;2:全彩夜视",
+  "manualMode": 0,
+  "sensitivity": {
+    "day2ir": 5,
+    "ir2day": 5,
+    "day2color": 5,
+    "color2day": 5
+  }
+}

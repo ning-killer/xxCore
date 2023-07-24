@@ -1,0 +1,38 @@
+[
+  {
+    "motionDetection": {
+      "vpssGrp": 4,
+      "vpssChn": 0,
+      "interval": 25,
+      "threshold": 64,
+      "minArea": 512
+    },
+    "personDetection": {
+      "vpssGrp": 3,
+      "vpssChn": 0,
+      "modelId": 11,
+      "modelPath": "mobiledetv2-pedestrian-d1-ls.cvimodel",
+      "threshold": 0.7,
+      "fps": 10
+    },
+    "facePersonDetection": {
+      "vpssGrp": 5,
+      "vpssChn": 0,
+      "vbPool": 5,
+      "PDModelId": 11,
+      "FDModelId": 31,
+      "FeatureModelId": 3,
+      "modelFdPath": "scrfd_500m_bnkps_432_768.cvimodel",
+      "modelFdFeaturePath": "pipnet_mbv3_64_v5_cv182x_2.cvimodel",
+      "modelPdPath": "mobiledetv2-pedestrian-d1-ls.cvimodel",
+      "PDThreshold": 0.5,
+      "maxFaceNum": 10,
+      "imgQuality": 90,
+      "fps": 15
+    },
+    "classify": {
+      "vpssGrp": 4,
+      "vpssChn": 0
+    }
+  }
+]

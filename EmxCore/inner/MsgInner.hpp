@@ -1,0 +1,25 @@
+//
+// Created by xiong on 2020/9/18.
+//
+
+#ifndef EMX_MsgInner_HPP
+#define EMX_MsgInner_HPP
+
+#include "EmxInner.hpp"
+
+#define MSG_SYNC_ID 0x12345678
+#define MSG_MAX_ID_LEN 64
+
+#define MSG_DOMAIN_DIR                  EMX_DOMAIN_DIR"/msg"
+
+#define TOPIC_SERVER_DOMAIN_PATH        MSG_DOMAIN_DIR"/TopicS"
+#define TOPIC_CLIENT_DOMAIN_PREFIX      MSG_DOMAIN_DIR"/TopicC_"
+#define TOPIC_PUB_DOMAIN_PREFIX         TOPIC_CLIENT_DOMAIN_PREFIX"PUB_"
+#define TOPIC_SUB_DOMAIN_PREFIX         TOPIC_CLIENT_DOMAIN_PREFIX"SUB_"
+
+#define RPC_SERVER_DOMAIN_PATH          MSG_DOMAIN_DIR"/RpcS"
+#define RPC_CLIENT_DOMAIN_PREFIX        MSG_DOMAIN_DIR"/RpcC_"
+#define RPC_REQ_DOMAIN_PREFIX           RPC_CLIENT_DOMAIN_PREFIX"REQ_"
+#define RPC_RESP_DOMAIN_PREFIX           RPC_CLIENT_DOMAIN_PREFIX"RESP_"
+
+#endif //EMX_MsgInner_HPP

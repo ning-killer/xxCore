@@ -1,0 +1,39 @@
+[
+  {
+    "ena": true,
+    "motionDetection": {
+      "ena": true,
+      "drawing": true,
+      "threshold": 64
+    },
+    "personDetection": {
+      "ena": true,
+      "drawing": true
+    },
+    "classify": {
+      "ena": true,
+      "drawing": true,
+      "type": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    },
+    "personRecognition": {
+      "ena": true,
+      "drawing": true
+    },
+    "faceRecognition": {
+      "ena": true,
+      "drawing": true
+    },
+    "facePersonDetection": {
+      "ena": true,
+      "faceDraw": false,
+      "personDraw": false,
+      "aeEna": false,
+      "aeValue": 60,
+      "captureNum": 1,
+      "captureMode": 0,
+      "captureQuality": 20,
+      "captureInterval": 10,
+      "captureSensitivity": 0.5
+    }
+  }
+]

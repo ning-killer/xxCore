@@ -1,0 +1,10 @@
+[
+  {
+    "type": 0,
+    "mirror": true,
+    "map": {
+      "x": "/mnt/nfs/app/configs/Y_mapX_400w.bin",
+      "y": "/mnt/nfs/app/configs/Y_mapY_400w.bin"
+    }
+  }
+]

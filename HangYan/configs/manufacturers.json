@@ -1,0 +1,12 @@
+{
+  "deviceVendor": "深圳市兆能讯通科技有限公司",
+  "deviceBrand": "兆能讯通",
+  "deviceType": "232839",
+  "os": "Linux-4.9.37",
+  "reserve": "Eapil",
+  "chipFactory": "Cvitek",
+  "chipModel": "ARM",
+  "chipUuid": "",
+  "romSize": "128M",
+  "power": "USB"
+}

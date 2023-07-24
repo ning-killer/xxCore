@@ -1,0 +1,6 @@
+# HangYan Readme
+
+## 分支说明
+
+master: 发布分支  
+develop-xx: 研发开发分支, 测试通过后可合并至master

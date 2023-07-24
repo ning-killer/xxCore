@@ -1,0 +1,23 @@
+[
+  {
+    "motionDetection": {
+      "vpssGrp": 4,
+      "vpssChn": 0,
+      "interval": 25,
+      "threshold": 64,
+      "minArea": 512
+    },
+    "personDetection": {
+      "vpssGrp": 3,
+      "vpssChn": 0,
+      "modelId": 11,
+      "modelPath": "mobiledetv2-pedestrian-d1-ls.cvimodel",
+      "threshold": 0.7,
+      "fps": 10
+    },
+    "classify": {
+      "vpssGrp": 4,
+      "vpssChn": 0
+    }
+  }
+]

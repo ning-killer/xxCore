@@ -1,0 +1,16 @@
+[
+  {
+    "pipe": 0,
+    "infoInvMs": 200,
+    "wdrMode": 0,
+    "pq": {
+      "day": "sc3335_sdr_day.bin",
+      "night": "sc3335_sdr_ir.bin",
+      "nightWithLight": "sc3335_sdr_day.bin"
+    },
+    "fps": {
+      "day": 15,
+      "night": 15
+    }
+  }
+]

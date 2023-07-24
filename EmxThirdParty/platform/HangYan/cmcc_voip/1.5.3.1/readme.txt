@@ -1,0 +1,4 @@
+20220408:
+    CMCC_RTC_IoT_SDK_V1.5.3.1_rc_Ingenic_T31X-gcc4.7.2-64bit
+20220509:
+    CMCC_RTC_IoT_SDK_V1.5.3.1_rc_Cvitek_CV1821_gcc6.4.0_32bit

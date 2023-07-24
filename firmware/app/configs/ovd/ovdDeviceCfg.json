@@ -1,0 +1,49 @@
+{
+  "ledType": "single",
+  "record": {
+    "path": "/mnt/sdcard",
+    "splitTimeMs": 60000,
+    "reservedSpace": 500,
+    "vencChn": 0,
+    "aencChn": 0
+  },
+  "videoQuality": {
+    "ld": {
+      "venc": {"width": 640, "height": 360, "bitRate": 285},
+      "font": {"size": 16},
+      "logo": {"width": 66, "height": 18, "file": "640x360.rgba"}
+    },
+    "sd": {
+      "venc": {"width": 960, "height": 540, "bitRate": 384},
+      "font": {"size": 24},
+      "logo": {"width": 96, "height": 26, "file": "960x540.rgba"}
+    },
+    "hd": {
+      "venc": {"width": 2304, "height": 1296, "bitRate": 1300},
+      "font": {"size": 56},
+      "logo": {"width": 230, "height": 60, "file": "2304x1296.rgba"}
+    },
+    "fhd": {
+      "venc": {"width": 2560, "height": 1440, "bitRate": 1600},
+      "font": {"size": 64},
+      "logo": {"width": 256, "height": 68, "file": "2560x1440.rgba"}
+    }
+  },
+  "osdFontMap": [
+    {"height": 1520, "font": [64, 48, 56, 64]},
+    {"height": 1440, "font": [60, 48, 56, 64]},
+    {"height": 1296, "font": [56, 48, 56, 64]},
+    {"height": 1080, "font": [48, 32, 48, 54]},
+    {"height": 720, "font": [32, 24, 32, 48]},
+    {"height": 540, "font": [24, 20, 24, 32]},
+    {"height": 360, "font": [16, 14, 16, 20]}
+  ],
+  "spkVolumeMap": [4, 14, 25, 38, 57],
+  "alarmVoiceDir": "/root/data",
+  "andlinkPath": "/root/data/andlink",
+  "voip": {
+    "aCall": false,
+    "resolution": { "width": 640, "height": 360 },
+    "spkLoop": false
+  }
+}

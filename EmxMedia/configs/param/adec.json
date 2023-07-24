@@ -1,0 +1,10 @@
+[
+  {
+    "codec": 2,
+    "bitRate": 64,
+    "sampleRate": 8000,
+    "volume": 7,
+    "bitWidth": 16,
+    "mute": false
+  }
+]

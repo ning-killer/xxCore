@@ -1,0 +1,53 @@
+APP2_PART_OFFSET=0x24C0000
+APP2_PART_SIZE=0x1400000
+APP_PART_OFFSET=0x9C0000
+APP_PART_SIZE=0x1400000
+BOOT2_PART_OFFSET=0x1DC0000
+BOOT2_PART_SIZE=0x400000
+BOOT_PART_OFFSET=0x2C0000
+BOOT_PART_SIZE=0x400000
+CONFIGS2_PART_OFFSET=0x40C0000
+CONFIGS2_PART_SIZE=0x800000
+CONFIGS_PART_OFFSET=0x38C0000
+CONFIGS_PART_SIZE=0x800000
+DATA_PART_OFFSET=0x4940000
+DATA_PART_SIZE=0x8000000000000000
+ENV_PART_OFFSET=0x280000
+ENV_PART_SIZE=0x40000
+ROOTFS2_PART_OFFSET=0x21C0000
+ROOTFS2_PART_SIZE=0x300000
+ROOTFS_PART_OFFSET=0x6C0000
+ROOTFS_PART_SIZE=0x300000
+UPDATE_PART_OFFSET=0x48C0000
+UPDATE_PART_SIZE=0x80000
+baudrate=115200
+bootcmd=cvi_update || run nandboot
+bootdelay=1
+consoledev=ttyS0
+fdtcontroladdr=876dfb70
+fip_PART_OFFSET=0x0
+fip_PART_SIZE=0x280000
+gatewayip=192.168.0.11
+hostname=unknown
+ipaddr=192.168.0.3
+mem=0x8000000
+mtdids=nand0=cvsnfc
+mtdparts=mtdparts=cvsnfc:2560K(boot),256K(env),4M(kernel.A),3M(rootfs.A),20M(firmware.A),4M(kernel.B),3M(rootfs.B),20M(firmware.B),8M(config.A),8M(config.B),512K(update),-(data)
+nandboot=setenv bootargs mem=${mem} ${root} ${mtdparts} console=$consoledev,$baudrate $othbootargs;nand read ${uimage_addr} ${BOOT_PART_OFFSET} ${BOOT_PART_SIZE};mw.l 4330058 1 1; md.l 4330058 1; mw.l 3000154 0 1;bootm ${uimage_addr}#config@cv1821_wevb_0005b_spinand;
+netdev=eth0
+netmask=255.255.255.0
+nfsboot=setenv bootargs root=/dev/nfs init=/init rw nfsroot=$serverip:$rootpath,v3,tcp ip=$ipaddr:$serverip:$gatewayip:$netmask:$hostname:$netdev:off console=$consoledev,$baudrate $othbootargs;setenv kernel_name Image;setenv kernel_addr 0x100080000;setenv fdt_name cv1835_asic_evb.dtb;setenv fdt_addr 0x102000000;tftp ${kernel_addr} ${kernel_name}; tftp ${fdt_addr} ${fdt_name}; fdt addr ${fdt_addr}; fdt resize; booti ${kernel_addr} - ${fdt_addr}
+nor1=flash-0
+othbootargs=earlycon loglevel=4
+partition={"flashImgSize":"74M","partitionTable":[{"name":"boot","file":"boot.bin","size":"2560K"},{"name":"env","size":"256K"},{"name":"kernel.A","file":"kernel.bin","size":"4M"},{"name":"rootfs.A","file":"rootfs.bin","size":"3M"},{"name":"firmware.A","file":"firmware.bin","size":"20M"},{"name":"kernel.B","file":"kernel.bin","size":"4M"},{"name":"rootfs.B","file":"rootfs.bin","size":"3M"},{"name":"firmware.B","file":"firmware.bin","size":"20M"},{"name":"config.A","size":"8M"},{"name":"config.B","size":"8M"},{"name":"update","size":"512K"}]}
+ramboot=setenv bootargs console=$consoledev,$baudrate $othbootargs;echo run Ramboot...;if test $? -eq 0; then bootm ${uimage_addr}#config@cv1821_wevb_0005b_spinand;fi;
+root=ubi.mtd=ROOTFS ubi.block=0,0 root=/dev/ubiblock0_0 rootfstype=squashfs
+rootpath=/home/share/nfsroot
+sdboot=setenv bootargs console=$consoledev,$baudrate $othbootargs;mmc dev 1;if test $? -eq 0; then fatload mmc 1:1 ${uimage_addr} sdboot.itb;if test $? -eq 0; then bootm ${uimage_addr}#config@cv1821_wevb_0005b_spinand;fi;fi;
+serverip=192.168.0.110
+stderr=serial
+stdin=serial
+stdout=serial
+systemSelect=A
+uimage_addr=0x82000000
+usbboot=setenv bootargs console=$consoledev,$baudrate $othbootargs;mw.l  0xe00fc04 0x4D474E31;cmp.l 0xe00fc08 0xe00fc04 1;if test $? -eq 0; then echo usbboot...;mw.l 0xe00fc00 0x0;mw.l 0xe00fc04 0x0;mw.l 0xe00fc08 0x0;cvi_utask;bootm ${uimage_addr}#config@cv1821_wevb_0005b_spinand;fi;

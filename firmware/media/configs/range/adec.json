@@ -1,0 +1,7 @@
+{
+  "codec": [0, 1, 2, 3, 4],
+  "bitRate": {"min": 16, "max": 320},
+  "sampleRate": [8000, 16000],
+  "volume": {"min": 0, "max": 100},
+  "bitWidth": [8, 16]
+}

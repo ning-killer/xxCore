@@ -1,0 +1,10 @@
+[
+  {
+    "type": 0,
+    "mirror": true,
+    "map": {
+      "x": "Y_mapX_400w.bin",
+      "y": "Y_mapY_400w.bin"
+    }
+  }
+]

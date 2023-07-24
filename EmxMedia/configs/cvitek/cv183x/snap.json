@@ -1,0 +1,18 @@
+[
+  {
+    "ViPipe": 0,
+    "ViChn": 0,
+    "VencChn": 3,
+    "width": 2560,
+    "height": 1440,
+    "u32Qfactor": 70
+  },
+  {
+    "ViPipe": 0,
+    "ViChn": 1,
+    "VencChn": 4,
+    "width": 2560,
+    "height": 1440,
+    "u32Qfactor": 70
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "modeComment": "spare/doubleSystem",
+  "mode": "spare",
+  "flashTypeComment": "spiNor/spiNand/emmc",
+  "flashType": "spiNor",
+  "dev": "/dev/mtd",
+  "firstPart": 0,
+  "rebootAfterComplete": true,
+  "rebootDelayS": 3,
+  "updateWay comment": "升级方式: 0 全量下载至内存后再进行烧写; 1 边下载边进行烧写; 2 全量下载到文件后再进行烧写",
+  "updateWay": 0,
+  "BlockSize" : 131072
+}

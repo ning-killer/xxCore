@@ -1,0 +1,19 @@
+[
+  {
+    "expMode": 0,
+    "autoMaxExpGain": 6,
+    "compensation": 35,
+    "manualExpGain": 0,
+    "expTime": 1000,
+    "brightness": 50,
+    "sharpness": 128,
+    "hue": 50,
+    "contrast": 50,
+    "saturation": 50,
+    "deNoise": 128,
+    "wbMode": 0,
+    "redGain": 128,
+    "blueGain": 128,
+    "antiFlicker": 50
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "ena": true,
+  "port": 554,
+  "user": [
+    {
+      "name": "admin",
+      "password": "admin"
+    },
+    {
+      "name": "123",
+      "password": "21321312421"
+    },
+    {
+      "name": "456",
+      "password": "21321312421"
+    }
+  ],
+  "media comment": "vencChn或aencChn等于-1代表不传输此种类型流，name是rtsp url最后一部分的路径",
+  "media": [
+    {
+      "name": "main",
+      "vencChn": 0,
+      "aencChn": 0
+    },
+    {
+      "name": "sub",
+      "vencChn": 1,
+      "aencChn": 0
+    }
+  ]
+}
+
+

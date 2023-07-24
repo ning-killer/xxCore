@@ -1,0 +1,74 @@
+#add_link_options(-fPIC)
+set(MEDIA_LIBS
+        libcvi_bin.a
+        libcvi_bin_isp.a
+        #video
+        libisp.a
+        libisp_algo.a
+        libae.a
+        libawb.a
+        libaf.a
+        libsns_full.a
+
+        #encode
+        libvenc.a
+        vpu
+        libcvi_jpeg.a
+        libcvi_vcodec.a
+        vdec
+
+        #audio
+        libcvi_audio.a
+        libcvi_vqe.a
+        libcvi_VoiceEngine.a
+        libcvi_RES1.a
+        libdnvqe.a
+        libtinyalsa.a
+        cvi_ssp.a
+
+        #sys
+        libini.a
+        libsys.a
+        boost_system
+        cvi_ispd
+
+        #AI
+        libcviai_core.so
+        libcviai_service.so
+        libcvi_ive_tpu.so
+        libopencv_core.so.3.2
+        libopencv_imgproc.so.3.2
+        libcviruntime.so
+        libcvimath.so
+        libcvikernel.so
+        libcnpy.so
+        libcvitracer.so
+        )
+set(MEDIA_SRC
+        sample
+        )
+set(MEDIA_LIB_DIR
+        lib
+        )
+set(MEDIA_INC_DIR
+        sample
+        include
+        include/isp/cv183x
+        include/ive
+        include/linux
+        include/glog
+        include/cviai
+        )
+add_definitions(
+        #-DCV1821
+        #-DCV1821_WATCHDOG
+        #-DCV1821_ADC
+        #-DSUPPORT_EXTERNAL_AAC
+        -DCVI_MODIFIED
+        -DARCH_CV183X
+        #-DCV1821_ROTATE_180
+        #-DPERSON_REGION_SUPPORT
+        #-DICR_AE_SUPPORT
+        #-DCV1821_OSD_OVERLAYEX_SUPPORT
+        #-DSUPPORT_ISP_PQTOOL
+)

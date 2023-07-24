@@ -1,0 +1,73 @@
+/*
+ * Copyright (C) Cvitek Co., Ltd. 2019-2020. All rights reserved.
+ *
+ * File Name: include/cvi_awb.h
+ * Description:
+ */
+
+ #ifndef __CVI_AWB_H__
+#define __CVI_AWB_H__
+
+#include "cvi_comm_isp.h"
+#include "cvi_comm_3a.h"
+#include "cvi_awb_comm.h"
+
+#ifdef __cplusplus
+#if __cplusplus
+extern "C" {
+#endif
+#endif /* End of #ifdef __cplusplus */
+
+#define AWB_LOG_BUFF_SIZE	(48*1024)
+#define AWB_SNAP_LOG_BUFF_SIZE	(AWB_LOG_BUFF_SIZE)
+
+typedef struct cviISP_WB_CURVE_S {
+	CVI_U16 u16CurveSize;
+	CVI_U16 *u16RGain;
+	CVI_U16 *u16BGain;
+	CVI_U16 *u16BGainTop;
+	CVI_U16 *u16BGainBottom;
+} ISP_WB_CURVE_S;
+
+
+
+/* The interface of awb lib register to isp. */
+CVI_S32 CVI_AWB_Register(VI_PIPE ViPipe, ALG_LIB_S *pstAwbLib);
+CVI_S32 CVI_AWB_UnRegister(VI_PIPE ViPipe, ALG_LIB_S *pstAwbLib);
+
+/* The callback function of sensor register to awb lib. */
+CVI_S32 CVI_AWB_SensorRegCallBack(VI_PIPE ViPipe, ALG_LIB_S *pstAwbLib, ISP_SNS_ATTR_INFO_S *pstSnsAttrInfo,
+				AWB_SENSOR_REGISTER_S *pstRegister);
+CVI_S32 CVI_AWB_SensorUnRegCallBack(VI_PIPE ViPipe, ALG_LIB_S *pstAwbLib, SENSOR_ID SensorId);
+
+CVI_S32 CVI_ISP_SetWBAttr(VI_PIPE ViPipe, const ISP_WB_ATTR_S *pstWBAttr);
+CVI_S32 CVI_ISP_GetWBAttr(VI_PIPE ViPipe, ISP_WB_ATTR_S *pstWBAttr);
+CVI_S32 CVI_ISP_SetAWBAttrEx(VI_PIPE ViPipe, const ISP_AWB_ATTR_EX_S *pstAWBAttrEx);
+CVI_S32 CVI_ISP_GetAWBAttrEx(VI_PIPE ViPipe, ISP_AWB_ATTR_EX_S *pstAWBAttrEx);
+
+CVI_S32 CVI_ISP_QueryWBInfo(VI_PIPE ViPipe, ISP_WB_INFO_S *pstWBInfo);
+CVI_S32 CVI_ISP_SetWBCalibration(VI_PIPE ViPipe, const ISP_AWB_Calibration_Gain_S *pstWBCalib);
+CVI_S32 CVI_ISP_GetWBCalibration(VI_PIPE ViPipe, ISP_AWB_Calibration_Gain_S *pstWBCalib);
+CVI_S32 CVI_ISP_SetWBCalibrationEx(VI_PIPE ViPipe, const ISP_AWB_Calibration_Gain_S_EX *pstWBCalib);
+CVI_S32 CVI_ISP_GetWBCalibrationEx(VI_PIPE ViPipe, ISP_AWB_Calibration_Gain_S_EX *pstWBCalib);
+CVI_S32 CVI_ISP_SetAWBWinStatictics(VI_PIPE ViPipe, const ISP_WB_STATISTICS_CFG_S *pstAwbWinCfg);
+CVI_S32 CVI_ISP_GetAWBWinStatictics(VI_PIPE ViPipe, ISP_WB_STATISTICS_CFG_S *pstAwbWinCfg);
+
+CVI_S32 CVI_ISP_GetAWBSnapLogBuf(VI_PIPE ViPipe, CVI_U8 *buf, CVI_U32 bufSize);
+CVI_S32 CVI_ISP_GetAWBDbgBinBuf(VI_PIPE ViPipe, CVI_U8 *buf, CVI_U32 bufSize);
+CVI_S32 CVI_ISP_GetAWBDbgBinSize(void);
+
+CVI_S32 CVI_ISP_GetAWBCurve(VI_PIPE ViPipe, ISP_WB_CURVE_S *pshWBCurve);
+CVI_S32 CVI_ISP_SetAWBLogPath(const char *szPath);
+CVI_S32 CVI_ISP_SetAWBLogName(const char *szName);
+CVI_S32 CVI_ISP_SetFaceAwbInfo(VI_PIPE ViPipe, const CVI_ISP_FACE_DETECT_INFO *pstFaceInfo);
+
+
+
+#ifdef __cplusplus
+#if __cplusplus
+}
+#endif
+#endif /* End of #ifdef __cplusplus */
+
+#endif /* __CVI_AWB_H__ */

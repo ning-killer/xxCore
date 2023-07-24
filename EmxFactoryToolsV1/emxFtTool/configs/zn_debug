@@ -1,0 +1,4 @@
+factory_mode=true;
+agingtest=true;
+agingtest_time=30;
+ircut_interval=5;

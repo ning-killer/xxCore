@@ -1,0 +1,88 @@
+[
+  {
+    "image": [
+      {
+        "alpha": 255,
+        "ena": false,
+        "height": 60,
+        "layer": 0,
+        "margin": {
+          "horizon": {
+            "align": 1,
+            "rate": 10
+          },
+          "vertical": {
+            "align": 1,
+            "rate": 10
+          }
+        },
+        "path": "/root/firmware/app/configs/logo/2304x1296.rgba",
+        "width": 230
+      }
+    ],
+    "text": [],
+    "time": [
+      {
+        "ena": true,
+        "font": "font.ttf",
+        "format": 0,
+        "layer": 1,
+        "margin": {
+          "horizon": {
+            "align": 1,
+            "rate": 25
+          },
+          "vertical": {
+            "align": 0,
+            "rate": 25
+          }
+        },
+        "size": 56,
+        "thickness": 1
+      }
+    ]
+  },
+  {
+    "image": [
+      {
+        "alpha": 255,
+        "ena": false,
+        "height": 18,
+        "layer": 0,
+        "margin": {
+          "horizon": {
+            "align": 1,
+            "rate": 10
+          },
+          "vertical": {
+            "align": 1,
+            "rate": 10
+          }
+        },
+        "path": "/root/firmware/app/configs/logo/640x360.rgba",
+        "width": 66
+      }
+    ],
+    "text": [],
+    "time": [
+      {
+        "ena": true,
+        "font": "font.ttf",
+        "format": 0,
+        "layer": 1,
+        "margin": {
+          "horizon": {
+            "align": 1,
+            "rate": 25
+          },
+          "vertical": {
+            "align": 0,
+            "rate": 25
+          }
+        },
+        "size": 16,
+        "thickness": 1
+      }
+    ]
+  }
+]

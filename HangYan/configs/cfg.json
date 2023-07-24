@@ -1,0 +1,23 @@
+{
+  "trace": true,
+  "led": true,
+  "rsk_encrypt": true,
+  "net_mode": 1,
+  "logSTD": 1,
+  "logLevel": 5,
+  "logContrl": 1,
+  "callback": 1,
+  "log_path": "/tmp",
+  "cnl_cnt": 1,
+  "tz": 8,
+  "video_quality": 2,
+  "auto_reboot_on": false,
+  "long auto_reboot_cycle": 604800,
+  "auto_reboot_start": "02:00:00",
+  "auto_reboot_end": "03:00:00",
+  "last_reboot": "00-00-00T00:00:00",
+  "last_upgrade_state": 0,
+  "last_upgrade_time": "",
+  "intelligentNightVision": true,
+  "softprobe_on": true
+}
