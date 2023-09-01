@@ -37,6 +37,10 @@ if (EAPIL_SPARE)
     add_definitions(-DEAPIL_SPARE)
 endif ()
 
+ADD_DEFINITIONS(
+    -DOnlySupportDHCP # 仅支持dhcp
+)
+
 # 通用的编译选项
 add_compile_options(
         -g
@@ -153,8 +157,8 @@ target_include_directories(${TARGET} PRIVATE ${FactoryPath}/emxAgeingTool/inner)
 #thirdparty
 
 #libconfig
-target_include_directories(${TARGET} PRIVATE ${ThirdPartyPath}/libconfig/include)
-target_link_directories(${TARGET} PRIVATE ${ThirdPartyPath}/libconfig/lib/${CROSS})
+target_include_directories(${TARGET} PRIVATE ${ThirdPartyPath}/libconfig/${LIBCONFIG_VERSION}/${CROSS}/include)
+target_link_directories(${TARGET} PRIVATE ${ThirdPartyPath}/libconfig/${LIBCONFIG_VERSION}/${CROSS}/lib)
 
 #jsoncpp
 target_include_directories(${TARGET} PRIVATE ${ThirdPartyPath}/jsoncpp/${JSONCPP_VERSION}/${CROSS}/include)

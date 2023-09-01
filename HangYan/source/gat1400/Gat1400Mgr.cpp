@@ -50,30 +50,36 @@ void Gat1400Mgr::Create(EuvLoop *loop) {
                     , std::bind(&Gat1400Mgr::AliveDone, this, ph_1, ph_2));
         m_runTimer.Create(*m_loop);
         if (m_gat1400Req != nullptr) {
-            m_gat1400Req->UpdateDeviceId();
             m_gat1400Req->StartSyncCurlClient(m_loop);
         }
         m_isCreated = true;
+    }
+    if (m_gat1400Req != nullptr) {
+        m_gat1400Req->UpdateDeviceId();
     }
     Start();
 }
 
 void Gat1400Mgr::Start() {
-    m_runTimer.Start(0, 1000, [this]() {
-        if (!IsSyncTime()) {
-            emxlogd("gat1400 run wait for time sync.\n");
-            return;
-        }
-        if (!GetNetState()) {
-            emxlogd("gat1400 run wait for net connect.\n");
-            return;
-        }
-        if (!m_runWork.IsWorking()) {
-            m_isRun = true;
-            m_runWork.Run((void*)&m_isRunRet);
-        }
-        m_runTimer.Stop();
-    });
+    if (!m_runWork.IsWorking()) {
+        m_isRun = true;
+        m_runWork.Run((void*)&m_isRunRet);
+    }
+    // m_runTimer.Start(0, 1000, [this]() {
+    //     if (!IsSyncTime()) {
+    //         emxlogd("gat1400 run wait for time sync.\n");
+    //         return;
+    //     }
+    //     if (!GetNetState()) {
+    //         emxlogd("gat1400 run wait for net connect.\n");
+    //         return;
+    //     }
+    //     if (!m_runWork.IsWorking()) {
+    //         m_isRun = true;
+    //         m_runWork.Run((void*)&m_isRunRet);
+    //     }
+    //     m_runTimer.Stop();
+    // });
 }
 
 void Gat1400Mgr::Stop() {
@@ -99,6 +105,18 @@ void Gat1400Mgr::Run(void *arg) {
     CHECK_GAT1400_PTR2(runRet);
     *runRet = false;
     while (m_isRun) {
+        if (!IsSyncTime()) {
+            emxlogd("gat1400 run wait for time sync.\n");
+            sleep(1);
+            continue;
+        }
+
+        if (!GetNetState()) {
+            emxlogd("gat1400 run wait for net connect.\n");
+            sleep(1);
+            continue;
+        }
+
         // 尝试注销
         TryUnRegister();
 
@@ -360,6 +378,10 @@ bool Gat1400Mgr::TryGetTime() {
 }
 
 bool Gat1400Mgr::Upload(const Gat1400Util::UploadDataParam &upload_param) {
+    if (!m_isRegistOk || !m_isGetgateOk) {
+        emxloge("gat1400 no regist or no getgateinfo\n");
+        return false;
+    }
     if (m_gat1400Req == nullptr) {
         return false;
     }

@@ -301,7 +301,6 @@ bool ManageCfgFile::LoadIpCfg() {
         NetMainDev::Get(type);
         if (type != Net::DevE::Eth) {
             emxlogd("need switch mainDev(%d)\n", type);
-            abort();
             if (NetMainDev::Set(Net::DevE::Eth) != ErrCodeE::Success) {
                 break;
             }
@@ -330,14 +329,14 @@ bool ManageCfgFile::LoadIpCfg() {
             memset(addr.gateway4, 0, sizeof(addr.gateway4));
             memcpy(addr.gateway4, gateway, sizeof(addr.gateway4));
         }
-        emxlogd("set ip(%s); mask(%s); gateway(%s)\n", addr.ip4, addr.netmask4, addr.gateway4);
+        emxlogd("set dhcp(%d); ip(%s); mask(%s); gateway(%s)\n", addr.dhcp, addr.ip4, addr.netmask4, addr.gateway4);
 
         //note: 网络配置
         if (net.SetAddr(addr) == ErrCodeE::Success) {
             result = true;
-            emxlogd("enter factory mode, set eth ok!\n");
+            emxlogd("enter factory mode, set eth static ip ok!\n");
         } else {
-            emxlogd("enter factory mode, set eth failed!\n");
+            emxlogd("enter factory mode, set eth stattc ip failed!\n");
         }
     } while(false);
     return result;

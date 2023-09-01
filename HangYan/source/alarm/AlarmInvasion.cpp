@@ -91,6 +91,13 @@ void AlarmInvasion::CheckLightContorl() {
     if (!m_cloudBroadcastEnable && m_ctx->running.voip.isRunVoiceCall) {
         ExitLightContorl();
     }
+
+    // 闪灯中，中断广播状态，将m_cloudBroadcastEnable标志位还原，保证该场景重新唤起广播可中断灯控闪烁
+    if (m_cloudBroadcastEnable) {
+        if (!m_ctx->running.voip.isRunVoiceCall) {
+            m_cloudBroadcastEnable = false;
+        }
+    }
 }
 
 void AlarmInvasion::BreakVoip() {
@@ -219,7 +226,7 @@ bool AlarmInvasion::IsFlashingLight() {
 }
 
 void AlarmInvasion::IntelligentLight(const uint32_t frequency_time) {
-    if (!m_isIntelligentNightVision) {
+    if (!m_ctx->env.cfg.intelligentNightVision) {
         return;
     }
     uint32_t currentTime = Time::GetS();

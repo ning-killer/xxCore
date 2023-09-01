@@ -761,7 +761,8 @@ ErrCodeE UpdateServer::Burn() {
         while (img.partSize % splitSize)splitSize = splitSize >> 1;
         emxlogd("split size = 0x%x\n", splitSize);
         while (imgSize > 0) {
-            uint8_t *tmpbuf = (uint8_t *) img.data;
+            bool isEnd = false;
+            uint8_t *tmpbuf = nullptr;
             int n = imgSize > (int) sizeof(m_buffer) ? (int) sizeof(m_buffer) : imgSize;
             while (imgOff + n > partOff) {
                 if (m_flash->Erase(partOff, splitSize) != ErrCodeE::Success) {
@@ -773,10 +774,20 @@ ErrCodeE UpdateServer::Burn() {
             }
             //检验是否为末尾数据
             if (imgSize < (int) sizeof(m_buffer)) {
-                memset(tmpbuf + imgOff + n, 0xFF, int(sizeof(m_buffer) - n));
+                // 需要深拷贝来处理尾数据补0xff操作
+                isEnd = true;
+                tmpbuf = (uint8_t*)malloc(sizeof(m_buffer));
+                memcpy(tmpbuf, img.data + imgOff, n);
+                memset(tmpbuf + n, 0xFF, int(sizeof(m_buffer) - n));
                 n = (int) sizeof(m_buffer);
+            } else {
+                tmpbuf = (uint8_t *) img.data;
             }
-            if (m_flash->Write(tmpbuf + imgOff, n) != ErrCodeE::Success) {
+            int off = imgOff;
+            if (isEnd) {
+                off = 0;
+            }
+            if (m_flash->Write(tmpbuf + off, n) != ErrCodeE::Success) {
                 m_flash->Close();
                 goto ERROR;
             }
@@ -787,7 +798,7 @@ ErrCodeE UpdateServer::Burn() {
                 m_flash->Close();
                 goto ERROR;
             }
-            if (memcmp(m_buffer, tmpbuf + imgOff, n) != 0) {
+            if (memcmp(m_buffer, tmpbuf + off, n) != 0) {
                 emxloge("verify failed\n");
                 m_flash->Close();
                 goto ERROR;
@@ -798,6 +809,10 @@ ErrCodeE UpdateServer::Burn() {
             if (m_event.burn.current >= m_publishSize) {
                 PublishEvent();
                 m_publishSize += m_event.burn.total / 50;
+            }
+            if (isEnd && tmpbuf != nullptr) {
+                free(tmpbuf);
+                tmpbuf = nullptr;
             }
         }
         if (m_mode == ModeE::Spare && m_systemSpare != SystemSpareE::Spare && img.name == "spare") {

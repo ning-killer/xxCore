@@ -9,8 +9,9 @@
 using namespace Emx;
 
 void MediaChipAiPlugFdPdDetection::Create(Json::Value &cfg) {
-    if (!m_param.facePersonDetection.ena)
+    if (!m_param.facePersonDetection.ena && !m_param.personDetection.ena) {
         return;
+    }
     auto &json = cfg["facePersonDetection"];
     CallBack cb(json["vpssGrp"].asInt(),
                 json["vpssChn"].asInt(),

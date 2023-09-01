@@ -19,7 +19,7 @@ endif()
 
 
 # 配置，注意更换你所希望使用的交叉编译链
-cmake -DCMAKE_C_COMPILER=arm-cvitek-linux-uclibcgnueabihf-gcc -DCMAKE_BUILD_TYPE=Release -DUSE_SHARED_MBEDTLS_LIBRARY=On -DCMAKE_INSTALL_PREFIX=${PWD}/out ..
+cmake -DCMAKE_C_COMPILER=arm-sigmastar-linux-uclibcgnueabihf-gcc -DCMAKE_BUILD_TYPE=Release -DUSE_SHARED_MBEDTLS_LIBRARY=On -DCMAKE_INSTALL_PREFIX=${PWD}/out/arm-sigmastar-linux-uclibcgnueabihf ..
 
 # 编译
 make -j32

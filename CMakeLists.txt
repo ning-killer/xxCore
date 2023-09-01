@@ -76,5 +76,6 @@ add_subdirectory(EmxModules)
 add_subdirectory(EmxBsp)
 add_subdirectory(HangYan)
 add_subdirectory(EmxFactoryToolsV1)
+add_subdirectory(EmxSamples)
 
 

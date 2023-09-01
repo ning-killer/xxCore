@@ -33,4 +33,5 @@ add_definitions(
         #DOVDSDK_APIVER_num1_num2定义说明: num1(针对sdk升级带来的(大差异)软探针版本升级：该参数为platform提供说明)，num2(针对sdk升级带来的api、struct发生差异：该参数为apil自行维护)
         -DOVDSDK_APIVER_3_0 
         -DOvdVersion="${OvdVersion}"
+        -DOvdVersionComplete="${OvdVersion}-rc.1_0aa1a708"
 )

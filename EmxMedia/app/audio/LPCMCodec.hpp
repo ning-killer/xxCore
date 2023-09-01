@@ -16,7 +16,7 @@ namespace Emx {
 
         virtual ~LPCMEncoder() {}
 
-        ErrCodeE Create(int32_t bitRate, int32_t sampleRate, int32_t bitWidth) override { return ErrCodeE::Success; }
+        ErrCodeE Create(int32_t bitRate, int32_t sampleRate, int32_t bitWidth, int32_t channelNum) override { return ErrCodeE::Success; }
 
         void Destroy() override {}
 

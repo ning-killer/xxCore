@@ -77,6 +77,8 @@ namespace Emx {
 
         FactoryMode GetFactoryMode();
 
+        void RemoveAlarmAudioFile();
+
     private:
         OvdCtx m_ctx;
 //

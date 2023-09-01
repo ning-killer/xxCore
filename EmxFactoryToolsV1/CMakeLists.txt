@@ -43,8 +43,8 @@ link_directories(${ThirdPartyPath}/jsoncpp/${JSONCPP_VERSION}/${CROSS}/lib)
 include_directories(${ThirdPartyPath}/jsoncpp/${JSONCPP_VERSION}/${CROSS}/include)
 link_directories(${ThirdPartyPath}/libuv/${LIBUV_VERSION}/${CROSS}/lib)
 include_directories(${ThirdPartyPath}/libuv/${LIBUV_VERSION}/${CROSS}/include)
-link_directories(${ThirdPartyPath}/libconfig/lib/${CROSS})
-include_directories(${ThirdPartyPath}/libconfig/include)
+link_directories(${ThirdPartyPath}/libconfig/${LIBCONFIG_VERSION}/${CROSS}/lib)
+include_directories(${ThirdPartyPath}/libconfig/${LIBCONFIG_VERSION}/${CROSS}/include)
 
 #option(DO_STRIP "是否build之后对目标文件进行strip操作" )
 

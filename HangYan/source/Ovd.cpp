@@ -166,6 +166,29 @@ void Ovd::OnTimeSync() {
 }
 
 void Ovd::OnInitSDKDone() {
+#ifdef OnlySupportDHCP
+    do {
+        Net::DevE type;
+        NetMainDev::Get(type);
+        if (type != Net::DevE::Eth) {
+            break;
+        }
+        Net::DevE dev;
+        NetMainDev::Get(dev);
+        Net::Addr addr = { 0 };
+        NetClient net(dev);
+        if (net.GetAddr(addr) == ErrCodeE::Failure) {
+            emxlogd("net GetAddr failed\n");
+            break;
+        }
+        emxlogd("current net is dhcp [%s]", addr.dhcp ? "enable" : "unable");
+        if (!addr.dhcp) {
+            addr.dhcp = 1;
+            net.SetAddr(addr);
+        }
+        break;
+    } while(false);
+#endif
     m_net.Create(&m_ctx,
                  std::bind(&Ovd::OnNetInitDone, this),
                  std::bind(&Ovd::OnNetConnectionChanged, this, ph_1));
@@ -225,6 +248,7 @@ void Ovd::OnResetKeyEvent(const char *name, Key::EventE e) {
         case Key::EventE::LongPress:
             VoicePlay::Play(VoicePlay::VoiceE::DI);
             m_record.Destroy();
+            RemoveAlarmAudioFile();
             Param::ResetAllToFactory();
             Reboot::DoReboot(0);
             break;
@@ -234,6 +258,15 @@ void Ovd::OnResetKeyEvent(const char *name, Key::EventE e) {
 }
 
 #endif
+
+void Ovd::RemoveAlarmAudioFile() {
+    char pathA[EMX_MAX_PATH_SIZE] = {};
+    char pathB[EMX_MAX_PATH_SIZE] = {};
+    snprintf(pathA, sizeof(pathA), "%s/alarmVoiceA.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    snprintf(pathB, sizeof(pathB), "%s/alarmVoiceB.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    File::Remove(pathA);
+    File::Remove(pathB);
+}
 
 void Ovd::OnUpdateEvent(UpdateEvent::Event &e) {
     m_ctx.running.updateEvent = e;

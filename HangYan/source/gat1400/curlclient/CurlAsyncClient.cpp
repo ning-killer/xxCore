@@ -150,6 +150,11 @@ void CurlAsyncClient::PostMsg(void *arg) {
         emxloge("post msg is null\n");
         return;
     }
+    //note: 重置应答
+    msg->response.clear();
+    msg->response.shrink_to_fit();
+    msg->responseHead.clear();
+    msg->responseHead.shrink_to_fit();
     Send(msg);
 }
 
@@ -174,9 +179,10 @@ void CurlAsyncClient::PostMsgDone(Emx::ErrCodeE e, void *arg) {
             m_msgList.pop_front();
         }
     } else {
-        if (faceUser == nullptr && msg->code != CURLE_OK) {
-            m_failedCount++;
-        }
+        m_failedCount++;
+        // if (faceUser == nullptr && msg->code != CURLE_OK) {
+        //     m_failedCount++;
+        // }
     }
     if (!m_msgList.empty()) {
         m_postTimer.Start(GetTimerInterval(), 0, [this]() {

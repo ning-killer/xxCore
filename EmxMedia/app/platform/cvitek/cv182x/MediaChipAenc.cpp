@@ -94,7 +94,9 @@ ErrCodeE MediaChipAenc::Config() {
     SetVolumeTemp(m_param.volume);
     MuteTemp(m_param.mute);
     m_encoder.reset(AudioCodecFactory::MakeEncoder(m_param.codec));
-    m_encoder->Create(m_param.bitRate, m_param.sampleRate, m_param.bitWidth);
+    //note: 开启vqe后，输入音频保持为单声道。
+    int channelNum = 1; 
+    m_encoder->Create(m_param.bitRate, m_param.sampleRate, m_param.bitWidth, channelNum);
     return ErrCodeE::Success;
 }
 
@@ -311,17 +313,19 @@ void MediaChipAenc::PushAencFrame() {
     m_encoder->Encode((int16_t *) m_stFrame.u64VirAddr[0],
                       (int) m_stFrame.u32Len, data, outSize);
     //aac会控制包长，可能多次输入对应一次输出
-    if (outSize <= 0)
+    if (outSize <= 0) {
         return;
+    }
     MediaFrame frame = {};
     frame.type = MediaFrame::TypeE::Aenc;
     frame.chn = m_chn;
     frame.tsInUs = m_stFrame.u64TimeStamp;
     frame.trace = Time::GetMonoClockUs();
-    frame.seq = m_seq;
+    frame.seq = m_enSeq;
     frame.size = outSize;
     frame.off = m_res.ring.Push((char *) data, frame.size, frame.tsInUs);
     if (frame.off >= 0) {
         m_res.pub.Publish(MEDIA_TOPIC_AENC_AENC + m_chn, (char *) &frame, sizeof(frame));
     }
+    m_enSeq++;
 }

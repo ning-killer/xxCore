@@ -26,6 +26,15 @@ void CurlClient::FreePostData(PostData *data) {
     //     delete data;
     //     data = nullptr;
     // }
+
+    data->url.clear();
+    data->url.shrink_to_fit();
+    data->param.clear();
+    data->param.shrink_to_fit();
+    data->response.clear();
+    data->response.shrink_to_fit();
+    data->responseHead.clear();
+    data->responseHead.shrink_to_fit();
 }
 
 void CurlClient::Send(PostData *data) {

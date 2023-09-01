@@ -195,6 +195,17 @@ void EmxProtoV1::WifiMacSet(Json::Value &in, Json::Value &out) {
     if (e != ErrCodeE::Success) {
         MakeCodeDesc(out, (int)e, "set mac failed");
     }
+    Net::DevE dev;
+    NetMainDev::Get(dev);
+    Net::Addr addr = { 0 };
+    emxlogd("current main dev %s\n", dev == Net::DevE::Eth ? "is eth0" : "no eth0");
+    NetClient net(dev);
+    net.GetAddr(addr);
+    memset(addr.mac, 0, sizeof(addr.mac));
+    int cpy_size = in["mac"].asString().size() > sizeof(addr.mac) ? sizeof(addr.mac) : in["mac"].asString().size();
+    memcpy(addr.mac, in["mac"].asString().c_str(), cpy_size);
+    emxlogd("set addr dhcp[%d], mac[%s]\n", addr.dhcp, addr.mac);
+    net.SetAddr(addr);
 }
 
 void EmxProtoV1::ImeiGet(Json::Value &in, Json::Value &out) {
@@ -537,15 +548,19 @@ void EmxProtoV1::DevHJQV2Set(Json::Value &in, Json::Value &out)
         MakeCodeDesc(out, (int)e, "set mac failed");
         return;
     }
-    Net::DevE dev;
-    NetMainDev::Get(dev);
-    Net::Addr addr = { 0 };
-    NetClient net(dev);
-    net.GetAddr(addr);
-    memset(addr.mac, 0, sizeof(addr.mac));
-    int cpy_size = in["mac"].asString().size() > sizeof(addr.mac) ? sizeof(addr.mac) : in["mac"].asString().size();
-    memcpy(addr.mac, in["mac"].asString().c_str(), cpy_size);
-    net.SetAddr(addr);
+
+    // 烧录的时候不用配置mac和ip，重启校验不同才生效
+    // Net::DevE dev;
+    // NetMainDev::Get(dev);
+    // Net::Addr addr = { 0 };
+    // emxlogd("current main dev %s\n", dev == Net::DevE::Eth ? "is eth0" : "no eth0");
+    // NetClient net(dev);
+    // net.GetAddr(addr);
+    // memset(addr.mac, 0, sizeof(addr.mac));
+    // int cpy_size = in["mac"].asString().size() > sizeof(addr.mac) ? sizeof(addr.mac) : in["mac"].asString().size();
+    // memcpy(addr.mac, in["mac"].asString().c_str(), cpy_size);
+    // emxlogd("set addr dhcp[%d], mac[%s]\n", addr.dhcp, addr.mac);
+    // net.SetAddr(addr);
 
     Param param("burnInfo");
     Json::Value json;

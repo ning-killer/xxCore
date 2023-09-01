@@ -672,6 +672,8 @@ OVD_int32 GetDiskInfo(OVD_int32 *out_state, OVD_int32 *out_total, OVD_int32 *out
             *out_state = 2;
         *out_total = info.total;
         *out_free = info.free;
+    } else {
+        *out_state = 1;
     }
     emxlogd("out_state: %d\n", *out_state);
     emxlogd("leave cost:%ums\n", timeCost.GetInv());

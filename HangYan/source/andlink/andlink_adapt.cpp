@@ -2,6 +2,7 @@
 // Created by tfh on 2021/9/15.
 //
 #include "andlink_adapt.h"
+#include "cmcc_rtc_api.h"
 #include "EmxCore.hpp"
 
 using namespace Emx;
@@ -348,9 +349,10 @@ int ak_get_dmInfo_callback(char *childDeviceId, cJSON *root) {
         return -1;
     }
     adl_cJSON_AddItemToObject(root, (char *) "cmccVersion", andVersionObj);
-    adl_cJSON_AddStringToObject(andVersionObj, (char *) "andimsVersion",
-                                (char *) VoipVersion);              // 和家固话 SDK,若使用必填;
-    adl_cJSON_AddStringToObject(andVersionObj, (char *) "anddotVersion", (char *) OvdVersion);
+    // adl_cJSON_AddStringToObject(andVersionObj, (char *) "andimsVersion",
+    //                             (char *) VoipVersion);   // 和家固话 SDK,若使用必填;
+    adl_cJSON_AddStringToObject(andVersionObj, (char *) "andimsVersion", (char*)cmcc_rtc_get_version()); // 和家固话 SDK,若使用必填;
+    adl_cJSON_AddStringToObject(andVersionObj, (char *) "anddotVersion", (char *) OvdVersionComplete);
     if (strcmp(AndLinkVersion, "1.5.1") == 0) {
         adl_cJSON_AddStringToObject(andVersionObj, (char *) "andlinkVersion",
                                     (char *) "1.5.1");              // 和家语音交互 SDK,若使用必填;

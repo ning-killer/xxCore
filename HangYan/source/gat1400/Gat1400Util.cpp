@@ -62,7 +62,9 @@ bool Gat1400Util::GetSign(const std::string nonce, const std::string devId, cons
     }
     // 加密
     std::string out;
-    if (!AesEcbPcsk5Encrypt(nonce, out, (char *)aesKey.c_str(), aesKey.size())) {
+    std::string nonceTmp = nonce;
+    Pkcs5Padding(nonceTmp);
+    if (!AesEcbPcsk5Encrypt(nonceTmp, out, (char *)aesKey.c_str(), aesKey.size())) {
         return false;
     }
     //转换为16进制字符串
@@ -73,8 +75,14 @@ bool Gat1400Util::GetSign(const std::string nonce, const std::string devId, cons
         signBuf[i] = tolower(signBuf[i]);
     }
     sign = std::string(signBuf);
-    sign.append("7241d887a6176f8e27d0227a3ec96273");
     return true;
+}
+
+void Gat1400Util::Pkcs5Padding(std::string &data) {
+    size_t data_len = data.size();
+    size_t pad_len = 16 - (data_len % 16); 
+    std::string padded_data = data + std::string(pad_len, static_cast<char>(pad_len));
+    data = padded_data;
 }
 
 bool Gat1400Util::AesEcbPcsk5Encrypt(const std::string &in, std::string &out, char *key, int key_len) {
@@ -98,18 +106,19 @@ bool Gat1400Util::AesEcbPcsk5Encrypt(const std::string &in, std::string &out, ch
         //note: mbedtls_aes_crypt_ecb奇葩的接口设计：1. input & output >= 16字节；2. input大小 <= output大小
         //note: 为防止外部传入input&output无法校验控制大小，所以接管对buffer的控制
         int SrcSize = in.size();
-        if (SrcSize < 16) {
-            emxloge("mbedtls aes error, input(%s) size(%d) < 16\n", in.c_str(), in.size());
+        if (SrcSize == 0) {
+            emxloge("Input is empty.\n");
             break;
         }
-        char input[SrcSize + 1] = { 0 };
-        char output[SrcSize + 1] = { 0 };
-        memcpy(input, in.c_str(), SrcSize);
-        if (mbedtls_aes_crypt_ecb(&ctx, MBEDTLS_AES_ENCRYPT, (const unsigned char*)input, (unsigned char*)output) != 0) {
-            emxloge("mbedtls_aes_crypt_ecb failed!\n");
-            break;
+        std::string output;
+        output.resize(SrcSize);
+        std::string input = in;
+        for (int i = 0; i < SrcSize; i += 16) {
+            mbedtls_aes_crypt_ecb(&ctx, MBEDTLS_AES_ENCRYPT,
+                              reinterpret_cast<const unsigned char *>(input.data() + i),
+                              (unsigned char *)(output.data() + i));
         }
-        out = std::string(output);
+        out = output;
         ret = true;
     } while (false);
     mbedtls_aes_free(&ctx);

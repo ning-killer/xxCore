@@ -6,17 +6,19 @@
 
 using namespace Emx;
 
-ErrCodeE AACEncoder::Create(int32_t bitRate, int32_t sampleRate, int32_t bitWidth) {
+ErrCodeE AACEncoder::Create(int32_t bitRate, int32_t sampleRate, int32_t bitWidth, int32_t channelNum) {
+    if ((CHANNEL_MODE)channelNum < MODE_1 || (CHANNEL_MODE)channelNum > MODE_2) {
+        emxloge("Unable to set the channel[%d]\n", channelNum);
+        return ErrCodeE::IllegalParam;
+    }
     int aot;
     int afterburner;
-    CHANNEL_MODE mode;
     AACENC_InfoStruct info = {0};
 
-    mode = MODE_1;
     aot = AOT_AAC_LC;
     afterburner = 1;
 
-    if (aacEncOpen(&m_handle, 0, 1) != AACENC_OK) {
+    if (aacEncOpen(&m_handle, 0, channelNum) != AACENC_OK) {
         emxloge("Unable to open encoder\n");
         return ErrCodeE::OpenFailed;
     }
@@ -28,7 +30,7 @@ ErrCodeE AACEncoder::Create(int32_t bitRate, int32_t sampleRate, int32_t bitWidt
         emxloge("Unable to set the AOT\n");
         return ErrCodeE::IllegalParam;
     }
-    if (aacEncoder_SetParam(m_handle, AACENC_CHANNELMODE, mode) != AACENC_OK) {
+    if (aacEncoder_SetParam(m_handle, AACENC_CHANNELMODE, (CHANNEL_MODE)channelNum) != AACENC_OK) {
         emxloge("Unable to set the channel mode\n");
         return ErrCodeE::IllegalParam;
     }
@@ -66,6 +68,22 @@ void AACEncoder::Destroy() {
 }
 
 ErrCodeE AACEncoder::Encode(int16_t *inData, int32_t inNum, uint8_t *outData, int32_t &outNum) {
+    ErrCodeE ret = ErrCodeE::ResNotAvailable;
+    m_buff.append(std::string((char *)inData, inNum * 2));
+    if (m_buff.size() < (1024 * 2)) {
+        outNum = 0;
+        return ret;
+    }
+    ret = ToEncode((int16_t *) m_buff.data(), 1024, outData, outNum);
+    int off = 1024 * 2;
+    int size = m_buff.size() - off;
+    memcpy((char*)m_buff.data(), m_buff.data() + off, size);
+    m_buff.resize(size);
+    m_buff.shrink_to_fit();
+    return ret;
+}
+
+ErrCodeE AACEncoder::ToEncode(int16_t *inData, int32_t inNum, uint8_t *outData, int32_t &outNum) {
     short *convert_buf = inData;
     AACENC_BufDesc in_buf = {0};
     AACENC_BufDesc out_buf = {0};
@@ -105,7 +123,6 @@ ErrCodeE AACEncoder::Encode(int16_t *inData, int32_t inNum, uint8_t *outData, in
     outNum = out_args.numOutBytes;
     return ErrCodeE::Success;
 }
-
 
 ErrCodeE AACDecoder::Create(int32_t sampleRate, int32_t bitWidth) {
     m_handle = aacDecoder_Open(TT_MP4_ADTS, 1);

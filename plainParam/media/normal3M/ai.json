@@ -24,7 +24,7 @@
       "drawing": true
     },
     "facePersonDetection": {
-      "ena": true,
+      "ena": false,
       "faceDraw": false,
       "personDraw": false,
       "aeEna": false,

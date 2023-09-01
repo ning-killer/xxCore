@@ -1,41 +1,61 @@
 #!/bin/sh
+
 AddRecoveryLog(){
-  logfile="/tmp/daemon.log"
+  logfile="/root/data/daemon.log"
   if [ -f $logfile ];then
     size=$(ls -l $logfile | awk '{print $5}')
     if [ $size -gt 4096 ];then
       rm $logfile
     fi
   fi
-  echo "restart $1 on `date`" >> $logfile
+  echo "$1[$2]: restart." >> $logfile
 }
+
+TagMemory(){
+  memlogfile="/root/data/mem.log"
+  mmalogfile="/root/data/mma.log"
+  if [ -f $memlogfile ];then
+    size=$(ls -l $memlogfile | awk '{print $5}')
+    if [ $size -gt 524288 ];then
+      rm $memlogfile
+    fi
+  fi
+   if [ -f $mmalogfile ];then
+    size=$(ls -l $mmalogfile | awk '{print $5}')
+    if [ $size -gt 524288 ];then
+      rm $mmalogfile
+    fi
+  fi
+  memMessage=$(echo 1 > /proc/sys/vm/drop_caches ; free -m | grep Mem:)
+  mmaMessage=$(cat /sys/kernel/debug/ion/cvi_carveout_heap_dump/summary | grep usage;)
+  echo "mem[$1]: $memMessage" >> $memlogfile
+  echo "mma[$1]: $mmaMessage" >> $mmalogfile
+}
+
 AppCheckAndRecovery(){
   App=$(ps | grep $1 | grep -v grep)
-  #application disappeared
   if [[ "${App/$1//}" == "$App" ]];then
-    $1 $2
-    AddRecoveryLog $1
+    # 写入日志文件
+    AddRecoveryLog "$1" "$2"
+    if [[ $1 == "EmxCoreServer" ]];then #|| $1 == "EmxMediaServer"
+      # 不可恢复进程，重启系统
+      reboot
+    else
+      # 服务重新启动
+      $1 -b
+    fi
   fi
 }
 
 while true
 do
-  sleep 5
-  # if the core service EmxMsgServer is not running, restart all
-  App=$(ps | grep EmxMsgServer | grep -v grep)
-  if [[ "${App/EmxMsgServer//}" == "$App" ]];then
-    allstop.sh
-    allstart.sh
-    AddRecoveryLog "all"
-  else
-    AppCheckAndRecovery EmxLogServer
-    AppCheckAndRecovery EmxEnvServer
-    AppCheckAndRecovery EmxNtpClient
-    AppCheckAndRecovery EmxSDCardServer
-    AppCheckAndRecovery EmxUpdateServer
-    AppCheckAndRecovery EmxMediaServer
-    AppCheckAndRecovery EmxNetServer
-    AppCheckAndRecovery EmxTools
-    AppCheckAndRecovery EmxMain
-  fi
+  sleep 10
+  currentTime=$(date +"%Y-%m-%d %H:%M:%S")
+  TagMemory "$currentTime"
+  AppCheckAndRecovery EmxCoreServer "$currentTime"
+  AppCheckAndRecovery EmxMediaServer "$currentTime"
+  AppCheckAndRecovery EmxModulesServer "$currentTime"
+  AppCheckAndRecovery EapilMain "$currentTime"
+  # AppCheckAndRecovery EmxAgeingServer "$currentTime"
+  AppCheckAndRecovery EmxFctToolsV1 "$currentTime"
 done

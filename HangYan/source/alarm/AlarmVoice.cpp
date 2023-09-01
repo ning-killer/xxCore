@@ -44,7 +44,7 @@ ErrCodeE AlarmVoice::Create() {
             targetDb = m_ctx->env.voice.map[4];
         }
         if (db >= targetDb) {
-            emxlogd("voice db[%d] >= targetDb[%d]\n", db, targetDb);
+            // emxlogd("voice db[%d] >= targetDb[%d]\n", db, targetDb);
             AlarmTrigger();
         }
     });

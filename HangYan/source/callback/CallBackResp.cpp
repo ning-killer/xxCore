@@ -612,13 +612,18 @@ OVD_int32 CallBackResp::GetOVDConfigureInfo(OVD_char **output_ovdconfig, OVD_int
                 Json::Value textJson;
 
                 auto &pos = textJson["pos"];
-                //注意，对于杭研平台的text，只支持MediaOSD::HAlignE::Left和MediaOSD::VAlignE::Top
-                if (text.margin.horizon != MediaOSD::HAlignE::Left)
-                    emxloge("only horizon margin Left is supported\n");
-                if (text.margin.vertical != MediaOSD::VAlignE::Top)
+                if (text.margin.vertical != MediaOSD::VAlignE::Top) {
                     emxloge("only vertical margin Top is supported\n");
-                pos["x"] = text.margin.rateX * 10;
+                }
                 pos["y"] = text.margin.rateY * 10;
+                //note: 特殊处理水平方向
+                if (text.margin.horizon == MediaOSD::HAlignE::Left) {
+                    pos["x"] = text.margin.rateX * 10;
+                } else if (text.margin.horizon == MediaOSD::HAlignE::Right) {
+                    pos["x"] = 9700;
+                } else {
+                    emxloge("horizon margin Center is supported\n");
+                }
 
                 auto &color = textJson["color"];
                 color["Red"] = 0;
@@ -808,6 +813,7 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
             schedule.onOff = switch_schedule["on"].asBool();
         }
         if (switch_schedule.isMember("start_time") && switch_schedule.isMember("shutdown_time")) {
+            // schedule.manual = false;
             strncpy(schedule.startTime, switch_schedule["start_time"].asCString(), sizeof(schedule.startTime));
             strncpy(schedule.endTime, switch_schedule["shutdown_time"].asCString(), sizeof(schedule.endTime));
             if (switch_schedule.isMember("repeat")) {
@@ -989,8 +995,17 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
             memset(param.get(), 0, sizeof(MediaOSD::Param));
             param->type = MediaOSD::TypeE::Text;
             param->text.ena = textArray[i].isMember("on") && textArray[i]["on"].asBool();
-            param->text.margin.horizon = MediaOSD::HAlignE::Left;
-            param->text.margin.rateX = textArray[i]["pos"]["x"].asInt() / 10;
+            
+            //note: 水平方向特殊处理
+            if ((int)(textArray[i]["pos"]["x"].asInt() / 10) < 50) {
+                param->text.margin.horizon = MediaOSD::HAlignE::Left;
+                param->text.margin.rateX = textArray[i]["pos"]["x"].asInt() / 10;
+            } else {
+                //note: 杭研要求右侧osd元素右对齐
+                param->text.margin.horizon = MediaOSD::HAlignE::Right;
+                param->text.margin.rateX = 30;
+            }
+           
             param->text.margin.vertical = MediaOSD::VAlignE::Top;
             param->text.margin.rateY = textArray[i]["pos"]["y"].asInt() / 10;
             param->text.thickness = 1;
@@ -1347,8 +1362,11 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
                 emxloge("ai get param failed!\n");
             }
 
-            //启动gat1400
-            Gat1400Client::Instance()->Create(&m_ctx);
+            if (m_ctx.env.face.ena) {
+                Gat1400Client::Instance()->Create(&m_ctx);
+            } else {
+                Gat1400Client::Instance()->Stop();
+            }
 
             m_ctx.env.face.Save();
         }
@@ -1422,6 +1440,7 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
         nightVisionParam.manual = false;
         auto color_nightvision_mode = channel["color_nightvision_mode"].asInt();
         //全彩夜视配置为全彩，黑白夜视和智能夜视都配置为黑白，智能下的全彩由本应用程序去触发，不由nightVision负责
+        m_ctx.env.cfg.intelligentNightVision = false;
         if (color_nightvision_mode == 1) {
             nightVisionParam.autoMode = NightVision::AutoModeE::ColorNightVision;
         } else {
@@ -2312,9 +2331,9 @@ OVD_int32 CallBackResp::GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void*
         }
         case OVD_CMD_GET_HJZH_SDKVER: /*和家智话SDK版本号 char[64]*/ {
         #ifdef VoipVersion
-            int cpy_size = strlen((char*)(VoipVersion)) > 64
-                                ? 64 : strlen((char*)(VoipVersion));
-            memcpy(out_response, (char*)(VoipVersion), cpy_size);
+            int cpy_size = strlen((char*)(cmcc_rtc_get_version())) > 64
+                                ? 64 : strlen((char*)(cmcc_rtc_get_version()));
+            memcpy(out_response, cmcc_rtc_get_version(), cpy_size);
             ret = 0;
         #endif
             break;

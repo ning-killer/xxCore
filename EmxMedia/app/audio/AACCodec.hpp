@@ -17,14 +17,18 @@ namespace Emx {
 
         virtual ~AACEncoder() {}
 
-        ErrCodeE Create(int32_t bitRate, int32_t sampleRate, int32_t bitWidth) override;
+        ErrCodeE Create(int32_t bitRate, int32_t sampleRate, int32_t bitWidth, int32_t channelNum) override;
 
         void Destroy() override;
 
         ErrCodeE Encode(int16_t *inData, int32_t inNum, uint8_t *outData, int32_t &outNum) override;
 
     private:
+        ErrCodeE ToEncode(int16_t *inData, int32_t inNum, uint8_t *outData, int32_t &outNum);
+
+    private:
         HANDLE_AACENCODER m_handle;
+        std::string m_buff;
     };
 
     class AACDecoder : public AudioDecoder {

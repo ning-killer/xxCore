@@ -14,7 +14,7 @@ namespace Emx {
 
         virtual ~AudioEncoder() {}
 
-        virtual ErrCodeE Create(int32_t bitRate, int32_t sampleRate, int32_t bitWidth) = 0;
+        virtual ErrCodeE Create(int32_t bitRate, int32_t sampleRate, int32_t bitWidth, int32_t channelNum) = 0;
 
         virtual ErrCodeE Encode(int16_t *inData, int32_t inNum, uint8_t *outData, int32_t &outNum) = 0;
 

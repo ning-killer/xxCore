@@ -1,0 +1,42 @@
+version:2.0.20220928.1_0.0.2
+depend EapilHangYan version:2.0.20220928.1
+depend EapilBsp version:2.0.20220928.1
+depend EapilModules version:2.0.20220928.1
+    MOD:更新版本
+    ADD:增加BSP子仓库
+    MOD:更新EapilHangYan版本
+    MOD:Bsp和Update配置文件
+    MOD:适配Modules新的BSP
+    ADD:增加Bsp子仓库的编译
+    MOD:修改编译脚本，脚本不负责strip，strip由cmake里的custom cmd负责
+    ADD:增加预期Modules版本号，当某个子模块 所依赖的Modules版本号不一致需报错 xiao xiong 47 minutes ago
+    MOD:so much thing xiao xiong 2022/9/24 下午3:39
+    MOD:尝试修改GMT+0 xiao xiong 2022/9/23 下午8:01
+    MOD:utils中的aes支持源目的相同 MOD:env中单独抽离烧录相关字段为burn ADD:增加单独的参数加解密脚本 xiao xiong 2022/9/22 下午6:57
+    MOD:支持录像回放(实时流和录像音频都存在持续卡顿问题) xiao xiong 2022/9/21 下午7:56
+###################################################
+version:2.0.20220928.1_0.0.2
+depend EapilHangYan version:2.0.20220928.1
+    MOD:更新版本
+    ADD:增加BSP子仓库
+    MOD:更新EapilHangYan版本
+    MOD:Bsp和Update配置文件
+    MOD:适配Modules新的BSP
+    ADD:增加Bsp子仓库的编译
+    MOD:修改编译脚本，脚本不负责strip，strip由cmake里的custom cmd负责
+    ADD:增加预期Modules版本号，当某个子模块 所依赖的Modules版本号不一致需报错 xiao xiong 47 minutes ago
+    MOD:so much thing xiao xiong 2022/9/24 下午3:39
+    MOD:尝试修改GMT+0 xiao xiong 2022/9/23 下午8:01
+    MOD:utils中的aes支持源目的相同 MOD:env中单独抽离烧录相关字段为burn ADD:增加单独的参数加解密脚本 xiao xiong 2022/9/22 下午6:57
+    MOD:支持录像回放(实时流和录像音频都存在持续卡顿问题) xiao xiong 2022/9/21 下午7:56
+###################################################
+
+version:2.0.20220919.4_0.0.2
+depend EapilHangYan version:2.0.20220919.1
+    MOD:更新EapilHangYan版本
+###################################################
+
+version:2.0.20220915.11_0.0.2
+depend EapilHangYan version:2.0.20220915.1
+    初始版本
+###################################################

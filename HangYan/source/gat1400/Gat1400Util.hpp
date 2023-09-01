@@ -164,6 +164,8 @@ namespace Emx {
         static int GetRandom(int a, int b);
 
         static std::string GetImgType(ImgType type);
+
+        static void Pkcs5Padding(std::string &data);
     };
 }
 

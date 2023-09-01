@@ -11,6 +11,7 @@
 #include "NetServerResource.hpp"
 #include "NetServerDev.hpp"
 #include "NetInner.hpp"
+#include "Mac.hpp"
 
 using namespace Emx;
 
@@ -132,6 +133,7 @@ ErrCodeE NetServerDev::SetAddr(Addr &addr) {
             isChanged = true;
         }
     }
+    emxlogd("isChanged[%d],isMacChange[%d]\n", isChanged, isMacChange);
     if (isChanged || isMacChange) {
         if (isMacChange) {
             ConfigMac();
@@ -282,13 +284,34 @@ ErrCodeE NetServerDev::ConfigAddr() {
 }
 
 ErrCodeE NetServerDev::ConfigMac() {
+    emxlogd("ConfigMac\n");
     if (!m_devJsonParam["mac"].asString().empty()) {
         Addr addr = {};
         GetAddr(addr);
+        emxlogd("addr mac[%s]; current mac[%s]\n", m_devJsonParam["mac"].asString().c_str(), addr.mac);
         if (m_devJsonParam["mac"].asString() != addr.mac) {
             Cmd::Run("ifconfig %s down", m_interface);
             Cmd::Run("ifconfig %s hw ether %s", m_interface, m_devJsonParam["mac"].asCString());
             Cmd::Run("ifconfig %s up", m_interface);
+            emxlogd("netServer mac config end\n");
+        }
+    } else {
+        Mac mac;
+        if (mac.Load() != ErrCodeE::Success) {
+            return ErrCodeE::Success;
+        }
+        std::string s_mac(mac.Get());
+        if (s_mac == "") {
+            return ErrCodeE::Success;
+        }
+        Addr addr = {};
+        GetAddr(addr);
+        emxlogd("addr mac[%s]; current mac[%s]\n", s_mac.c_str(), addr.mac);
+        if (s_mac != std::string(addr.mac)) {
+            Cmd::Run("ifconfig %s down", m_interface);
+            Cmd::Run("ifconfig %s hw ether %s", m_interface, s_mac.c_str());
+            Cmd::Run("ifconfig %s up", m_interface);
+            emxlogd("mac config end\n");
         }
     }
     return ErrCodeE::Success;

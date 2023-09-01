@@ -7,7 +7,7 @@ set(MergeProcess ON)
 set(PlatSDKPath ${ThirdPartyPath}/platform/HangYan)
 include(${PlatSDKPath}/andlink/1.5.2/configure.cmake)
 include(${PlatSDKPath}/cmcc_voip/1.5.12.2/configure.cmake)
-include(${PlatSDKPath}/ovdsdk/1.28/configure.cmake)
+include(${PlatSDKPath}/ovdsdk/1.28.1/configure.cmake)
 
 #硬件依赖
 set(Board EpCv182xGunV1)
@@ -16,6 +16,7 @@ set(Board EpCv182xGunV1)
 set(MediaProfile cv182xFDPDWith)
 
 #第三方库依赖
+set(LIBCONFIG_VERSION 1.7.3)
 set(JSONCPP_VERSION 1.9.3)
 set(LIBUV_VERSION 1.44.2)
 set(WPASUPPLICANT_VERSION 2.9)

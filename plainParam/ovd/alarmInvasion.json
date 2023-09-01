@@ -1,4 +1,5 @@
 {
+  "ena": false,
   "schedule": {
     "onOff": false,
     "startTime": "00:00:00",

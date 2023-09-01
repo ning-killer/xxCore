@@ -15,8 +15,8 @@ target_include_directories(${TARGET_APP} PRIVATE ${ModulesPath}/sdcardUpdate/inc
 #wpa
 target_link_directories(${TARGET_APP} PRIVATE ${ThirdPartyPath}/wpa_supplicant/${WPASUPPLICANT_VERSION}/${CROSS}/lib)
 #libconfig
-target_include_directories(${TARGET_APP} PRIVATE ${ThirdPartyPath}/libconfig/include)
-target_link_directories(${TARGET_APP} PRIVATE ${ThirdPartyPath}/libconfig/lib/${CROSS})
+target_include_directories(${TARGET_APP} PRIVATE ${ThirdPartyPath}/libconfig/${LIBCONFIG_VERSION}/${CROSS}/include)
+target_link_directories(${TARGET_APP} PRIVATE ${ThirdPartyPath}/libconfig/${LIBCONFIG_VERSION}/${CROSS}/lib)
 # factory
 target_include_directories(${TARGET_APP} PRIVATE ${FactoryPath}/emxFtTool/inner)
 target_include_directories(${TARGET_APP} PRIVATE ${FactoryPath}/emxAgeingTool/inner)

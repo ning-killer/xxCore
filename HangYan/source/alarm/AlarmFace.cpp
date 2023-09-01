@@ -88,8 +88,8 @@ void AlarmFace::Clone(Gat1400Util::UploadDataParam &param
         faceImg.ShotTime = Gat1400Util::GetTimeStr(Gat1400Util::TimePrecision::S);
         faceImg.Width = sub.second.Width; 
         faceImg.Height = sub.second.Height;
-        emxloge("headersize(%d)\n", sizeof(MediaAi::AiInfoFaceDetectionData));
-        emxloge("off(%d)\n", sub.first);
+        emxlogd("headersize(%d)\n", sizeof(MediaAi::AiInfoFaceDetectionData));
+        emxlogd("off(%d)\n", sub.first);
         std::string inData = std::string((char*)(face_data + sub.first), sub.second.imgSize);
         Base64::Encode(inData, faceImg.Data);
         param.subImgList.push_back(faceImg);

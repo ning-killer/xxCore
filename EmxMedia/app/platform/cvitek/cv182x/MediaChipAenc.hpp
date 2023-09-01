@@ -16,7 +16,8 @@ namespace Emx {
                 MediaServerAenc(chn, res),
                 m_got(false),
                 m_started(false),
-                m_seq(0) {}
+                m_seq(0),
+                m_enSeq(0) {}
 
         virtual ~MediaChipAenc() {};
 
@@ -72,6 +73,7 @@ namespace Emx {
         int m_aioSampleRate;
         int m_frameSize;
         uint32_t m_seq;
+        uint32_t m_enSeq;
     };
 }
 

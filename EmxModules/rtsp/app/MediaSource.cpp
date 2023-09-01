@@ -672,7 +672,7 @@ int MediaSource::ADTSBuildRTP(const unsigned char* payload, size_t payload_size,
 	auto rtp = pkt->data() + 4;
 	packHeader(rtp, true, pts, 1);
 
-	unsigned short aacLen = payload_size - 12;
+	unsigned short aacLen = payload_size - 7;
 
 	rtp[12] = 0x00;
 	rtp[13] = 0x10;
@@ -680,7 +680,7 @@ int MediaSource::ADTSBuildRTP(const unsigned char* payload, size_t payload_size,
 	rtp[14] = (aacLen & 0x1FE0) >> 5;
 	rtp[15] = (aacLen & 0x1F) << 3;
 
-	memcpy(rtp + 16, payload + 12, aacLen);
+	memcpy(rtp + 16, payload + 7, aacLen);
 
 	auto rtpSize = 12 + 4 + aacLen;
 	rtp[-4] = 0x24;
@@ -694,7 +694,7 @@ int MediaSource::ADTSBuildRTP(const unsigned char* payload, size_t payload_size,
 	if (frame->_isKey)
 		_gopCache.clear();
 
-	//_gopCache.emplace_back(frame);
+	// _gopCache.emplace_back(frame);
 
 	for (auto& ptr : _dispatcher)
 	{

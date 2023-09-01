@@ -6,7 +6,7 @@
       "AencChn": 0,
       "bind": false,
       "aioSampleRate": 8000,
-      "frameSize": 640,
+      "frameSize": 320,
       "enWorkmode": 0,
       "enSoundmode": 1,
       "u32EXFlag": 0,

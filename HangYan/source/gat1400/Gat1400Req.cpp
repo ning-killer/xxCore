@@ -53,7 +53,7 @@ size_t Gat1400Req::OnRegisterWriteHeader(void* buffer
 
 Gat1400Req::Gat1400Req(Gat1400Util::InitParam *param)
     : m_initParam(param)
-    , m_faceAsyncCurlClient(new CurlAsyncClient())
+    , m_faceAsyncCurlClient(new CurlAsyncClient(1))
     , m_faceUploadUserOpera(new Gat1400FaceUploadUserOpera()) {
 }
 
@@ -214,7 +214,7 @@ bool Gat1400Req::UnRegister() {
             emxloge("UnRegister ackJson Parse Failed!\n");
             break;
         }
-        if (!ackJson["ResponseStatusObject"].isObject()
+        if (ackJson["ResponseStatusObject"].isObject()
             && ackJson["ResponseStatusObject"]["StatusCode"].isInt()
             && ackJson["ResponseStatusObject"]["StatusCode"].asInt() == 0) {
             ret = true;
