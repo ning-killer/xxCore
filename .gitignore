@@ -11,3 +11,7 @@
 /imgs/spare.bin
 /imgs/rootfs.bin
 /firmware/app/configs/devInfo.json
+/firmware/app/bin/
+/firmware/app/lib/
+/firmware/media/bin/
+/firmware/media/lib/
