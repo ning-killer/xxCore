@@ -3,6 +3,7 @@
 //
 #include <dirent.h>
 #include <set>
+#include <sys/stat.h>
 #include "ParamServer.hpp"
 #include "core/EmxLog.hpp"
 #include "core/EmxUtils.hpp"
@@ -93,9 +94,12 @@ ErrCodeE ParamServer::Set(const char *name, const char *data) {
     }
     std::string text = data;
 #ifndef EMX_PLAIN_PARAM
-    Pkcs7Padding::Pad(text);
-    m_aes.Init(m_key, m_iv);
-    m_aes.Encrypt((uint8_t *) text.data(), text.size());
+        Pkcs7Padding::Pad(text);
+        m_aes.Init(m_key, m_iv);
+        m_aes.Encrypt((uint8_t *) text.data(), text.size());
+        std::string base64;
+        Base64::Encode(text, base64);
+        text = base64;
 #endif
     auto e = File::Write(normal, (char *) text.data(), (int) text.size());
     return e;
@@ -139,16 +143,19 @@ ErrCodeE ParamServer::Load(const char *path, std::string &data) {
     if (File::Read(path, data) != ErrCodeE::Success)
         return ErrCodeE::Failure;
 #ifndef EMX_PLAIN_PARAM
-    m_aes.Init(m_key, m_iv);
-    m_aes.Decrypt((uint8_t *) data.data(), data.size());
-    Pkcs7Padding::UnPad(data);
+        std::string tmp;
+        Base64::Decode(data, tmp);
+        m_aes.Init(m_key, m_iv);
+        m_aes.Decrypt((uint8_t *) tmp.data(), tmp.size());
+        Pkcs7Padding::UnPad(tmp);
+        data = tmp;
 #endif
     Json::Value dataJson;
     JSONCPP_STRING errs;
     Json::CharReaderBuilder builder;
     std::unique_ptr<Json::CharReader> const reader(builder.newCharReader());
     if (!reader->parse(data.data(), data.data() + data.size(), &dataJson, &errs)) {
-        emxloge("file:%s, %s Cannot parse : %s\n", path, data.data(),
+        emxloge("%s Cannot parse : %s\n", data.data(),
                 errs.empty() ? "unknown" : errs.data());
         return ErrCodeE::ParseFailed;
     }
@@ -220,13 +227,13 @@ ErrCodeE ParamServer::ResetToFactory() {
         return ErrCodeE::Failure;
     }
     std::set<std::string> reservedSet;
-    for (auto &item : reservedJson)
+    for (auto &item: reservedJson)
         reservedSet.emplace(item.asString());
 
     std::list<std::string> removeList;
     ScanDir(m_backup, "", reservedSet, removeList);
     ScanDir(m_normal, "", reservedSet, removeList);
-    for (auto &item:removeList) {
+    for (auto &item: removeList) {
         File::Remove(item.c_str());
         emxlogi("remove %s\n", item.c_str());
     }
