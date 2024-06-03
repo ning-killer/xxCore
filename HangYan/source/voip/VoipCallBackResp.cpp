@@ -12,7 +12,8 @@ using namespace Emx;
 
 VoipCallBackResp::VoipCallBackResp(VoipBase *voip) :
         m_voip(voip),
-        m_resp(voip->m_ctx->loop) {}
+        m_resp(voip->m_ctx->loop),
+        m_pauseHandle(false) {}
 
 
 void VoipCallBackResp::Start() {
@@ -23,8 +24,15 @@ void VoipCallBackResp::Stop() {
     m_resp.Stop();
 }
 
+void VoipCallBackResp::PauseHandle(bool isPause) {
+    m_pauseHandle = isPause;
+}
+
 void VoipCallBackResp::ProcCallBack(ThreadInvoke::Packet &packet) {
-    emxlogt("start callback id:%d\n", packet.id);
+    emxlogt("start callback id:%d;isPause[%d]\n", packet.id, m_pauseHandle);
+    if (m_pauseHandle) {
+        return;
+    }
     switch ((VoipCallBackIdE) packet.id) {
         case VoipCallBackIdE::OnUserLoginSucceed: {
             auto e = (void **) packet.data;

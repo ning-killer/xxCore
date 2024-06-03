@@ -25,9 +25,8 @@ namespace Emx {
         void Destroy() override;
 
       private:
-        void Clone(Gat1400Util::UploadDataParam &param
-                , const std::map<int/*img偏移量*/, MediaAi::facePicMsg> &match_data
-                , const uint8_t *face_data);
+        bool Clone(Gat1400Util::UploadFaceData &param, 
+          const MediaAi::AiInfoFaceDetectionData& faceData);
 
       private:
         MediaClientAiDataAsync *m_ai;

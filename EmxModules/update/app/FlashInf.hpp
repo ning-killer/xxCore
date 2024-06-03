@@ -31,6 +31,8 @@ namespace Emx {
 
         virtual ErrCodeE GetInfo(mtd_info_t &mtd);
 
+        virtual bool IsBadBlock(int fd, int start);
+
     protected:
         int m_fd;
     };

@@ -200,7 +200,7 @@ void Ovd::OnNetInitDone() {
     }
 #ifndef EAPIL_SPARE
     //创建复位按键事件监测模块
-    m_key = new Key("Reset", m_ctx.loop, m_ctx.bsp.keyReset.get(), 3000);
+    m_key = new Key("Reset", m_ctx.loop, m_ctx.bsp.keyReset.get(), 3000, Key::ModeE::Key);
     m_key->Create(std::bind(&Ovd::OnResetKeyEvent, this, ph_1, ph_2));
 #endif
     //监听升级状态改变
@@ -246,7 +246,14 @@ void Ovd::OnResetKeyEvent(const char *name, Key::EventE e) {
             break;
         }
         case Key::EventE::LongPress:
-            VoicePlay::Play(VoicePlay::VoiceE::DI);
+            emxlogd("ovd sdk reset config call reboot\n");
+            m_ctx.env.initMsg.reason = (int)OVD_REBOOT_REASON_DUT_FACTORY_RESET;
+            m_ctx.env.initMsg.message = "reset to factory, reboot";
+            m_ctx.env.initMsg.ts = Time::GetMs();
+            m_ctx.env.initMsg.Save();
+            //VoicePlay::Play(VoicePlay::VoiceE::DI);
+            VoicePlay::Play(VoicePlay::VoiceE::RESET_REBOOT);
+            m_ctx.led->StatChange(Led::StatE::Rebooting, true);
             m_record.Destroy();
             RemoveAlarmAudioFile();
             Param::ResetAllToFactory();
@@ -262,8 +269,16 @@ void Ovd::OnResetKeyEvent(const char *name, Key::EventE e) {
 void Ovd::RemoveAlarmAudioFile() {
     char pathA[EMX_MAX_PATH_SIZE] = {};
     char pathB[EMX_MAX_PATH_SIZE] = {};
-    snprintf(pathA, sizeof(pathA), "%s/alarmVoiceA.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
-    snprintf(pathB, sizeof(pathB), "%s/alarmVoiceB.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    snprintf(pathA, sizeof(pathA), "%s/transgressionAlarmVoiceA.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    snprintf(pathB, sizeof(pathB), "%s/transgressionAlarmVoiceB.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    snprintf(pathA, sizeof(pathA), "%s/alertareaAlarmVoiceA.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    snprintf(pathB, sizeof(pathB), "%s/alertareaAlarmVoiceB.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    snprintf(pathA, sizeof(pathA), "%s/maskAlarmVoiceA.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    snprintf(pathB, sizeof(pathB), "%s/maskAlarmVoiceB.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    snprintf(pathA, sizeof(pathA), "%s/vehicleAlarmVoiceA.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    snprintf(pathB, sizeof(pathB), "%s/vehicleAlarmVoiceB.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    snprintf(pathA, sizeof(pathA), "%s/nonmotorAlarmVoiceA.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
+    snprintf(pathB, sizeof(pathB), "%s/nonmotorAlarmVoiceB.wav",m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString());
     File::Remove(pathA);
     File::Remove(pathB);
 }
@@ -292,9 +307,15 @@ void Ovd::ServiceStart() {
     m_scheduleSleep.Create("sleep", &m_ctx, &m_ctx.env.sleep.schedule, [this](bool ena) {
         emxlogi("sleep schedule active %d\n", ena);
         m_ctx.running.sleep = !ena;
+        OVD_updatechannelstate(0, m_ctx.running.sleep ? OVD_CHANNEL_DISABLE : OVD_CHANNEL_ONLINE);
         if (m_ctx.running.sleep) {
             m_record.Destroy();
             m_scheduleInv.Destroy();
+            m_scheduleAlertarea.Destroy();
+            m_scheduleTransgression.Destroy();
+            m_scheduleMaskDetection.Destroy();
+            m_scheduleregionalPeople.Destroy();
+            m_scheduleOffduty.Destroy();
             Gat1400Client::Instance()->Stop();
             m_alarm.Destroy();
             m_avPush.Destroy();
@@ -329,6 +350,26 @@ void Ovd::ServiceStart() {
                 //当警戒排程改变时通知告警模块
                 m_alarm.SetEna(OVD_ALERTAREA, ena);
                 emxlogi("invasion change %d\n", ena);
+            });
+            m_scheduleAlertarea.Create("alertarea", &m_ctx, &m_ctx.env.alertarea.schedule, [this](bool ena) {
+                m_alarm.SetEna(OVD_ALERTAREA, ena);
+                emxlogi("alertarea change %d\n", ena);
+            });
+            m_scheduleTransgression.Create("transgression", &m_ctx, &m_ctx.env.transgression.schedule, [this](bool ena) {
+                m_alarm.SetEna(OVD_TRANSGRESSION, ena);
+                emxlogi("transgression change %d\n", ena);
+            });
+            m_scheduleMaskDetection.Create("maskDetection", &m_ctx, &m_ctx.env.face.schedule, [this](bool ena) {
+                m_alarm.SetEna(OVD_FACE_MASK, ena);
+                emxlogi("maskDetection change %d\n", ena);
+            });
+            m_scheduleregionalPeople.Create("regionalPeople", &m_ctx, &m_ctx.env.regionalPeople.schedule, [this](bool ena) {
+                m_alarm.SetEna(OVD_REGIONAL_PEOPLE_STAT, ena);
+                emxlogi("regionalPeople change %d\n", ena);
+            });
+            m_scheduleOffduty.Create("offduty", &m_ctx, &m_ctx.env.offDuty.schedule, [this](bool ena) {
+                m_alarm.SetEna(OVD_OFF_DUTY, ena);
+                emxlogi("offduty change %d\n", ena);
             });
             //开启andlink
             m_andLink.Create(&m_ctx);
@@ -381,6 +422,11 @@ void Ovd::ServiceStop() {
     m_autoMaintain.Destroy();
     //结束警戒排程
     m_scheduleInv.Destroy();
+    m_scheduleAlertarea.Destroy();
+    m_scheduleTransgression.Destroy();
+    m_scheduleMaskDetection.Destroy();
+    m_scheduleregionalPeople.Destroy();
+    m_scheduleOffduty.Destroy();
     //结束休眠排程
     m_scheduleSleep.Destroy();
     //停止gat1400业务

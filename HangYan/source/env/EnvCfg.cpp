@@ -36,6 +36,7 @@ ErrCodeE EnvCfg::Load() {
         last_upgrade_state = json["last_upgrade_state"].asInt();
         strncpy(last_upgrade_time, json["last_upgrade_time"].asCString(), sizeof(last_upgrade_time));
         intelligentNightVision = json["intelligentNightVision"].asBool();
+        nightvision_detect_mode = (NightvisionDetectMode)json["nightvision_detect_mode"].asInt();
         return ErrCodeE::Success;
     } catch (std::exception &e) {
         emxlogc("load ovd cfg failed\n");
@@ -68,6 +69,7 @@ ErrCodeE EnvCfg::Save() {
         json["last_upgrade_state"] = last_upgrade_state;
         json["last_upgrade_time"] = last_upgrade_time;
         json["intelligentNightVision"] = intelligentNightVision;
+        json["nightvision_detect_mode"] = nightvision_detect_mode;
         ErrCodeE e = Set(json);
         if (e != ErrCodeE::Success) {
             emxlogc("param set ovd cfg failed\n");

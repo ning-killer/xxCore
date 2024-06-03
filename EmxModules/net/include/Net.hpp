@@ -78,6 +78,13 @@ namespace Emx {
         virtual ErrCodeE SetAddr(Addr &addr) = 0;
 
         /**
+         * @brief 配置临时地址，字符串内容为空的字段，在配置的时候会被忽略
+         * @param addr [in] 地址信息
+         * @return ErrCodeE
+         */
+        virtual ErrCodeE SetTempAddr(Addr &addr) = 0;
+
+        /**
          * @brief 获取当前地址信息
          * @param addr [out] 地址信息
          * @return ErrCodeE

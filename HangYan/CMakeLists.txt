@@ -121,6 +121,7 @@ macro(strip target filename)
             COMMAND ${CMAKE_STRIP} -s ${filename}
             COMMENT "Strip ${filename} done")
 endmacro()
+
 strip(${TARGET} ${TARGET})
 
 # bsp
@@ -212,7 +213,7 @@ if (MergeProcess MATCHES ON)
         SDCardServerLib
         NightVisionServerLib
         RtspServerLib
-        NtpClientLib
+        # NtpClientLib
     )
 elseif (MergeProcess MATCHES OFF)
     SET(MERGE_PROCESS_LIBS

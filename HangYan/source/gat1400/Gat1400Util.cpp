@@ -1,6 +1,8 @@
 #include "Gat1400Util.hpp"
 #include <mbedtls/md5.h>
 #include <mbedtls/aes.h>
+#include <chrono>
+#include <ctime>
 
 using namespace Emx;
 
@@ -136,17 +138,25 @@ void Gat1400Util::byteToHex(const unsigned char *input, int length, char *output
 // yyyyMMddHHmmss
 std::string Gat1400Util::GetTimeStr(TimePrecision precision) {
     unsigned long long tmp = 0;
-    tm* local; //本地时间   
-    char buf[128] = { 0 };
+    tm* local;
+    char buf[15] = { 0 };  
     if (precision == MS) {
-        tmp = Time::GetMs();
+        tmp = Time::GetS();
     } else if (precision == S) {
         tmp = Time::GetS();
     }
     std::time_t t(tmp);
-    local = localtime(&t); //转为本地时间  
-    strftime(buf, 64, "%Y%m%d%H%M%S", local);
+    local = localtime(&t);
+    strftime(buf, sizeof(buf), "%Y%m%d%H%M%S", local);
     return std::string(buf);
+}
+
+char *Gat1400Util::GetTimeStr(uint32_t utc, char *timeStr, int maxSize) {
+    auto timep = (time_t) utc;
+    struct tm *p = localtime(&timep);
+    snprintf(timeStr, maxSize, "%04d-%02d-%02d_%02d-%02d-%02d",
+             (1900 + p->tm_year), (1 + p->tm_mon), p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec);
+    return timeStr;
 }
 
 int Gat1400Util::GetRandom(int a, int b) {
@@ -176,3 +186,5 @@ std::string Gat1400Util::GetImgType(ImgType type) {
     }
     return s_type;
 }
+
+int Gat1400Util::m_index = 0;

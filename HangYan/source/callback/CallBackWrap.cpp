@@ -59,6 +59,9 @@ void InitCallBackList(OVD_CallBackFunList *list) {
     list->OVD_SetAudioOutPlay = SetAudioOutPlay;
 #else
 #endif
+#ifdef OVDSDK1_38_1
+    list->OVD_syncmachash = SyncMacHash;
+#endif // OVDSDK1_38_1
 }
 
 static ThreadInvoke::Req gOvdReq(OVD_CALL_BACK_RPC_ID);
@@ -127,6 +130,36 @@ OVD_int32 GetOVDConfigureInfo(OVD_char **output_ovdconfig, OVD_int32 *output_siz
     return ret;
 }
 
+#ifdef OVDSDK1_38_1
+OVD_int32 SetOVDConfigureInfo(OVD_char *in_ovdconfig, OUT OVD_char *errMsg, IN OVD_int32 errMsg_len) {
+    emxlogd("into\n");
+    TimeRec timeCost;
+    int ret = -1;
+    void *buffer[] = {
+            &ret,
+            &in_ovdconfig
+    };
+    ThreadInvoke::Packet packet((uint32_t) OvdCallBackIdE::SetOVDConfigureInfo, buffer);
+    gOvdReq.Send(packet);
+    emxlogd("leave cost:%ums\n", timeCost.GetInv());
+    return ret;
+}
+
+OVD_int32 ReBootDevice(ovd_reboot_reason_e reason) {
+    emxlogi("into\n");
+    TimeRec timeCost;
+    int ret = -1;
+    void *buffer[] = {
+            &ret,
+            &reason
+    };
+    ThreadInvoke::Packet packet((uint32_t) OvdCallBackIdE::ReBootDevice, buffer);
+    gOvdReq.Send(packet);
+    Reboot::DoReboot(5);
+    emxlogd("leave cost:%ums\n", timeCost.GetInv());
+    return 0;
+}
+#else
 OVD_int32 SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
     emxlogd("into\n");
     TimeRec timeCost;
@@ -141,6 +174,15 @@ OVD_int32 SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
     return ret;
 }
 
+OVD_int32 ReBootDevice() {
+    emxlogi("into\n");
+    TimeRec timeCost;
+    Reboot::DoReboot(5);
+    emxlogd("leave cost:%ums\n", timeCost.GetInv());
+    return 0;
+}
+#endif
+
 OVD_void OVCConnectStatus(OVD_int32 connectStatus) {
     emxlogi("into:connectStatus = %d\n", connectStatus);
     TimeRec timeCost;
@@ -154,14 +196,6 @@ OVD_void OVCConnectStatus(OVD_int32 connectStatus) {
 }
 
 OVD_int32 ReBootChannel(OVD_int32 channel) {
-    emxlogi("into\n");
-    TimeRec timeCost;
-    Reboot::DoReboot(5);
-    emxlogd("leave cost:%ums\n", timeCost.GetInv());
-    return 0;
-}
-
-OVD_int32 ReBootDevice() {
     emxlogi("into\n");
     TimeRec timeCost;
     Reboot::DoReboot(5);
@@ -191,7 +225,10 @@ OVD_int32 KeepAwakenUtilExpired(OVD_int32 channel, OVD_int32 notAllowHibernate,
 OVD_int32 ResetConfiguration() {
     emxlogd("into\n");
     TimeRec timeCost;
-    int ret;
+    int ret = -1;
+    void *buffer[] = { &ret };
+    ThreadInvoke::Packet packet((uint32_t) OvdCallBackIdE::ResetConfiguration, buffer);
+    gOvdReq.Send(packet);
     if (Param::ResetAllToFactory() == ErrCodeE::Success)
         ret = 0;
     else
@@ -319,7 +356,7 @@ OVD_int32 DMEAPI_callback_RecordSeek(OVD_void *ctx, OVD_int64 timestamp) {
 }
 
 OVD_int32 DMEAPI_callback_RecordReadFrame(OVD_void *ctx, OVD_FrameInfo *pframe_info) {
-//    emxlogd("into\n");
+    // emxlogd("into\n");
     TimeRec timeCost;
     int ret = -1;
     void *buffer[] = {
@@ -329,7 +366,7 @@ OVD_int32 DMEAPI_callback_RecordReadFrame(OVD_void *ctx, OVD_FrameInfo *pframe_i
     };
     ThreadInvoke::Packet packet((uint32_t) OvdCallBackIdE::DMEAPI_callback_RecordReadFrame, buffer);
     gOvdReq.Send(packet);
-//    emxlogd("leave cost:%ums\n", timeCost.GetInv());
+    // emxlogd("leave cost:%ums\n", timeCost.GetInv());
     return ret;
 }
 
@@ -508,7 +545,12 @@ OVD_int32 VedioSwitchQuality(OVD_int32 channel, OVDEncodeQuality quality, OVDVid
     return ret;
 }
 
-OVD_int32 ForceIFrame(OVD_int32 channel) {
+#ifdef OVDSDK1_38_1
+OVD_int32 ForceIFrame(OVD_int32 channel, OVDCodeStream code_stream)
+#else
+OVD_int32 ForceIFrame(OVD_int32 channel)
+#endif
+{
     emxlogd("into\n");
     TimeRec timeCost;
     MediaClientVenc venc(0);
@@ -557,8 +599,20 @@ OVD_int32 SetAudioOutPlay(OVD_int32 channel, OVD_char *url) {
 }
 #elif defined OVDSDK_APIVER_3_0
 OVD_int32 SetAudioOutPlay(OVD_int32 channel, OVD_char *url, int repeat, int volume) {
-    emxloge("not implement\n");
-    return 0;
+    emxlogd("into\n");
+    TimeRec timeCost;
+    int ret = -1;
+    void *buffer[] = {
+            &ret,
+            &channel,
+            &url,
+            &repeat,
+            &volume
+    };
+    ThreadInvoke::Packet packet((uint32_t) OvdCallBackIdE::SetAudioOutPlay, buffer);
+    gOvdReq.Send(packet);
+    emxlogd("leave cost:%ums\n", timeCost.GetInv());
+    return ret;
 }
 #endif 
 
@@ -784,7 +838,12 @@ OVD_int32 StopAlarm(int alarmtype) {
 #endif
 
 #ifdef OVDSDK_APIVER_3_0
-OVD_int32 GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void* out_response) {
+#ifdef OVDSDK1_38_1
+OVD_int32 GetDevRunningInfo(ovd_probe_devrunning_info_e in_info, void* out_response) 
+#else
+OVD_int32 GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void* out_response)
+#endif
+{
     emxlogd("into\n");
     TimeRec timeCost;
     int ret = -1;
@@ -872,6 +931,9 @@ OVD_int32 GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void* out_response)
         case OVD_CMD_GET_PING:
         case OVD_CMD_GET_TRACEROUTE:
         case OVD_CMD_GET_RSSI_4G:
+        #ifdef OVDSDK1_38_1
+        case OVD_CMD_GET_POWER_MODE:
+        #endif
             ret = 101;
         break;
     }
@@ -886,6 +948,22 @@ OVD_int32 GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void* out_response)
         &out_response,
     };
     ThreadInvoke::Packet packet((uint32_t) OvdCallBackIdE::GetDevRunningInfo, buffer);
+    gOvdReq.Send(packet);
+    emxlogd("leave cost:%ums\n", timeCost.GetInv());
+    return ret;
+}
+#endif
+
+#ifdef OVDSDK1_38_1
+OVD_int32 SyncMacHash(OVD_char* in_machash) {
+    emxlogd("into\n");
+    TimeRec timeCost;
+    int ret = -1;
+    void *buffer[] = {
+        &ret,
+        &in_machash
+    };
+    ThreadInvoke::Packet packet((uint32_t) OvdCallBackIdE::SyncMacHash, buffer);
     gOvdReq.Send(packet);
     emxlogd("leave cost:%ums\n", timeCost.GetInv());
     return ret;

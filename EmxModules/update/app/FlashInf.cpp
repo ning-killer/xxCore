@@ -51,6 +51,9 @@ ErrCodeE FlashInf::Write(const uint8_t *data, int64_t size) {
     int off = 0;
     while (size > 0) {
         int n = write(m_fd, data + off, size);
+        if (IsBadBlock(m_fd, off)) {
+            emxloge("current write is bad block.\n");
+        }
         if (n < 0) {
             emxlogc("write flash failed %d:%s\n", errno, strerror(errno));
             return ErrCodeE::Failure;
@@ -105,3 +108,7 @@ ErrCodeE FlashInf::GetInfo(mtd_info_t &mtd) {
     return ErrCodeE::Success;
 }
 
+bool FlashInf::IsBadBlock(int fd, int start) {
+    loff_t seek = (loff_t) start;
+    return ioctl(fd, MEMGETBADBLOCK, &seek) == 0 ? false : true;
+}

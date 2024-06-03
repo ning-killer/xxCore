@@ -503,7 +503,7 @@ int andlink_adapt_init(andlink_attr_t *pAttrInfo) {
     disableAdlFunc(ADL_APP_SEARCH_SERVICE);
 
     // logTo="file" 表示记录到文件;="terminal"表示记录到控制台
-    set_printLog_debug_level(16, (char *) "terminal");
+    //set_printLog_debug_level(16, (char *) "terminal");
 
     // 若存在离线解绑后,需要立马绑定的场景时,可以禁止自动默认用户注册功能;
     //disableAdlFunc(ADL_OFFLINE_UNBIND_AUTO_REBOOTSTRAP);

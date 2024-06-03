@@ -63,8 +63,7 @@ void ConfigService::OnRecv(EuvStmServerClientBase *client, char *data, int32_t s
         ErrCodeE e = c->update->Push((uint8_t *) data, size);
         if (e == ErrCodeE::ReachTheEof) {
             UpdatePushResult(c,0,"update success");
-        }
-        if (e != ErrCodeE::Success) {
+        } else if (e != ErrCodeE::Success) {
             UpdatePushResult(c,400,"update failed");
         }
         return;

@@ -7,6 +7,7 @@
 #define EAPIL_EnvStrategy_HPP
 
 #include "EmxCore.hpp"
+#include "EnvCommon.hpp"
 
 namespace Emx {
     class EnvStrategy {
@@ -36,6 +37,7 @@ namespace Emx {
             bool ena;//是否联动蜂鸣器
             int duration;//蜂鸣器报警时长，单位：秒
         } buzz;
+        SoundAlarmControl::Type type;
     };
 };
 

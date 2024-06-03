@@ -19,11 +19,11 @@ namespace Emx {
 
         void Destroy() override;
 
-        bool IsStaticPerson(Size &size, MediaAi::AiInfoPersonDetectionData &data);
+        bool IsStaticPerson(Size &size, Rect &data);
 
     private:
         MediaClientAiDataAsync *m_ai;
-        MediaAi::AiInfoPersonDetectionData m_cache[5];
+        Rect m_cache[5];
         int m_cacheIdx;
     };
 };

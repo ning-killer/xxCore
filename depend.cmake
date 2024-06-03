@@ -5,9 +5,9 @@ set(MergeProcess ON)
 
 # 杭研依赖
 set(PlatSDKPath ${ThirdPartyPath}/platform/HangYan)
-include(${PlatSDKPath}/andlink/1.5.2/configure.cmake)
-include(${PlatSDKPath}/cmcc_voip/1.5.12.2/configure.cmake)
-include(${PlatSDKPath}/ovdsdk/1.28.1/configure.cmake)
+include(${PlatSDKPath}/andlink/1.5.3/configure.cmake)
+include(${PlatSDKPath}/cmcc_voip/1.5.12.2.488/configure.cmake)
+include(${PlatSDKPath}/ovdsdk/1.38.1/configure.cmake)
 
 #硬件依赖
 set(Board EpCv182xGunV1)

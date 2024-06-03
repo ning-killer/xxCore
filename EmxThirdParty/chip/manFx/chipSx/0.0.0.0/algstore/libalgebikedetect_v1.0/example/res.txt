@@ -1,0 +1,104 @@
+### 测试数据 #include "../model/ebike_detect_input.h" 
+# chmod 777 algebikedetect.elf 
+# ./algebikedetect.elf 
+[1970-01-01 03:54:56.925]mod(1)<D>: <vb_creat_pool:1043>:vb_creat_pool poolid=1 pool_cfg->blk_cnt=1, pool_cfg->blk_size=737280
+03:54:56-[DEBUG]: image.pDataPhy: 5200000: image.pData: (nil)
+03:54:57-[INFO]: rne log level : 1
+03:54:57-[INFO]: rne lib version :1.3.0.8
+03:54:57-[DEBUG]: open device success! 
+03:54:57-[INFO]: model blobmem size is 1474560
+03:54:57-[INFO]: algo heap size is 63488
+03:54:57-[DEBUG]: version: ebikeDetect_v1.0_model_0928
+03:54:57-[DEBUG]: cfgsize: 31603, weightsize: 871872 
+03:54:57-[DEBUG]: image h:384 w:640, blob h:384 w:640
+03:54:57-[DEBUG]: rne proprocess time:10
+03:54:57-[DEBUG]: rne forward time:21
+03:54:57-[DEBUG]: TS_ALG_handDetect_PostProcess time: 4 ms
+03:54:57-[DEBUG]: TS_ALG_EbikeDetect_Process:36 ms
+03:54:57-[DEBUG]: face:0 --score:0.929563 
+        xmin:0.388571 ymin:0.334411 xmax:0.599170 ymax:0.606151 
+        x1:248 y1:128 x2:383 y2:232
+03:54:57-[DEBUG]: face:1 --score:0.428453 
+        xmin:0.170052 ymin:0.378928 xmax:0.248232 ymax:0.475799 
+        x1:108 y1:145 x2:158 y2:182
+# 
+
+
+
+### 测试数据 #include "../model/D01_20230809104104.h"
+# ./algebikedetect.elf 
+[1970-01-01 03:58:30.132]mod(1)<D>: <vb_creat_pool:1043>:vb_creat_pool poolid=1 pool_cfg->blk_cnt=1, pool_cfg->blk_size=737280
+03:58:30-[DEBUG]: image.pDataPhy: 5200000: image.pData: (nil)
+03:58:30-[INFO]: rne log level : 1
+03:58:30-[INFO]: rne lib version :1.3.0.8
+03:58:30-[DEBUG]: open device success! 
+03:58:30-[INFO]: model blobmem size is 1474560
+03:58:30-[INFO]: algo heap size is 63488
+03:58:30-[DEBUG]: version: ebikeDetect_v1.0_model_0928
+03:58:30-[DEBUG]: cfgsize: 31603, weightsize: 871872 
+03:58:30-[DEBUG]: image h:384 w:640, blob h:384 w:640
+03:58:30-[DEBUG]: rne proprocess time:11
+03:58:30-[DEBUG]: rne forward time:21
+03:58:30-[DEBUG]: TS_ALG_handDetect_PostProcess time: 4 ms
+03:58:30-[DEBUG]: TS_ALG_EbikeDetect_Process:36 ms
+03:58:30-[DEBUG]: face:0 --score:0.716870 
+        xmin:0.357715 ymin:0.473264 xmax:0.450616 ymax:0.590700 
+        x1:228 y1:181 x2:288 y2:226
+# 
+
+
+### 测试数据 #include "../model/D01_20230811120604.h"
+# ./algebikedetect.elf 
+[1970-01-01 03:59:42.640]mod(1)<D>: <vb_creat_pool:1043>:vb_creat_pool poolid=1 pool_cfg->blk_cnt=1, pool_cfg->blk_size=737280
+03:59:42-[DEBUG]: image.pDataPhy: 5200000: image.pData: (nil)
+03:59:42-[INFO]: rne log level : 1
+03:59:42-[INFO]: rne lib version :1.3.0.8
+03:59:42-[DEBUG]: open device success! 
+03:59:42-[INFO]: model blobmem size is 1474560
+03:59:42-[INFO]: algo heap size is 63488
+03:59:42-[DEBUG]: version: ebikeDetect_v1.0_model_0928
+03:59:42-[DEBUG]: cfgsize: 31603, weightsize: 871872 
+03:59:42-[DEBUG]: image h:384 w:640, blob h:384 w:640
+03:59:42-[DEBUG]: rne proprocess time:10
+03:59:42-[DEBUG]: rne forward time:21
+03:59:42-[DEBUG]: TS_ALG_handDetect_PostProcess time: 13 ms
+03:59:42-[DEBUG]: TS_ALG_EbikeDetect_Process:46 ms
+03:59:42-[DEBUG]: face:0 --score:0.859242 
+        xmin:0.177512 ymin:0.363863 xmax:0.321497 ymax:0.637873 
+        x1:113 y1:139 x2:205 y2:244
+# 
+
+
+### 测试数据 #include "../model/img_5011.h"
+# ./algebikedetect.elf 
+[1970-01-01 04:00:35.374]mod(1)<D>: <vb_creat_pool:1043>:vb_creat_pool poolid=1 pool_cfg->blk_cnt=1, pool_cfg->blk_size=737280
+04:00:35-[DEBUG]: image.pDataPhy: 5200000: image.pData: (nil)
+04:00:35-[INFO]: rne log level : 1
+04:00:35-[INFO]: rne lib version :1.3.0.8
+04:00:35-[DEBUG]: open device success! 
+04:00:35-[INFO]: model blobmem size is 1474560
+04:00:35-[INFO]: algo heap size is 63488
+04:00:35-[DEBUG]: version: ebikeDetect_v1.0_model_0928
+04:00:35-[DEBUG]: cfgsize: 31603, weightsize: 871872 
+04:00:35-[DEBUG]: image h:384 w:640, blob h:384 w:640
+04:00:35-[DEBUG]: rne proprocess time:10
+04:00:35-[DEBUG]: rne forward time:21
+04:00:35-[DEBUG]: TS_ALG_handDetect_PostProcess time: 4 ms
+04:00:35-[DEBUG]: TS_ALG_EbikeDetect_Process:37 ms
+04:00:35-[DEBUG]: face:0 --score:0.902222 
+        xmin:0.278435 ymin:0.365213 xmax:0.342444 ymax:0.459272 
+        x1:178 y1:140 x2:219 y2:176
+04:00:35-[DEBUG]: face:1 --score:0.878771 
+        xmin:0.563670 ymin:0.352279 xmax:0.746319 ymax:0.531632 
+        x1:360 y1:135 x2:477 y2:204
+04:00:35-[DEBUG]: face:2 --score:0.820186 
+        xmin:0.383032 ymin:0.332209 xmax:0.490097 ymax:0.479886 
+        x1:245 y1:127 x2:313 y2:184
+04:00:35-[DEBUG]: face:3 --score:0.820186 
+        xmin:0.480779 ymin:0.349704 xmax:0.553921 ymax:0.474254 
+        x1:307 y1:134 x2:354 y2:182
+04:00:35-[DEBUG]: face:4 --score:0.718717 
+        xmin:0.237531 ymin:0.392903 xmax:0.259381 ymax:0.457292 
+        x1:152 y1:150 x2:166 y2:175
+# 
+

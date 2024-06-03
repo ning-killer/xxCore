@@ -93,14 +93,14 @@ namespace Emx {
 
         //!@brief gat1400子图数据参数结构体
         struct SubImgDataParam {
-            bool isfullImg = false;
-            int EventSort = 0;
-            int Width = 0;
-            int Height = 0;
+            int EventSort;
+            int Width;
+            int Height;
+            int FileSize;
             std::string ImageID = "";
             std::string StoragePath = "";
-            std::string Type = "11";
-            std::string FileFormat = "jpg";
+            std::string Type = "";
+            std::string FileFormat = "";
             std::string ShotTime = "";
             std::string Data = "";
         };
@@ -115,6 +115,7 @@ namespace Emx {
             Falling,            //!< 高空抛物批量
             Region,             //!< 区域人数统计批量
             Traffic,            //!< 倾斜客流
+            OnLeave,            //!< 离岗分析
         };  
 
         //!@brief gat1400上传数据参数结构体
@@ -131,7 +132,86 @@ namespace Emx {
             std::string LocationMarkTime;
             std::string AppearTime;
             std::string DisAppearTime;
+            virtual ~UploadDataParam() {}
+        };
+
+        //!@brief 人脸上传数据
+        struct  UploadFaceData : public UploadDataParam  {
+            bool isHaveFullImg = false;
+            int IsSuspectedTerrorist;
+            int IsCriminalInvolved;
+            int IsDetainees;
+            int IsVictim;
+            int IsSuspiciousPerson;
+            std::string RespiratorColor = "";
+            SubImgDataParam fullImg;
             std::list<SubImgDataParam> subImgList;
+        };
+
+        //!@brief 非机动车上传数据
+        struct UploadNonMotorVehiclesData : public UploadDataParam  {
+            bool HasPlate;
+            std::string PlateClass = "";
+            std::string PlateNo = "";
+            std::string PlateColor = "";
+            std::string VehicleColor = "";
+            std::list<SubImgDataParam> subImgList;
+        };
+
+        //!@brief 一组车辆车牌数据
+        struct VehiclePlateNo {
+            int LaneNo;
+            std::string HasPlate = "";
+            std::string PlateClass = "";
+            std::string PlateColor = "";
+            std::string PlateNo = "";
+            std::string VehicleClass = "";
+            std::string Direction = "";
+            std::string VehicleColor = "";
+            std::string PassTime = "";
+            std::string StorageUrl1 = "";
+            SubImgDataParam Vehicle;
+            SubImgDataParam Pl;
+        };
+
+        //!@brief 机动车上传数据
+        struct UploadMotorVehiclesData : public UploadDataParam  {
+            std::list<VehiclePlateNo> subImgList;
+        };
+
+        //!@brief 倾斜客流统计上传数据
+        struct UploadTrafficData : public UploadDataParam  {
+            std::string trafficID = "";
+            std::string endTime = "";
+            int inCount;
+            int outCount;
+        };
+
+        //!@brief 区域人数统计上传数据
+        struct UploadRegionData : public UploadDataParam  {
+            std::string regionID = "";
+            std::string scheduledTime = "";
+            int peopleCount;
+            int cordon = 2;
+            int typeE = 0;
+            SubImgDataParam img;
+        };
+
+        enum OnLeaveStatus {
+            Unknown = 0, // 未知
+            OnDuty,      // 在岗 
+            OffDuty,     // 离岗  
+        };
+
+        //!@brief 离岗检测上传数据
+        struct UploadOnLeaveData : public UploadDataParam  {
+            std::string onLeaveID = "";
+            std::string endTime = "";
+            OnLeaveStatus eventType = Unknown;
+            int onDutyCount;
+            int offDutyDuration;
+            Json::Value alarmZone;
+            Json::Value alertTime;
         };
 
         //!@brief 图片类型
@@ -159,13 +239,18 @@ namespace Emx {
 
         static void byteToHex(const unsigned char *input, int length, char *output);
 
+        //note: 只支持秒级
         static std::string GetTimeStr(TimePrecision precision);
+
+        static char *GetTimeStr(uint32_t utc, char *timeStr, int maxSize);
 
         static int GetRandom(int a, int b);
 
         static std::string GetImgType(ImgType type);
 
         static void Pkcs5Padding(std::string &data);
+
+        static int m_index; 
     };
 }
 

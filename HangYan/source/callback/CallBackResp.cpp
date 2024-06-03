@@ -72,7 +72,12 @@ void CallBackResp::ProcCallBack(ThreadInvoke::Packet &packet) {
         }
         case OvdCallBackIdE::ReBootDevice: {
             auto e = (void **) packet.data;
+            #ifdef OVDSDK1_38_1
+            *(int *) e[0] = ReBootDevice(*(ovd_reboot_reason_e *) e[1]);
+            #else
             *(int *) e[0] = ReBootDevice();
+            #endif
+            
             break;
         }
         case OvdCallBackIdE::KeepAwakenUtilExpired: {
@@ -241,9 +246,11 @@ void CallBackResp::ProcCallBack(ThreadInvoke::Packet &packet) {
             break;
         }
         case OvdCallBackIdE::SetAudioOutPlay: {
-            // auto e = (void **) packet.data;
-            // *(int *) e[0] = SetAudioOutPlay(*(OVD_int32 *) e[1],
-            //                                 *(OVD_char **) e[2]);
+            auto e = (void **) packet.data;
+            *(int *) e[0] = SetAudioOutPlay(*(OVD_int32 *) e[1],
+                                            *(OVD_char **) e[2],
+                                            *(OVD_int32 *) e[3],
+                                            *(OVD_int32 *) e[4]);
             break;
         }
         case OvdCallBackIdE::AudioOutPlayCtrl: {
@@ -329,14 +336,27 @@ void CallBackResp::ProcCallBack(ThreadInvoke::Packet &packet) {
         #ifdef OVDSDK_APIVER_3_0
             break;
         #endif
+            break;
         }
         case OvdCallBackIdE::GetDevRunningInfo: {
         #ifdef OVDSDK_APIVER_3_0
+        #ifdef OVDSDK1_38_1
+            auto e = (void **) packet.data;
+            *(int*) e[0] = GetDevRunningInfo(
+                                *(ovd_probe_devrunning_info_e *) e[1],
+                                *(void **)e[2]);
+        #else
             auto e = (void **) packet.data;
             *(int*) e[0] = GetDevRunningInfo(
                                 *(OVD_GetDevRunningInfo_e *) e[1],
-                                *(void **)e[2]);    
+                                *(void **)e[2]);
         #endif
+        #endif
+            break;
+        }
+        case OvdCallBackIdE::SyncMacHash: {
+            auto e = (void **) packet.data;
+            *(int *) e[0] = SyncMacHash(*(OVD_char **) e[1]);
             break;
         }
         default:
@@ -472,8 +492,8 @@ OVD_int32 CallBackResp::GetOVDConfigureInfo(OVD_char **output_ovdconfig, OVD_int
             body["zone"] = m_ctx.env.person.zone.ovdZone;
         }
     }
-
     //invasion
+#ifndef OVDSDK1_38_1
     if (cap.ovdCapInfo_alarms.have_alarms_alertarea) {
         auto &alertarea = alarms["alertarea"];
         alertarea["on"] = m_ctx.env.invasion.ena;
@@ -500,10 +520,10 @@ OVD_int32 CallBackResp::GetOVDConfigureInfo(OVD_char **output_ovdconfig, OVD_int
             repeat.append("Sat");
         if (schedule.repeat[6])
             repeat.append("Sun");
+       
         if (cap.ovdCapInfo_alarms.support_alarms_alertarea_zone) {
             alertarea["zone"] = m_ctx.env.invasion.zone.ovdZone;
         }
-
         auto &linkage_strategy = alertarea["linkage_strategy"];
         auto &speech = linkage_strategy["speech"];
         speech["on"] = m_ctx.env.invasion.strategy.speech.ena;
@@ -515,7 +535,32 @@ OVD_int32 CallBackResp::GetOVDConfigureInfo(OVD_char **output_ovdconfig, OVD_int
         light["mode"] = (int) m_ctx.env.invasion.strategy.light.mode;
         light["dur"] = m_ctx.env.invasion.strategy.light.duration;
     }
+#endif
+#ifdef OVDSDK1_38_1
+    if (cap.ovdCapInfo_alarms.have_alarms_transgression) {
+        // alarm 周界-越界检测
+        auto &transgression = alarms["transgression"];
+        transgression["on"] = m_ctx.env.transgression.on;
+        transgression["targetType"] = (int)m_ctx.env.transgression.type;
+        transgression["statistics_mode_style"] = (int)m_ctx.env.transgression.statisticsModeStyle;
+        transgression["statistics_mode_direction"] = (int)m_ctx.env.transgression.statisticsModeDirection;
+        m_ctx.env.transgression.line.Serialize(transgression["statistics_line"]);
+        GetAlertTime(transgression["alerttime"], m_ctx.env.transgression.schedule);
+        GetLinkageStrategy(transgression["linkage_strategy"], m_ctx.env.transgression.strategy);
+    }
 
+    if (cap.ovdCapInfo_alarms.alertarea_params.support_set_alerttime) {
+        // alarm 周界-区域入侵
+        auto &alertarea = alarms["alertarea"];
+        alertarea["on"] = m_ctx.env.alertarea.on;
+        alertarea["targetType"] = (int)m_ctx.env.alertarea.type;
+        alertarea["sensitivity"] = (int)m_ctx.env.alertarea.sensitivity;
+        alertarea["staymode_time"] = (int)m_ctx.env.alertarea.staymodeTime;
+        alertarea["zone"] = m_ctx.env.alertarea.zone.ovdZone;
+        GetAlertTime(alertarea["alerttime"], m_ctx.env.alertarea.schedule);
+        GetLinkageStrategy(alertarea["linkage_strategy"], m_ctx.env.alertarea.strategy);
+    }
+#endif 
     //AI
     auto &ai = channel["AI"];
     //face
@@ -536,6 +581,81 @@ OVD_int32 CallBackResp::GetOVDConfigureInfo(OVD_char **output_ovdconfig, OVD_int
         if (cap.ovdCapInfo_alarms.support_alarms_face_zone) {
             face["alarm_zone"] = m_ctx.env.face.zone.ovdZone;
         }
+        if (cap.ovdAICapInfo.AIface.mask_detection) {
+            face["mask_detection"]["on"] = m_ctx.env.face.mask_detection;
+            GetAlertTime(face["mask_detection"]["alerttime"], m_ctx.env.face.schedule);
+            GetLinkageStrategy(face["mask_detection"]["linkage_strategy"], m_ctx.env.face.strategy);
+        }
+    }
+    // 机动车
+    if (cap.ovdAICapInfo.AIvehicle.vehicle_detection) {
+        auto &licensePlate = ai["vehicle_detection"];
+        licensePlate["on"] = m_ctx.env.licensePlate.on;
+        licensePlate["alarm_sensitivity"] = m_ctx.env.licensePlate.sensitivity;
+        licensePlate["quality"] = m_ctx.env.licensePlate.quality;
+        licensePlate["capture_mode"] = (int)m_ctx.env.licensePlate.mode;
+        licensePlate["scheduled_capture_time"] = (int)m_ctx.env.licensePlate.scheduledCaptureTime;
+        licensePlate["detect_site"] = (int)m_ctx.env.licensePlate.detectSite;
+        licensePlate["exit_mode"] = (int)m_ctx.env.licensePlate.exitMode;
+        licensePlate["alarm_zone"] = m_ctx.env.licensePlate.zone.ovdZone;
+        GetLinkageStrategy(licensePlate["linkage_strategy"], m_ctx.env.licensePlate.strategy);
+    }
+    // 非机动车
+    if (cap.ovdAICapInfo.AInonmotorvehicle.nonmotorvehicle_detection) {
+        auto &batteryCar = ai["nonmotorvehicle_detection"];
+        batteryCar["on"] = m_ctx.env.batteryCar.on;
+        batteryCar["detect_mode_list"] = m_ctx.env.batteryCar.detectModelist;
+        batteryCar["alarm_sensitivity"] = m_ctx.env.batteryCar.sensitivity;
+        batteryCar["quality"] = m_ctx.env.batteryCar.quality;
+        batteryCar["capture_mode"] = (int)m_ctx.env.batteryCar.mode;
+        batteryCar["scheduled_capture_time"] = m_ctx.env.batteryCar.scheduledCaptureTime;
+        batteryCar["alarm_zone"] = m_ctx.env.batteryCar.zone.ovdZone;
+        GetLinkageStrategy(batteryCar["linkage_strategy"], m_ctx.env.batteryCar.strategy);
+    }
+    // 客流统计
+    if (cap.ovdAICapInfo.AIpassenger.passenger) {
+        auto &passenger = ai["passenger_flow_statistics"];
+        passenger["on"] = m_ctx.env.passengerFlow.on;
+        passenger["exposure_on"] = m_ctx.env.passengerFlow.exposureOn;
+        passenger["exposure_adjust"] = m_ctx.env.passengerFlow.exposureAdjust;
+        if (m_ctx.env.passengerFlow.mode == EnvAlarmPassengerFlow::SnapMode::Quality) {
+            passenger["mode"] = "quality";
+        } else if (m_ctx.env.passengerFlow.mode == EnvAlarmPassengerFlow::SnapMode::Quick) {
+            passenger["mode"] = "quick";
+        }
+        passenger["quality_value"] = m_ctx.env.passengerFlow.qualityValue;
+        passenger["osd_status"] = m_ctx.env.passengerFlow.osdStatus;
+        passenger["statistics_mode"] = m_ctx.env.passengerFlow.statisticsMode;
+        passenger["sensitivity"] = m_ctx.env.passengerFlow.sensitivity;
+        passenger["alarm_zone"] = m_ctx.env.passengerFlow.zone.ovdZone;
+        m_ctx.env.passengerFlow.line.Serialize(passenger["statistics_line"]);
+    }
+    // 区域人数统计
+    if (cap.ovdAICapInfo.AIregionalPeopleStat.regionalPeopleStat) {
+        auto &regionalPeople = ai["regional_people_statistics"];
+        regionalPeople["detect_on"] = m_ctx.env.regionalPeople.gatReportOn;
+        regionalPeople["detect_plans"][0]["on"] = m_ctx.env.regionalPeople.on;
+        regionalPeople["detect_plans"][0]["regional_id"] = m_ctx.env.regionalPeople.regionalId;
+        regionalPeople["detect_plans"][0]["regional_name"] = m_ctx.env.regionalPeople.regionalName;
+        regionalPeople["detect_plans"][0]["regional_people_count"] = m_ctx.env.regionalPeople.regionalPeopleCount;
+        regionalPeople["detect_plans"][0]["alarm_report_duration"] = m_ctx.env.regionalPeople.alarmReportDuration;
+        regionalPeople["detect_plans"][0]["osd_status"] = m_ctx.env.regionalPeople.osdStatus;
+        regionalPeople["detect_plans"][0]["detect_result_report_duration"] = m_ctx.env.regionalPeople.gatReportDuration;
+        regionalPeople["detect_plans"][0]["alarm_zone"] = m_ctx.env.regionalPeople.zone.ovdZone;
+        GetLinkageStrategy(regionalPeople["detect_plans"][0]["linkage_strategy"], m_ctx.env.regionalPeople.strategy);
+        GetAlertTime(regionalPeople["detect_plans"][0]["alerttime"], m_ctx.env.regionalPeople.schedule);
+    }
+    // 离岗检测
+    if (cap.ovdAICapInfo.AIOffDuty.offDuty_detection) {
+        auto &offDuty = ai["off_duty_detection"];
+        offDuty["detect_on"] = m_ctx.env.offDuty.gatReportOn;
+        offDuty["detect_plans"][0]["on"] = m_ctx.env.offDuty.on;
+        offDuty["detect_plans"][0]["regional_id"] = m_ctx.env.offDuty.regionalId;
+        offDuty["detect_plans"][0]["regional_name"] = m_ctx.env.offDuty.regionalName;
+        offDuty["detect_plans"][0]["on_duty_count"] = m_ctx.env.offDuty.onDutyCount;
+        offDuty["detect_plans"][0]["off_duty_duration"] = m_ctx.env.offDuty.offdutyDuration;
+        offDuty["detect_plans"][0]["alarm_zone"] = m_ctx.env.offDuty.zone.ovdZone;
+        GetAlertTime(offDuty["detect_plans"][0]["alerttime"], m_ctx.env.offDuty.schedule);
     }
 
     //voiceout_volume
@@ -677,6 +797,11 @@ OVD_int32 CallBackResp::GetOVDConfigureInfo(OVD_char **output_ovdconfig, OVD_int
                 channel["color_nightvision_mode"] = m_ctx.env.cfg.intelligentNightVision ? 2 : 0;
             }
         }
+
+        //触发全彩行为类型分类
+        if (cap.support_detect_nightvision_mask != 0) {
+            channel["nightvision_detect_mode"] = (int)m_ctx.env.cfg.nightvision_detect_mode;
+        }
     }
 #endif
     std::string out;
@@ -726,12 +851,14 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
         cfgChanged = true;
     }
 
+#ifndef OVDSDK1_38_1
     if (root.isMember("log_contrl")) {
         m_ctx.env.cfg.logContrl = root["log_contrl"].asInt();
         OVD_setlogcontrol(m_ctx.env.cfg.logContrl); 
         emxlogd("OVD_setlogcontrol:%d\n", (int) m_ctx.env.cfg.logContrl);
         cfgChanged = true;
     }
+#endif
 
     ////////////////////////////////////////时区////////////////////////////////////////
     /**tz 时区号，东为正数，西为负数**/
@@ -970,6 +1097,7 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
         }
     }
 
+    bool onlyOsdChanged = false;
     /**OSD配置**/
     if (cap.osd_text && channel.isMember("osd_text") && osdParamValid) {
         auto &textArray = channel["osd_text"];
@@ -999,15 +1127,15 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
             //note: 水平方向特殊处理
             if ((int)(textArray[i]["pos"]["x"].asInt() / 10) < 50) {
                 param->text.margin.horizon = MediaOSD::HAlignE::Left;
-                param->text.margin.rateX = textArray[i]["pos"]["x"].asInt() / 10;
+                param->text.margin.rateX = (textArray[i]["pos"]["x"].asInt() / 10) - 10;
             } else {
                 //note: 杭研要求右侧osd元素右对齐
                 param->text.margin.horizon = MediaOSD::HAlignE::Right;
-                param->text.margin.rateX = 30;
+                param->text.margin.rateX = 20;
             }
            
             param->text.margin.vertical = MediaOSD::VAlignE::Top;
-            param->text.margin.rateY = textArray[i]["pos"]["y"].asInt() / 10;
+            param->text.margin.rateY = (textArray[i]["pos"]["y"].asInt() / 10 - 10);
             param->text.thickness = 1;
             strncpy(param->text.content, textArray[i]["text"].asCString(), sizeof(param->text.content));
             int fontsize = 0;
@@ -1028,6 +1156,7 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
             osdParam.push_back(param);
         }
         osdParamChanged = true;
+        onlyOsdChanged = true;
     }
     if (cap.osd_logo &&
         channel.isMember("osd_logo") &&
@@ -1098,9 +1227,17 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
             if (cap.ovdCapInfo_alarms.support_alarms_motion_zone &&
                 motion.isMember("zone")) {
                 m_ctx.env.motion.zone.ovdZone = motion["zone"];
-                m_ctx.env.motion.zone.SetOvdZone(m_ctx.env.motion.zone.ovdZone);
+                m_ctx.env.motion.zone.SetOvdZoneEx(m_ctx.env.motion.zone.ovdZone);
             }
             m_ctx.env.motion.Save();
+            MediaClientAi ai_client(0);
+            MediaAi::Param ai_param;
+            if (ai_client.GetParam(ai_param) == ErrCodeE::Success) {
+                ai_param.motionDetection.ena = m_ctx.env.motion.ena;
+                if (ai_client.SetParam(ai_param) == ErrCodeE::Success) {
+                    emxlogd("ai motionDetection param set ok.\n");
+                }
+            }
         }
         if (cap.ovdCapInfo_alarms.have_alarms_body &&
             alarms.isMember("body")) {
@@ -1112,12 +1249,14 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
             if (cap.ovdCapInfo_alarms.support_alarms_body_zone &&
                 body.isMember("zone")) {
                 m_ctx.env.person.zone.ovdZone = body["zone"];
-                m_ctx.env.person.zone.SetOvdZone(m_ctx.env.person.zone.ovdZone);
+                m_ctx.env.person.zone.SetOvdZoneEx(m_ctx.env.person.zone.ovdZone);
             }
             m_ctx.env.person.Save();
         }
-        if (cap.ovdCapInfo_alarms.have_alarms_alertarea &&
-            alarms.isMember("alertarea")) {
+#ifndef OVDSDK1_38_1
+        if (cap.ovdCapInfo_alarms.have_alarms_alertarea 
+            && alarms["alertarea"].isObject()
+            && !alarms["alertarea"]["targetType"].isInt()) {
             auto &alertarea = alarms["alertarea"];
             if (alertarea.isMember("on")) {
                 m_ctx.env.invasion.ena = alertarea["on"].asBool();
@@ -1127,11 +1266,13 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
             }
             if (alertarea.isMember("sensitivity"))
                 m_ctx.env.invasion.sensitivity = alertarea["sensitivity"].asInt();
+
             if (cap.ovdCapInfo_alarms.support_alarms_alertarea_zone &&
                 alertarea.isMember("zone")) {
                 m_ctx.env.invasion.zone.ovdZone = alertarea["zone"];
-                m_ctx.env.invasion.zone.SetOvdZone(m_ctx.env.invasion.zone.ovdZone);
+                m_ctx.env.invasion.zone.SetOvdZoneEx(m_ctx.env.invasion.zone.ovdZone);
             }
+            
             if (alertarea.isMember("alerttime")) {
                 auto &alerttime = alertarea["alerttime"];
                 auto &schedule = m_ctx.env.invasion.schedule;
@@ -1276,16 +1417,111 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
             }
             m_ctx.env.invasion.Save();
         }//end alertarea
+#endif
+#ifdef OVDSDK1_38_1
+        // 周界-越界检测
+        if (alarms["transgression"].isObject() &&
+            cap.ovdCapInfo_alarms.have_alarms_transgression) {
+            auto &transgression = alarms["transgression"];
+            if (transgression["on"].isBool()) {
+                m_ctx.env.transgression.on = transgression["on"].asBool();
+                if (!m_ctx.env.transgression.on) {
+                    m_ctx.soundAlarmControl.NotifyControlOff(m_ctx.env.transgression.strategy.type);
+                }
+            }
+            if (transgression["targetType"].isInt()) {
+                m_ctx.env.transgression.type = (EnvAlarmTransgression::TargetType)transgression["targetType"].asInt();
+            }
+            if (transgression["statistics_mode_style"].isInt()) {
+                m_ctx.env.transgression.statisticsModeStyle = (EnvAlarmTransgression::DirectionControl)transgression["statistics_mode_style"].asInt();
+            }
+            if (transgression["statistics_mode_direction"].isInt()) {
+                m_ctx.env.transgression.statisticsModeDirection = (EnvAlarmTransgression::Direction)transgression["statistics_mode_direction"].asInt();
+            }
+            if (transgression["statistics_line"].isObject()) {
+                m_ctx.env.transgression.line.Parse(transgression["statistics_line"]);
+            }
+            if (transgression["linkage_strategy"].isObject()) {
+                SetLinkageStrategy(transgression, m_ctx.env.transgression.strategy, "transgressionAlarmVoice");
+            }
+            if (transgression["alerttime"].isObject()) {
+                SetAlertTime(transgression, m_ctx.env.transgression.schedule);
+                m_ovd->m_scheduleTransgression.UpdateSchedule();
+            }
+            m_ctx.env.transgression.Save();
+            // MediaClientAi ai_client(0);
+            // MediaAi::Param ai_param;
+            // if (ai_client.GetParam(ai_param) == ErrCodeE::Success) {
+            //     ai_param.classifyDetection.ena = m_ctx.env.transgression.on; 
+            //     if (ai_client.SetParam(ai_param) == ErrCodeE::Success) {
+            //         emxlogd("ai classifyDetection param set ok.\n");
+            //     }
+            // }
+        }
+
+        // 周界-区域入侵
+        if (alarms["alertarea"].isObject()
+            && cap.ovdCapInfo_alarms.alertarea_params.support_set_alerttime) {
+            auto &alertarea = alarms["alertarea"];
+            if (alertarea["on"].isBool()) {
+                m_ctx.env.alertarea.on = alertarea["on"].asBool();
+                if (!m_ctx.env.alertarea.on) {
+                    m_ctx.soundAlarmControl.NotifyControlOff(m_ctx.env.alertarea.strategy.type);
+                }
+            }
+            if (alertarea["sensitivity"].isInt()) {
+                m_ctx.env.alertarea.sensitivity = alertarea["sensitivity"].asInt();
+            }
+            if (alertarea["targetType"].isInt()) {
+                m_ctx.env.alertarea.type = (EnvAlarmAlertarea::TargetType)alertarea["targetType"].asInt();
+            }
+            if (alertarea["staymode_time"].isInt()) {
+                m_ctx.env.alertarea.staymodeTime = alertarea["staymode_time"].asInt();
+            }
+            if (alertarea["zone"].isArray()) {
+                if (alertarea["zone"].size() != 0) {
+                    m_ctx.env.alertarea.zone.ovdZone = alertarea["zone"];
+                    m_ctx.env.alertarea.zone.SetOvdZoneEx(m_ctx.env.alertarea.zone.ovdZone);
+                } else {
+                    emxloge("alertarea zone is null\n");
+                }
+            }
+            if (alertarea["linkage_strategy"].isObject()) {
+                SetLinkageStrategy(alertarea, m_ctx.env.alertarea.strategy, "alertareaAlarmVoice");
+            }
+            if (alertarea["alerttime"].isObject()) {
+                SetAlertTime(alertarea, m_ctx.env.alertarea.schedule);
+                m_ovd->m_scheduleAlertarea.UpdateSchedule();
+            }
+            m_ctx.env.alertarea.Save();
+            // MediaClientAi ai_client(0);
+            // MediaAi::Param ai_param;
+            // if (ai_client.GetParam(ai_param) == ErrCodeE::Success) {
+            //     ai_param.classifyDetection.ena = m_ctx.env.alertarea.on; 
+            //     if (ai_client.SetParam(ai_param) == ErrCodeE::Success) {
+            //         emxlogd("ai classifyDetection param set ok.\n");
+            //     }
+            // }
+        }
+
+#endif
     }//end alarms
 
 
     ////////////////////////////////////////ai 能力配置/////////////////////////////////////////////
     if (channel.isMember("AI")) {
         auto &ai = channel["AI"];
+        // bool isCreateGat1400 = false;
+        bool isReboot = false; 
+        // 人脸
         if (cap.ovdCapInfo_alarms.have_alarms_face &&
             ai.isMember("face")) {
             auto &face = ai["face"];
             if (face.isMember("on")) {
+                if (m_ctx.env.face.ena != face["on"].asBool() 
+                    && face["on"].asBool()) {
+                    isReboot = true;
+                }
                 m_ctx.env.face.ena = face["on"].asBool();
             }
             if (face.isMember("alarm_sensitivity")) {
@@ -1313,62 +1549,425 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
             if (cap.ovdCapInfo_alarms.support_alarms_face_zone &&
                 face.isMember("alarm_zone")) {
                 m_ctx.env.face.zone.ovdZone = face["alarm_zone"];
-                m_ctx.env.face.zone.SetOvdZone(m_ctx.env.face.zone.ovdZone);
+                m_ctx.env.face.zone.SetOvdZoneEx(m_ctx.env.face.zone.ovdZone);
+            }
+
+            //make_detection
+            if (face["mask_detection"].isObject()) {
+                Json::Value mask = face["mask_detection"];
+                if (mask["on"].isBool()) {
+                    m_ctx.env.face.mask_detection = mask["on"].asBool();
+                    if (!m_ctx.env.face.mask_detection) {
+                        m_ctx.soundAlarmControl.NotifyControlOff(m_ctx.env.face.strategy.type);
+                    }
+                }
+                if (mask["linkage_strategy"].isObject()) {
+                    SetLinkageStrategy(mask, m_ctx.env.face.strategy, "maskAlarmVoice");
+                }
+                if (mask["alerttime"].isObject()) {
+                    SetAlertTime(mask, m_ctx.env.face.schedule);
+                    m_ovd->m_scheduleMaskDetection.UpdateSchedule();
+                }
+            }
+            if (m_ctx.env.face.ena) {
+                // isCreateGat1400 = true;
+            }
+
+            MediaClientAi ai_client(0);
+            MediaAi::Param ai_param;
+            if (ai_client.GetParam(ai_param) == ErrCodeE::Success) {
+                ai_param.faceDetection.ena = m_ctx.env.face.ena;
+                ai_param.faceDetection.exposureOn = m_ctx.env.face.exposure_on;
+                ai_param.faceDetection.exposureAdjust = m_ctx.env.face.exposure_adjust;
+                ai_param.faceDetection.qualityValue = m_ctx.env.face.quality;
+                ai_param.faceDetection.maskDetected = m_ctx.env.face.mask_detection;
+                ai_param.faceDetection.snapMode = (MediaAi::FaceSnapModeE)m_ctx.env.face.mode;
+                if (ai_param.faceDetection.ena) {
+                    ai_param.vehicleLicensePlateDetection.ena = false;
+                    m_ctx.env.licensePlate.on = false;
+                    ai_param.batteryCarDetection.ena = false;
+                    m_ctx.env.batteryCar.on = false;
+                    ai_param.passengerFlowDetection.ena = false;
+                    m_ctx.env.passengerFlow.on = false;
+                    m_ctx.env.regionalPeople.on = false;
+                    m_ctx.env.offDuty.on = false;
+                }
+                if (ai_client.SetParam(ai_param) == ErrCodeE::Success) {
+                    emxlogd("ai face param set ok.\n");
+                    m_ctx.env.batteryCar.Save();
+                    m_ctx.env.face.Save();
+                    m_ctx.env.licensePlate.Save();
+                    m_ctx.env.passengerFlow.Save();
+                    m_ctx.env.regionalPeople.Save();
+                    m_ctx.env.offDuty.Save();
+                }
+            }
+        }
+        // 机动车
+        if (cap.ovdAICapInfo.AIvehicle.vehicle_detection && 
+            ai.isMember("vehicle_detection")) {
+            auto &licensePlate = ai["vehicle_detection"];
+            if (licensePlate["on"].isBool()) {
+                if (m_ctx.env.licensePlate.on != licensePlate["on"].asBool() 
+                    && licensePlate["on"].asBool()) {
+                    isReboot = true;
+                }
+                m_ctx.env.licensePlate.on = licensePlate["on"].asBool();
+                if (!m_ctx.env.licensePlate.on) {
+                    m_ctx.soundAlarmControl.NotifyControlOff(m_ctx.env.licensePlate.strategy.type);
+                }
+            }
+            if (licensePlate["alarm_sensitivity"].isInt()) {
+                m_ctx.env.licensePlate.sensitivity = licensePlate["alarm_sensitivity"].asInt();
+            }
+            if (licensePlate["quality"].isInt()) {
+                m_ctx.env.licensePlate.quality = licensePlate["quality"].asInt();
+            }
+            if (licensePlate["capture_mode"].isInt()) {
+                m_ctx.env.licensePlate.mode = (EnvAlarmLicensePlate::CaptureMode)licensePlate["capture_mode"].asInt();
+            }
+            if (licensePlate["scheduled_capture_time"].isInt()) {
+                m_ctx.env.licensePlate.scheduledCaptureTime = licensePlate["scheduled_capture_time"].asInt();
+            }
+            if (licensePlate["detect_site"].isInt()) {
+                m_ctx.env.licensePlate.detectSite = licensePlate["detect_site"].asInt();
+            }
+            if (licensePlate["exit_mode"].isInt()) {
+                m_ctx.env.licensePlate.exitMode = licensePlate["exit_mode"].asInt();
+            }
+            if (licensePlate["alarm_zone"].isArray()) {
+                m_ctx.env.licensePlate.zone.ovdZone = licensePlate["alarm_zone"];
+                m_ctx.env.licensePlate.zone.SetOvdZoneEx(m_ctx.env.licensePlate.zone.ovdZone);
+            }
+            if (licensePlate["linkage_strategy"].isObject()) {
+                SetLinkageStrategy(licensePlate, m_ctx.env.licensePlate.strategy, "vehicleAlarmVoice");
+            }
+            if (m_ctx.env.licensePlate.on) {
+                // isCreateGat1400 = true;
             }
             MediaClientAi ai_client(0);
             MediaAi::Param ai_param;
             if (ai_client.GetParam(ai_param) == ErrCodeE::Success) {
-                //note: 除faceRecognition外，其余ai同配置保持一致，由外部应用控制
-                ai_param.facePersonDetection.ena = m_ctx.env.face.ena;
-                ai_param.facePersonDetection.aeEna = m_ctx.env.face.exposure_on;
-                ai_param.facePersonDetection.aeValue = m_ctx.env.face.exposure_adjust;
-                ai_param.facePersonDetection.captureMode = 
-                                    m_ctx.env.face.mode == EnvAlarmFace::Quality ? 1 : 0;
-                if (m_ctx.env.face.quality <= 20) {
-                    ai_param.facePersonDetection.captureQuality = m_ctx.env.face.quality_map[0];
-                } else if (m_ctx.env.face.quality > 20 && m_ctx.env.face.quality <= 35) {
-                    ai_param.facePersonDetection.captureQuality = m_ctx.env.face.quality_map[1];
-                } else if (m_ctx.env.face.quality > 35 && m_ctx.env.face.quality <= 50) {
-                    ai_param.facePersonDetection.captureQuality = m_ctx.env.face.quality_map[2];
-                } else if (m_ctx.env.face.quality > 50 && m_ctx.env.face.quality <= 65) {
-                    ai_param.facePersonDetection.captureQuality = m_ctx.env.face.quality_map[3];
-                } else if (m_ctx.env.face.quality > 65 && m_ctx.env.face.quality <= 80) {
-                    ai_param.facePersonDetection.captureQuality = m_ctx.env.face.quality_map[4];
-                } else {
-                    ai_param.facePersonDetection.captureQuality = m_ctx.env.face.quality_map[4];
+                ai_param.vehicleLicensePlateDetection.ena = m_ctx.env.licensePlate.on;
+                ai_param.vehicleLicensePlateDetection.sensitivity = m_ctx.env.licensePlate.sensitivity;
+                ai_param.vehicleLicensePlateDetection.snapMode = (MediaAi::CarSnapModeE)m_ctx.env.licensePlate.mode;
+                ai_param.vehicleLicensePlateDetection.regularTimer = m_ctx.env.licensePlate.scheduledCaptureTime;
+                ai_param.vehicleLicensePlateDetection.detectSite = m_ctx.env.licensePlate.detectSite;
+                ai_param.vehicleLicensePlateDetection.exitMode = m_ctx.env.licensePlate.exitMode;
+                ai_param.vehicleLicensePlateDetection.quality = m_ctx.env.licensePlate.quality;
+                if (ai_param.vehicleLicensePlateDetection.ena) {
+                    ai_param.faceDetection.ena = false;
+                    m_ctx.env.face.ena = false;
+                    ai_param.batteryCarDetection.ena = false;
+                    m_ctx.env.batteryCar.on = false;
+                    ai_param.passengerFlowDetection.ena = false;
+                    m_ctx.env.passengerFlow.on = false;
+                    m_ctx.env.regionalPeople.on = false;
+                    m_ctx.env.offDuty.on = false;
                 }
-                if (m_ctx.env.face.sensitivity <= 20) {
-                    ai_param.facePersonDetection.captureSensitivity = m_ctx.env.face.sensitivity_map[0];
-                } else if (m_ctx.env.face.sensitivity > 20 && m_ctx.env.face.sensitivity <= 40) {
-                    ai_param.facePersonDetection.captureSensitivity = m_ctx.env.face.sensitivity_map[1];
-                } else if (m_ctx.env.face.sensitivity > 40 && m_ctx.env.face.sensitivity <= 60) {
-                    ai_param.facePersonDetection.captureSensitivity = m_ctx.env.face.sensitivity_map[2];
-                } else if (m_ctx.env.face.sensitivity > 60 && m_ctx.env.face.sensitivity <= 80) {
-                    ai_param.facePersonDetection.captureSensitivity = m_ctx.env.face.sensitivity_map[3];
-                } else if (m_ctx.env.face.sensitivity > 80 && m_ctx.env.face.sensitivity <= 100) {
-                    ai_param.facePersonDetection.captureSensitivity = m_ctx.env.face.sensitivity_map[4];
-                } else {
-                    ai_param.facePersonDetection.captureSensitivity = m_ctx.env.face.sensitivity_map[4];
+                if (ai_client.SetParam(ai_param) == ErrCodeE::Success) {
+                    emxlogd("ai licensePlate param set ok.\n");
+                    m_ctx.env.batteryCar.Save();
+                    m_ctx.env.face.Save();
+                    m_ctx.env.licensePlate.Save();
+                    m_ctx.env.passengerFlow.Save();
+                    m_ctx.env.regionalPeople.Save();
+                    m_ctx.env.offDuty.Save();
                 }
-                emxlogd("captureSensitivity(%.2f);captureQuality(%.2f)\n"
-                        , ai_param.facePersonDetection.captureSensitivity
-                        , ai_param.facePersonDetection.captureQuality);
-                if (ai_client.SetParam(ai_param) != ErrCodeE::Success) {
-                    emxloge("ai set param failed!\n");
-                } else {
-                    emxlogd("ai set param ok!\n");
-                }
-            } else {
-                emxloge("ai get param failed!\n");
             }
-
-            if (m_ctx.env.face.ena) {
-                Gat1400Client::Instance()->Create(&m_ctx);
-            } else {
-                Gat1400Client::Instance()->Stop();
+        }
+        // 非机动车
+        if (cap.ovdAICapInfo.AInonmotorvehicle.nonmotorvehicle_detection && 
+            ai.isMember("nonmotorvehicle_detection")) {
+            auto &batteryCar = ai["nonmotorvehicle_detection"];
+            if (batteryCar["on"].isBool()) {
+                if (m_ctx.env.batteryCar.on != batteryCar["on"].asBool() 
+                    && batteryCar["on"].asBool()) {
+                    isReboot = true;
+                }
+                m_ctx.env.batteryCar.on = batteryCar["on"].asBool();
+                if (!m_ctx.env.batteryCar.on) {
+                    m_ctx.soundAlarmControl.NotifyControlOff(m_ctx.env.batteryCar.strategy.type);
+                }
             }
-
+            if (batteryCar["detect_mode_list"].isString()) {
+                m_ctx.env.batteryCar.detectModelist = batteryCar["detect_mode_list"].asString();
+            }
+            if (batteryCar["alarm_sensitivity"].isInt()) {
+                m_ctx.env.batteryCar.sensitivity = batteryCar["alarm_sensitivity"].asInt();
+            }
+            if (batteryCar["quality"].isInt()) {
+                m_ctx.env.batteryCar.quality = batteryCar["quality"].asInt();
+            }
+            if (batteryCar["capture_mode"].isInt()) {
+                m_ctx.env.batteryCar.mode = (EnvAlarmBatteryCar::CaptureMode)batteryCar["capture_mode"].asInt();
+            }
+            if (batteryCar["scheduled_capture_time"].isInt()) {
+                m_ctx.env.batteryCar.scheduledCaptureTime = batteryCar["scheduled_capture_time"].asInt();
+            }
+            if (batteryCar["alarm_zone"].isArray()) {
+                m_ctx.env.batteryCar.zone.ovdZone = batteryCar["alarm_zone"];
+                m_ctx.env.batteryCar.zone.SetOvdZoneEx(m_ctx.env.batteryCar.zone.ovdZone);
+            }
+            if (batteryCar["linkage_strategy"].isObject()) {
+                SetLinkageStrategy(batteryCar, m_ctx.env.batteryCar.strategy, "nonmotorAlarmVoice");
+            }
+            if (m_ctx.env.batteryCar.on) {
+                // isCreateGat1400 = true;
+            }
+            MediaClientAi ai_client(0);
+            MediaAi::Param ai_param;
+            if (ai_client.GetParam(ai_param) == ErrCodeE::Success) {
+                ai_param.batteryCarDetection.ena = m_ctx.env.batteryCar.on;
+                ai_param.batteryCarDetection.sensitivity = m_ctx.env.batteryCar.sensitivity;
+                ai_param.batteryCarDetection.snapMode = (MediaAi::CarSnapModeE)m_ctx.env.batteryCar.mode;
+                ai_param.batteryCarDetection.regularTimer = m_ctx.env.batteryCar.scheduledCaptureTime;
+                ai_param.batteryCarDetection.quality = m_ctx.env.batteryCar.quality;
+                if (ai_param.batteryCarDetection.ena) {
+                    ai_param.faceDetection.ena = false;
+                    m_ctx.env.face.ena = false;
+                    ai_param.vehicleLicensePlateDetection.ena = false;
+                    m_ctx.env.licensePlate.on = false;
+                    ai_param.passengerFlowDetection.ena = false;
+                    m_ctx.env.passengerFlow.on = false;
+                    m_ctx.env.regionalPeople.on = false;
+                    m_ctx.env.offDuty.on = false;
+                }
+                if (ai_client.SetParam(ai_param) == ErrCodeE::Success) {
+                    emxlogd("ai batteryCar param set ok.\n");
+                    m_ctx.env.batteryCar.Save();
+                    m_ctx.env.face.Save();
+                    m_ctx.env.licensePlate.Save();
+                    m_ctx.env.passengerFlow.Save();
+                    m_ctx.env.regionalPeople.Save();
+                    m_ctx.env.offDuty.Save();
+                }
+            }
+        }
+        // 客流统计
+        if (cap.ovdAICapInfo.AIpassenger.passenger && 
+            ai.isMember("passenger_flow_statistics")) {
+            auto &passengerFlow = ai["passenger_flow_statistics"];
+            if (passengerFlow["on"].isBool()) {
+                if (m_ctx.env.passengerFlow.on != passengerFlow["on"].asBool() 
+                    && passengerFlow["on"].asBool()) {
+                    isReboot = true;
+                }
+                m_ctx.env.passengerFlow.on = passengerFlow["on"].asBool();
+                ShowPassengerFlowOsd();
+            }
+            if (passengerFlow["exposure_on"].isBool()) {
+                m_ctx.env.passengerFlow.exposureOn = passengerFlow["exposure_on"].asBool();
+            }
+            if (passengerFlow["exposure_adjust"].isInt()) {
+                m_ctx.env.passengerFlow.exposureAdjust = passengerFlow["exposure_adjust"].asInt();
+            }
+            if (passengerFlow["mode"].isString()) {
+                if (passengerFlow["mode"].asString() == "quality") {
+                    m_ctx.env.passengerFlow.mode = EnvAlarmPassengerFlow::SnapMode::Quality;
+                } else if (passengerFlow["mode"].asString() == "quick") {
+                    m_ctx.env.passengerFlow.mode = EnvAlarmPassengerFlow::SnapMode::Quick;
+                }
+                
+            }
+            if (passengerFlow["quality_value"].isInt()) {
+                m_ctx.env.passengerFlow.qualityValue = passengerFlow["quality_value"].asInt();
+            }
+            if (passengerFlow["osd_status"].isBool()) {
+                m_ctx.env.passengerFlow.osdStatus = passengerFlow["osd_status"].asBool();
+                ShowPassengerFlowOsd();
+            }
+            if (passengerFlow["statistics_mode"].isInt()) {
+                m_ctx.env.passengerFlow.statisticsMode = (EnvAlarmPassengerFlow::DirectionRule)passengerFlow["statistics_mode"].asInt();
+            }
+            if (passengerFlow["statistics_line"].isObject()) {
+                m_ctx.env.passengerFlow.line.Parse(passengerFlow["statistics_line"]);
+            }
+            if (passengerFlow["alarm_zone"].isArray()) {
+                m_ctx.env.passengerFlow.zone.ovdZone = passengerFlow["alarm_zone"];
+                m_ctx.env.passengerFlow.zone.SetOvdZoneEx(m_ctx.env.passengerFlow.zone.ovdZone);
+            }
+            if (m_ctx.env.passengerFlow.on) {
+                m_ctx.env.face.ena = false;
+                m_ctx.env.licensePlate.on = false;
+                m_ctx.env.batteryCar.on = false;
+                m_ctx.env.regionalPeople.gatReportOn = false;
+                m_ctx.env.offDuty.gatReportOn = false;
+            }
+            m_ctx.env.passengerFlow.Save();
+            m_ctx.env.batteryCar.Save();
             m_ctx.env.face.Save();
+            m_ctx.env.licensePlate.Save();
+            m_ctx.env.regionalPeople.Save();
+            m_ctx.env.offDuty.Save();
+        }
+
+        // 区域人数统计
+        if (cap.ovdAICapInfo.AIregionalPeopleStat.regionalPeopleStat && 
+            ai.isMember("regional_people_statistics")) {
+            bool gatReportOnisChanged = false;
+            bool gatReportDurationisChanged = false;
+            auto &regionalPeople = ai["regional_people_statistics"];
+            if (regionalPeople["detect_on"].isBool()) {
+                if (m_ctx.env.regionalPeople.gatReportOn != regionalPeople["detect_on"].asBool()) {
+                    gatReportOnisChanged = true;
+                }
+                if (m_ctx.env.regionalPeople.gatReportOn != regionalPeople["detect_on"].asBool() 
+                    && regionalPeople["detect_on"].asBool()) {
+                    isReboot = true;
+                }
+                m_ctx.env.regionalPeople.gatReportOn = regionalPeople["detect_on"].asBool();
+                ShowRegionalPeopleOsd();
+            }
+            if (regionalPeople["detect_plans"].isArray() && regionalPeople["detect_plans"].size() > 0) {
+                auto &regionalPeoplePlan = regionalPeople["detect_plans"][0]; //目前仅支持一组，后期需求自行拓展成数组
+                if (regionalPeoplePlan["on"].isBool()) {
+                    m_ctx.env.regionalPeople.on = regionalPeoplePlan["on"].asBool();
+                }
+                if (regionalPeoplePlan["regional_id"].isInt()) {
+                    m_ctx.env.regionalPeople.regionalId = regionalPeoplePlan["regional_id"].asInt();
+                }
+                if (regionalPeoplePlan["regional_name"].isString()) {
+                    m_ctx.env.regionalPeople.regionalName = regionalPeoplePlan["regional_name"].asString();
+                }
+                if (regionalPeoplePlan["regional_people_count"].isInt()) {
+                    m_ctx.env.regionalPeople.regionalPeopleCount = regionalPeoplePlan["regional_people_count"].asInt();
+                }
+                if (regionalPeoplePlan["alarm_report_duration"].isInt()) {
+                    m_ctx.env.regionalPeople.alarmReportDuration = regionalPeoplePlan["alarm_report_duration"].asInt();
+                }
+                if (regionalPeoplePlan["osd_status"].isBool()) {
+                    m_ctx.env.regionalPeople.osdStatus = regionalPeoplePlan["osd_status"].asBool();
+                    ShowRegionalPeopleOsd();
+                }
+                if (regionalPeoplePlan["detect_result_report_duration"].isInt()) {
+                    if (m_ctx.env.regionalPeople.gatReportDuration != regionalPeoplePlan["detect_result_report_duration"].asInt()) {
+                        gatReportDurationisChanged = true;
+                    }
+                    m_ctx.env.regionalPeople.gatReportDuration = regionalPeoplePlan["detect_result_report_duration"].asInt();
+                }
+                if (regionalPeoplePlan["alarm_zone"].isArray()) {
+                    m_ctx.env.regionalPeople.zone.ovdZone = regionalPeoplePlan["alarm_zone"];
+                    m_ctx.env.regionalPeople.zone.SetOvdZoneEx(m_ctx.env.regionalPeople.zone.ovdZone);
+                }
+                if (regionalPeoplePlan["linkage_strategy"].isObject()) {
+                    SetLinkageStrategy(regionalPeoplePlan, m_ctx.env.regionalPeople.strategy, "regionalPeopleAlarmVoice");
+                }
+                if (regionalPeoplePlan["alerttime"].isObject()) {
+                    SetAlertTime(regionalPeoplePlan, m_ctx.env.regionalPeople.schedule);
+                    m_ovd->m_scheduleregionalPeople.UpdateSchedule();
+                }
+            }
+            if (gatReportOnisChanged || gatReportDurationisChanged) {
+                m_ctx.env.regionalPeople.isChangedGatReport = true;
+            } else {
+                m_ctx.env.regionalPeople.isChangedGatReport = false;
+            }
+            if (m_ctx.env.regionalPeople.gatReportOn) {
+                m_ctx.env.face.ena = false;
+                m_ctx.env.licensePlate.on = false;
+                m_ctx.env.batteryCar.on = false;
+                m_ctx.env.offDuty.on = false;
+                m_ctx.env.offDuty.gatReportOn = false;
+                m_ctx.env.passengerFlow.on = false;
+            }
+            m_ctx.env.passengerFlow.Save();
+            m_ctx.env.batteryCar.Save();
+            m_ctx.env.face.Save();
+            m_ctx.env.licensePlate.Save();
+            m_ctx.env.offDuty.Save();
+            m_ctx.env.regionalPeople.Save();
+        }
+
+        // 离岗检测
+        if (cap.ovdAICapInfo.AIOffDuty.offDuty_detection && 
+            ai.isMember("off_duty_detection")) {
+            bool isChangedoffdutyDuration = false;
+            auto &offDuty = ai["off_duty_detection"];
+            if (offDuty["detect_on"].isBool()) {
+                if (m_ctx.env.offDuty.gatReportOn != offDuty["detect_on"].asBool()) {
+                    isChangedoffdutyDuration = true;
+                }
+                if (m_ctx.env.offDuty.gatReportOn != offDuty["detect_on"].asBool() 
+                    && offDuty["detect_on"].asBool()) {
+                    isReboot = true;
+                }
+                m_ctx.env.offDuty.gatReportOn = offDuty["detect_on"].asBool();
+            }
+            if (offDuty["detect_plans"].isArray() && offDuty["detect_plans"].size() > 0) {
+                auto &offDutyPlan = offDuty["detect_plans"][0]; //目前仅支持一组，后期需求自行拓展成数组
+                if (offDutyPlan["on"].isBool()) {
+                    m_ctx.env.offDuty.on = offDutyPlan["on"].asBool();
+                }
+                if (offDutyPlan["regional_id"].isInt()) {
+                    m_ctx.env.offDuty.regionalId = offDutyPlan["regional_id"].asInt();
+                }
+                if (offDutyPlan["regional_name"].isString()) {
+                    m_ctx.env.offDuty.regionalName = offDutyPlan["regional_name"].asString();
+                }
+                if (offDutyPlan["on_duty_count"].isInt()) {
+                    m_ctx.env.offDuty.onDutyCount = offDutyPlan["on_duty_count"].asInt();
+                }
+                if (offDutyPlan["off_duty_duration"].isInt()) {
+                    if (m_ctx.env.offDuty.offdutyDuration != offDutyPlan["off_duty_duration"].asInt()) {
+                        isChangedoffdutyDuration = true;
+                    }
+                    m_ctx.env.offDuty.offdutyDuration = offDutyPlan["off_duty_duration"].asInt();
+                }
+                if (offDutyPlan["alarm_zone"].isArray()) {
+                    m_ctx.env.offDuty.zone.ovdZone = offDutyPlan["alarm_zone"];
+                    m_ctx.env.offDuty.zone.SetOvdZoneEx(m_ctx.env.offDuty.zone.ovdZone);
+                }
+                if (offDutyPlan["alerttime"].isObject()) {
+                    SetAlertTime(offDutyPlan, m_ctx.env.offDuty.schedule);
+                    m_ovd->m_scheduleOffduty.UpdateSchedule();
+                }
+            }
+            m_ctx.env.offDuty.isChangedoffdutyDuration = isChangedoffdutyDuration;
+            if (m_ctx.env.offDuty.gatReportOn) {
+                m_ctx.env.face.ena = false;
+                m_ctx.env.licensePlate.on = false;
+                m_ctx.env.batteryCar.on = false;
+                m_ctx.env.passengerFlow.on = false;
+                m_ctx.env.regionalPeople.on = false;
+                m_ctx.env.regionalPeople.gatReportOn = false;
+            }
+            m_ctx.env.passengerFlow.Save();
+            m_ctx.env.batteryCar.Save();
+            m_ctx.env.face.Save();
+            m_ctx.env.licensePlate.Save();
+            m_ctx.env.offDuty.Save();
+            m_ctx.env.regionalPeople.Save();
+        }
+
+        MediaClientAi ai_client(0);
+        MediaAi::Param ai_param;
+        if (ai_client.GetParam(ai_param) == ErrCodeE::Success) {
+            emxlogi("offDuty ena[%d]\n", m_ctx.env.offDuty.gatReportOn);
+            emxlogi("passengerFlow ena[%d]\n", m_ctx.env.passengerFlow.on);
+            emxlogi("regionalPeople ena[%d]\n", m_ctx.env.regionalPeople.gatReportOn);
+            if (m_ctx.env.offDuty.gatReportOn || m_ctx.env.passengerFlow.on || m_ctx.env.regionalPeople.gatReportOn) {
+                ai_param.passengerFlowDetection.ena = true;
+            } else {
+                ai_param.passengerFlowDetection.ena = false;
+            }
+            if (ai_client.SetParam(ai_param) == ErrCodeE::Success) {
+                emxlogi("ai passengerFlow param set ok.\n");
+            }
+        }
+
+        if (!m_ctx.env.face.ena && !m_ctx.env.batteryCar.on 
+            && !m_ctx.env.licensePlate.on && !m_ctx.env.passengerFlow.on
+            && !m_ctx.env.regionalPeople.on && !m_ctx.env.offDuty.on) {
+            emxlogd("gat1400 stop\n");
+            Gat1400Client::Instance()->Stop();
+        } else {
+            emxlogd("gat1400 create\n");
+            Gat1400Client::Instance()->Create(&m_ctx);
+        }
+        if (isReboot) {
+            sync();
+            Cmd::System("reboot -f");
         }
     }
     ////////////////////////////////////////扬声器输出音量配置////////////////////////////////////////
@@ -1451,6 +2050,17 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
         nightVisionChanged = true;
     }
 
+    //触发全彩行为类型分类（默认智能夜视）
+    if (cap.support_detect_nightvision_mask != 0 &&
+        channel["nightvision_detect_mode"].isInt()) {
+        nightVisionParam.manual = false;
+        nightVisionParam.autoMode = NightVision::AutoModeE::IrNightVision;
+        m_ctx.env.cfg.nightvision_detect_mode = (EnvCfg::NightvisionDetectMode)channel["nightvision_detect_mode"].asInt();
+        m_ctx.env.cfg.intelligentNightVision = true;
+        m_ctx.env.cfg.Save();
+        nightVisionChanged = true;
+    }
+
     if (nightVisionChanged) {
         emxlogd("nightVision(%s);autoMode(%d)\n", nightVisionParam.manual ? "manual" : "auto"
                                                 , nightVisionParam.autoMode);
@@ -1467,23 +2077,23 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
     if (vencParamChanged) {
         //执行视频编码和osd配置
         //先暂时关闭所有OSD通道，防止Venc分辨率切换时，水印出现短暂异常
-        bool osdChnEnabled[MediaOSD::MaxOSDNum];
-        std::vector<std::shared_ptr<MediaOSD::Param>> osdParamSubChn;
-        if (osdParamChanged) {
-            for (int i = 0; i < (int) osdParam.size(); i++) {
-                if (osdParam[i]->type == MediaOSD::TypeE::Time) {
-                    osdChnEnabled[i] = osdParam[i]->time.ena;
-                    osdParam[i]->time.ena = false;
-                } else if (osdParam[i]->type == MediaOSD::TypeE::Text) {
-                    osdChnEnabled[i] = osdParam[i]->text.ena;
-                    osdParam[i]->text.ena = false;
-                } else if (osdParam[i]->type == MediaOSD::TypeE::Image) {
-                    osdChnEnabled[i] = osdParam[i]->image.ena;
-                    osdParam[i]->image.ena = false;
-                }
-            }
-            osd.SetParam(osdParam);
-        }
+        // bool osdChnEnabled[MediaOSD::MaxOSDNum];
+        // std::vector<std::shared_ptr<MediaOSD::Param>> osdParamSubChn;
+        // if (osdParamChanged) {
+        //     for (int i = 0; i < (int) osdParam.size(); i++) {
+        //         if (osdParam[i]->type == MediaOSD::TypeE::Time) {
+        //             osdChnEnabled[i] = osdParam[i]->time.ena;
+        //             osdParam[i]->time.ena = false;
+        //         } else if (osdParam[i]->type == MediaOSD::TypeE::Text) {
+        //             osdChnEnabled[i] = osdParam[i]->text.ena;
+        //             osdParam[i]->text.ena = false;
+        //         } else if (osdParam[i]->type == MediaOSD::TypeE::Image) {
+        //             osdChnEnabled[i] = osdParam[i]->image.ena;
+        //             osdParam[i]->image.ena = false;
+        //         }
+        //     }
+        //     osd.SetParam(osdParam);
+        // }
         bool isRecordCreated = m_ovd->m_record.IsCreated();
         bool isAvPushCreated = m_ovd->m_avPush.IsCreated();
         if (vencCodecChanged) {
@@ -1498,25 +2108,25 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
                 m_ovd->m_avPush.Create(&m_ctx);
         }
         //重新打开OSD
-        if (osdParamChanged) {
-            for (int i = 0; i < (int) osdParam.size(); i++) {
-                if (osdParam[i]->type == MediaOSD::TypeE::Time) {
-                    osdParam[i]->time.ena = true;//时间默认始终打开
-                } else if (osdParam[i]->type == MediaOSD::TypeE::Text) {
-                    osdParam[i]->text.ena = osdChnEnabled[i];
-                } else if (osdParam[i]->type == MediaOSD::TypeE::Image) {
-                    osdParam[i]->image.ena = osdChnEnabled[i];
-                }
-            }
-            osd.SetParam(osdParam);
-        }
+        // if (osdParamChanged) {
+        //     for (int i = 0; i < (int) osdParam.size(); i++) {
+        //         if (osdParam[i]->type == MediaOSD::TypeE::Time) {
+        //             osdParam[i]->time.ena = true;//时间默认始终打开
+        //         } else if (osdParam[i]->type == MediaOSD::TypeE::Text) {
+        //             osdParam[i]->text.ena = osdChnEnabled[i];
+        //         } else if (osdParam[i]->type == MediaOSD::TypeE::Image) {
+        //             osdParam[i]->image.ena = osdChnEnabled[i];
+        //         }
+        //     }
+        //     osd.SetParam(osdParam);
+        // }
     } else {
         if (osdParamChanged) {
             osd.SetParam(osdParam);
         }
     }
     //单独处理副码流osd
-    if (osdParamChanged) {
+    if (osdParamChanged && onlyOsdChanged) {
         int chnNum;
         //如果存在副码流
         if (MediaClientOSD::GetChnNum(chnNum) == ErrCodeE::Success &&
@@ -1548,11 +2158,294 @@ OVD_int32 CallBackResp::SetOVDConfigureInfo(OVD_char *in_ovdconfig) {
     return 0;
 }
 
+void CallBackResp::ShowPassengerFlowOsd() {
+    MediaClientOSD osd(0);
+    std::vector<std::shared_ptr<MediaOSD::Param>> osdParam;
+    osdParam.clear();
+    if (!m_ctx.env.passengerFlow.on) {
+        osd.SetTempParam(osdParam);
+        return;
+    }
+    if (!m_ctx.env.passengerFlow.osdStatus) {
+        osd.SetTempParam(osdParam);
+    } else {
+        if (osd.GetParam(osdParam) != ErrCodeE::Success) {
+            emxloge("osd param get failed");
+            return;
+        }
+        int fontsize = 0;
+        int thickness = 0;
+        MediaOSD::Margin margin;
+        for (auto item : osdParam) {
+            if (item->type == MediaOSD::TypeE::Time) {
+                fontsize = item->time.size;
+                thickness = item->time.thickness;
+                margin = item->time.margin;
+            }
+        }
+
+        auto paramIn = std::make_shared<MediaOSD::Param>();
+        memset(paramIn.get(), 0, sizeof(MediaOSD::Param));
+        paramIn->type = MediaOSD::TypeE::Text;
+        paramIn->text.ena = true;
+        memcpy(&paramIn->text.margin, &margin, sizeof(MediaOSD::Margin));
+        paramIn->text.margin.rateY += fontsize + 5;
+        paramIn->text.thickness = thickness;
+        paramIn->text.size = fontsize;
+        strncpy(paramIn->text.font, "font.ttf", sizeof(paramIn->text.font));
+        snprintf(paramIn->text.content, sizeof(paramIn->text.content) - 1, "进入：%d", m_ctx.env.passengerFlow.inCount);
+        osdParam.push_back(paramIn);
+
+        auto paramOut = std::make_shared<MediaOSD::Param>();
+        memset(paramOut.get(), 0, sizeof(MediaOSD::Param));
+        paramOut->type = MediaOSD::TypeE::Text;
+        paramOut->text.ena = true;
+        memcpy(&paramOut->text.margin, &margin, sizeof(MediaOSD::Margin));
+        // paramOut->text.margin.rateY += paramIn->text.margin.rateY + 20;
+        paramOut->text.margin.rateY = paramIn->text.margin.rateY + fontsize + 5;
+        paramOut->text.thickness = thickness;
+        paramOut->text.size = fontsize;
+        strncpy(paramOut->text.font, "font.ttf", sizeof(paramOut->text.font));
+        snprintf(paramOut->text.content, sizeof(paramOut->text.content) - 1, "离开：%d", m_ctx.env.passengerFlow.outCount);
+        osdParam.push_back(paramOut);
+
+        osd.SetTempParam(osdParam);
+    }
+}
+
+void CallBackResp::ShowRegionalPeopleOsd() {
+    MediaClientOSD osd(0);
+    std::vector<std::shared_ptr<MediaOSD::Param>> osdParam;
+    osdParam.clear();
+    if (!m_ctx.env.regionalPeople.gatReportOn) {
+        osd.SetTempParam(osdParam);
+        return;
+    }
+    if (!m_ctx.env.regionalPeople.osdStatus) {
+        osd.SetTempParam(osdParam);
+    } else {
+        if (osd.GetParam(osdParam) != ErrCodeE::Success) {
+            emxloge("osd param get failed");
+            return;
+        }
+        int fontsize = 0;
+        int thickness = 0;
+        MediaOSD::Margin margin;
+        for (auto item : osdParam) {
+            if (item->type == MediaOSD::TypeE::Time) {
+                fontsize = item->time.size;
+                thickness = item->time.thickness;
+                margin = item->time.margin;
+            }
+        }
+        auto paramIn = std::make_shared<MediaOSD::Param>();
+        memset(paramIn.get(), 0, sizeof(MediaOSD::Param));
+        paramIn->type = MediaOSD::TypeE::Text;
+        paramIn->text.ena = true;
+        memcpy(&paramIn->text.margin, &margin, sizeof(MediaOSD::Margin));
+        paramIn->text.margin.rateY += fontsize + 5;
+        paramIn->text.thickness = thickness;
+        paramIn->text.size = fontsize;
+        strncpy(paramIn->text.font, "font.ttf", sizeof(paramIn->text.font));
+        snprintf(paramIn->text.content, sizeof(paramIn->text.content) - 1, "区域：%d", m_ctx.env.regionalPeople.inPeopleCount);
+        osdParam.push_back(paramIn);
+
+        osd.SetTempParam(osdParam);
+    }
+}
+
+void CallBackResp::GetLinkageStrategy(Json::Value &json, const EnvStrategy &strategy) {
+    auto &linkage_strategy = json;
+    auto &speech = linkage_strategy["speech"];
+    speech["on"] = strategy.speech.ena;
+    speech["repeat"] = strategy.speech.repeat;
+    speech["vol"] = strategy.speech.volume;
+    speech["url"] = strategy.speech.url;//8K 16bit alaw.wav
+    auto &light = linkage_strategy["light"];
+    light["on"] = strategy.light.ena;
+    light["mode"] = (int) strategy.light.mode;
+    light["dur"] = strategy.light.duration;
+}
+
+void CallBackResp::GetAlertTime(Json::Value &json, const EnvSchedule &schedule) {
+    auto &alertareaTime = json;
+    alertareaTime["on"] = schedule.onOff;
+    alertareaTime["starttime"] = schedule.startTime;
+    alertareaTime["endtime"] = schedule.endTime;
+    auto &repeat = alertareaTime["repeat"];
+    repeat.resize(0);
+    if (schedule.repeat[0])
+        repeat.append("Mon");
+    if (schedule.repeat[1])
+        repeat.append("Tue");
+    if (schedule.repeat[2])
+        repeat.append("Wed");
+    if (schedule.repeat[3])
+        repeat.append("Thu");
+    if (schedule.repeat[4])
+        repeat.append("Fri");
+    if (schedule.repeat[5])
+        repeat.append("Sat");
+    if (schedule.repeat[6])
+        repeat.append("Sun");
+}
+
+void CallBackResp::SetAlertTime(const Json::Value &json, EnvSchedule &schedule) {
+    auto timeNow = Time::GetS();
+    auto &alerttime = json["alerttime"];
+    if (alerttime.isMember("on")) {
+        schedule.onOff = alerttime["on"].asBool();
+    }
+    if (alerttime.isMember("starttime") && alerttime.isMember("endtime")) {
+        schedule.manual = false;
+        strncpy(schedule.startTime, alerttime["starttime"].asCString(), sizeof(schedule.startTime));
+        strncpy(schedule.endTime, alerttime["endtime"].asCString(), sizeof(schedule.endTime));
+        if (alerttime.isMember("repeat")) {
+            //如果repeat为空则代表是一次性计划
+            schedule.once = alerttime["repeat"].empty();
+            emxlogd("schedule one(%d)\n", schedule.once);
+            memset(schedule.repeat, 0, sizeof(schedule.repeat));
+            if (schedule.once) {
+                auto st = OvdUtils::GetSecondByTimeStr(schedule.startTime);
+                auto et = OvdUtils::GetSecondByTimeStr(schedule.endTime);
+                auto nt = OvdUtils::GetDayOffSecondByUtc(timeNow);
+                //如果结束时间小于等于起始时间则认为结束时间是隔天时间
+                if (et <= st)
+                    et += 60 * 60 * 24;
+                auto currentDay0TimeUtc = OvdUtils::GetDay0TimeUtcByUtc(timeNow);
+                auto startUtc = currentDay0TimeUtc + st;
+                auto endUtc = currentDay0TimeUtc + et;
+                if (nt > et) {
+                    //如果当前时间大于等于结束时间则隔天执行
+                    startUtc += 60 * 60 * 24;
+                    endUtc += 60 * 60 * 24;
+                }
+                Time::GetTimeStr(startUtc, schedule.onceStartTime, sizeof(schedule.onceStartTime));
+                Time::GetTimeStr(endUtc, schedule.onceEndTime, sizeof(schedule.onceEndTime));
+                emxlogd("schedule.onceStartTime(%s);schedule.onceEndTime(%s)\n"
+                                , schedule.onceStartTime, schedule.onceEndTime);
+            } else {
+                //如果repeat不为空则代表是常规计划
+                for (auto &item : alerttime["repeat"]) {
+                    if (!schedule.repeat[0] && strcmp(item.asCString(), "Mon") == 0)
+                        schedule.repeat[0] = true;
+                    else if (!schedule.repeat[1] && strcmp(item.asCString(), "Tue") == 0)
+                        schedule.repeat[1] = true;
+                    else if (!schedule.repeat[2] && strcmp(item.asCString(), "Wed") == 0)
+                        schedule.repeat[2] = true;
+                    else if (!schedule.repeat[3] && strcmp(item.asCString(), "Thu") == 0)
+                        schedule.repeat[3] = true;
+                    else if (!schedule.repeat[4] && strcmp(item.asCString(), "Fri") == 0)
+                        schedule.repeat[4] = true;
+                    else if (!schedule.repeat[5] && strcmp(item.asCString(), "Sat") == 0)
+                        schedule.repeat[5] = true;
+                    else if (!schedule.repeat[6] && strcmp(item.asCString(), "Sun") == 0)
+                        schedule.repeat[6] = true;
+                }
+            }
+        }
+    }
+}
+
+void CallBackResp::SetLinkageStrategy(const Json::Value &json, EnvStrategy &strategy, std::string alarmVoice) {
+    if (json.isMember("linkage_strategy")) {
+        auto &linkage_strategy = json["linkage_strategy"];
+        if (linkage_strategy.isMember("speech")) {
+            auto &speech = linkage_strategy["speech"];
+            if (speech.isMember("on")) {
+                strategy.speech.ena = speech["on"].asBool();
+                if (!strategy.speech.ena) {
+                    m_ctx.soundAlarmControl.NotifyControlOff(strategy.type);
+                }
+            }   
+            if (speech.isMember("vol")) {
+                int volume = speech["vol"].asInt();
+                strategy.speech.volume = volume;
+                auto &spkVolumeMap = m_ctx.deviceJsonCfg["spkVolumeMap"];
+                if (volume <= 20) {
+                    m_ctx.running.alarm.alarmVolume = spkVolumeMap[0].asInt();
+                } else if (volume <= 40) {
+                    m_ctx.running.alarm.alarmVolume = spkVolumeMap[1].asInt();
+                } else if (volume <= 60) {
+                    m_ctx.running.alarm.alarmVolume = spkVolumeMap[2].asInt();
+                } else if (volume <= 80) {
+                    m_ctx.running.alarm.alarmVolume = spkVolumeMap[3].asInt();
+                } else {
+                    m_ctx.running.alarm.alarmVolume = spkVolumeMap[4].asInt();
+                }  
+                MediaClientAdec adec(0);
+                adec.SetVolumeTemp(m_ctx.running.alarm.alarmVolume);
+            }
+            if (speech.isMember("repeat"))
+                strategy.speech.repeat = speech["repeat"].asInt();
+            if (speech.isMember("url")) {
+                if (speech["url"].asString() != strategy.speech.url) {
+                    m_invasion.url = speech["url"].asString();
+                    m_invasion.urlChanged = true;
+                    if (!m_invasion.work.IsWorking()) {
+                        m_invasion.urlChanged = false;
+                        auto arg = new InvasionAlarmVoice::Arg;
+                        arg->url = m_invasion.url;
+                        arg->playVoiceA = strategy.speech.playVoiceA;
+                        arg->ret = -1;
+                        arg->alarmVoice = alarmVoice;
+                        arg->strategy = &strategy;
+                        m_invasion.work.Create(&m_ctx.loop, arg,
+                                                [this](void *arg) {
+                                                    auto invasionArg = (InvasionAlarmVoice::Arg *) arg;
+                                                    long http_code = 0;
+                                                    char path[EMX_MAX_PATH_SIZE] = {};
+                                                    snprintf(path, sizeof(path), "%s/%s%c.wav",
+                                                            m_ctx.deviceJsonCfg["alarmVoiceDir"].asCString(),
+                                                            invasionArg->alarmVoice.c_str(),
+                                                            invasionArg->playVoiceA ? 'B' : 'A');
+                                                    invasionArg->ret = OvdUtils::https_download_file_func(
+                                                            invasionArg->url.c_str(),
+                                                            path, &http_code);
+                                                },
+                                                [this](ErrCodeE e, void *arg) {
+                                                    auto invasionArg = (InvasionAlarmVoice::Arg *) arg;
+                                                    if (m_invasion.urlChanged) {
+                                                        m_invasion.urlChanged = false;
+                                                        invasionArg->url = m_invasion.url;
+                                                        invasionArg->playVoiceA = invasionArg->strategy->speech.playVoiceA;
+                                                        invasionArg->ret = -1;
+                                                        m_invasion.work.Run();
+                                                    } else {
+                                                        m_invasion.work.Destroy();
+                                                        strncpy(invasionArg->strategy->speech.url, invasionArg->url.c_str(), sizeof(strategy.speech.url));
+                                                        delete invasionArg;
+                                                        invasionArg->strategy->speech.playVoiceA = !invasionArg->strategy->speech.playVoiceA;
+                                                        m_ctx.env.invasion.Save();
+                                                    }
+                                                });
+                        m_invasion.work.Run();
+                    }
+                }
+            }
+        }
+        if (linkage_strategy.isMember("light")) {
+            auto &light = linkage_strategy["light"];
+            if (light.isMember("on"))
+                strategy.light.ena = light["on"].asBool();
+            if (light.isMember("mode"))
+                strategy.light.mode = (EnvStrategy::Light::ModeE) light["mode"].asInt();
+            if (light.isMember("dur"))
+                strategy.light.duration = light["dur"].asInt();
+        }
+    }
+}
+
 void CallBackResp::InvasionAlarmVoice::OnDownloadVoice(void *arg) {
 
 }
 
 OVD_int32 CallBackResp::ResetConfiguration() {
+    emxlogd("ovd sdk reset config call reboot\n");
+    m_ctx.env.initMsg.reason = (int)OVD_REBOOT_REASON_CLOUD_FACTORY_RESET;
+    m_ctx.env.initMsg.message = "ovd sdk reset config call reboot";
+    m_ctx.env.initMsg.ts = Time::GetMs();
+    m_ctx.env.initMsg.Save();
     return 0;
 }
 
@@ -1614,6 +2507,10 @@ OVD_int32 CallBackResp::RecordCotrol(OVD_int32 channel, OVDCONTROLTYPE controlTy
 OVD_int32 CallBackResp::DMEAPI_callback_RecordSearch(OVD_int32 channel, OVD_uint64 starttime, OVD_uint64 endtime,
                                                      OVD_int32 page, OVD_int32 numInPage,
                                                      OVD_DMERecordFileListPerPage *fileinpage) {
+    if (!m_ovd->m_record.m_sdcard.normal) {
+        emxlogd("sdcard no mount\n");
+        return -1;
+    }
 #ifndef EAPIL_SPARE
     //若传进的参数numInPage=10，page=2，则fileInPage应该返回第10个到第20个录像的信息;
     int offset = numInPage * page;
@@ -1651,6 +2548,10 @@ OVD_int32 CallBackResp::DMEAPI_callback_RecordSearch(OVD_int32 channel, OVD_uint
 }
 
 OVD_void *CallBackResp::DMEAPI_callback_RecordOpen(OVD_int32 channel) {
+    if (!m_ovd->m_record.m_sdcard.normal) {
+        emxlogd("sdcard no mount\n");
+        return nullptr;
+    }
 #ifndef EAPIL_SPARE
     auto handle = new RecPlayHandle;
     handle->mp4Reader = new Mp4Reader;
@@ -1680,10 +2581,14 @@ int CallBackResp::RecPlayHandle::InitRecordReader(const char *path) {
 #endif
 
 OVD_int32 CallBackResp::DMEAPI_callback_RecordSeek(OVD_void *ctx, OVD_int64 timestamp) {
+    if (!m_ovd->m_record.m_sdcard.normal) {
+        emxlogd("sdcard no mount\n");
+        return OVD_RET_SEEK_NODATA;
+    }
 #ifndef EAPIL_SPARE
     if (!ctx) {
         emxloge("handle null\n");
-        return -1;
+        return OVD_RET_SEEK_NODATA;
     }
     emxlogi("seek utc:%lld\n", timestamp);
     auto handle = (RecPlayHandle *) ctx;
@@ -1715,6 +2620,10 @@ OVD_int32 CallBackResp::DMEAPI_callback_RecordSeek(OVD_void *ctx, OVD_int64 time
 }
 
 OVD_int32 CallBackResp::DMEAPI_callback_RecordReadFrame(OVD_void *ctx, OVD_FrameInfo *pframe_info) {
+    if (!m_ovd->m_record.m_sdcard.normal) {
+        emxlogd("sdcard no mount\n");
+        return OVD_RET_READ_FRAME_EOF;
+    }
 #ifndef EAPIL_SPARE
     if (!ctx) {
         emxloge("ctx == null\n");
@@ -1785,8 +2694,8 @@ OVD_int32 CallBackResp::DMEAPI_callback_RecordReadFrame(OVD_void *ctx, OVD_Frame
         pframe_info->video_info.iskey_frame = frame.isKeyFrame;
         pframe_info->video_info.width = video.width;
         pframe_info->video_info.height = video.height;
-        pframe_info->video_info.framerate = 15;//sbhy
-        pframe_info->video_info.gop = 45;//sbhy
+        pframe_info->video_info.framerate = 20;//sbhy
+        pframe_info->video_info.gop = 60;//sbhy
     } else if (frame.type == MediaFmt::TrackTypeE::Audio) {
         //note: audio暂未加密
         // if (!OvdUtils::EncryDecryMp4Audio(frame.data, frame.size)) {
@@ -1829,6 +2738,10 @@ OVD_int32 CallBackResp::DMEAPI_callback_RecordReadFrame(OVD_void *ctx, OVD_Frame
 }
 
 OVD_int32 CallBackResp::DMEAPI_callback_RecordClose(OVD_void *ctx) {
+    // if (!m_ovd->m_record.m_sdcard.normal) {
+    //     emxlogd("sdcard no mount\n");
+    //     return -1;
+    // }
 #ifndef EAPIL_SPARE
     if (!ctx) {
         emxloge("ctx == null\n");
@@ -1842,6 +2755,7 @@ OVD_int32 CallBackResp::DMEAPI_callback_RecordClose(OVD_void *ctx) {
     handle->mp4Reader->Destroy();
     delete handle->mp4Reader;
     free(handle);
+    emxlogd("handle: %p\n", handle);
 #endif
     return 0;
 }
@@ -1871,7 +2785,7 @@ OVD_void CallBackResp::OVCConnectStatus(OVD_int32 connectStatus) {
         return;
     m_ctx.running.ovdSdkConnected = ovdSdkConnected;
     if (ovdSdkConnected) {
-        emxlogd("OVD_ONLINE\n");
+        emxlogd("OVD_ONLINE,sleep status(%s)\n", m_ctx.running.sleep ? "OVD_CHANNEL_DISABLE" : "OVD_CHANNEL_ONLINE");
         OVD_updateOVDstate(OVD_ONLINE);
         OVD_updatechannelstate(0,
                                m_ctx.running.sleep ? OVD_CHANNEL_DISABLE : OVD_CHANNEL_ONLINE);
@@ -1888,9 +2802,20 @@ OVD_int32 CallBackResp::ReBootChannel(OVD_int32 channel) {
     return 0;
 }
 
+#ifdef OVDSDK1_38_1
+OVD_int32 CallBackResp::ReBootDevice(ovd_reboot_reason_e reason) {
+    emxlogd("reboot reason[%d]\n", (int)reason);
+    m_ctx.env.initMsg.reason = (int)reason;
+    m_ctx.env.initMsg.message = "ovd sdk call reboot";
+    m_ctx.env.initMsg.ts = Time::GetMs();
+    m_ctx.env.initMsg.Save();
+    return 0;
+}
+#else
 OVD_int32 CallBackResp::ReBootDevice() {
     return 0;
 }
+#endif
 
 OVD_int32 CallBackResp::KeepAwakenUtilExpired(OVD_int32 channel, OVD_int32 notAllowHibernate, OVD_int32 expired,
                                               OVDHibernateReason reason) {
@@ -1975,7 +2900,11 @@ OVD_int32 CallBackResp::LogUploadAsync(OVD_char *trans_id, OVD_char *start, OVD_
                 memcpy(act_end, buffer + 1, 19);
             }
         }
+        fflush(fpSrc);
+        fsync(fileno(fpSrc));        
         fclose(fpSrc);
+        fflush(fpDst);
+        fsync(fileno(fpDst));
         fclose(fpDst);
 
         act_start[10] = 'T';//replace "2016-12-05 02:15:32" to "2016-12-05T02:15:32"
@@ -2163,6 +3092,10 @@ OVD_int32 CallBackResp::FirmwareUpgrade(OVD_char *firmware_model, OVD_char *upgr
                          }
     );
     m_update.work.Run();
+    m_ctx.env.initMsg.reason = (int)OVD_REBOOT_REASON_CLOUD_UPGRADE;
+    m_ctx.env.initMsg.message = "upgrade file download failed, reboot";
+    m_ctx.env.initMsg.ts = Time::GetMs();
+    m_ctx.env.initMsg.Save();
     return 0;
 }
 
@@ -2218,32 +3151,120 @@ size_t CallBackResp::Update::OnDownload(void *ptr, size_t size, size_t number, v
 OVD_int32 CallBackResp::QueryFirmwareUpgradeStatus(OVDUpgradeStatus *upgradeStatus, OVD_int32 *upgradeProgress,
                                                    OVD_char *version, OVD_int32 version_len,
                                                    OVD_char *last_upgrade_time, OVD_int32 time_len) {
+    if (m_ctx.env.initMsg.ota_update_status != EnvInitMsg::OtaUpdateStatus::unknown) {
+        if (m_ctx.env.initMsg.is_normal_reboot 
+            || m_ctx.env.initMsg.ota_update_status == EnvInitMsg::OtaUpdateStatus::DONE) {
+            *upgradeStatus = OVD_STATUS_DONE;
+            *upgradeProgress = 100;
+        } else {
+            if (m_ctx.env.initMsg.ota_update_status == EnvInitMsg::OtaUpdateStatus::INSTALLING ||
+                m_ctx.env.initMsg.ota_update_status == EnvInitMsg::OtaUpdateStatus::DOWNLOADING ||
+                m_ctx.env.initMsg.ota_update_status == EnvInitMsg::OtaUpdateStatus::IDLE) {
+                auto &event = m_ctx.running.updateEvent;
+                switch (event.stat) {
+                    case UpdateEvent::StatE::Idle:
+                        m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::IDLE;
+                        *upgradeStatus = OVD_STATUS_IDLE;
+                        break;
+                    case UpdateEvent::StatE::Start:
+                        if (event.burn.total > 0) {
+                            *upgradeStatus = OVD_STATUS_INSTALLING;
+                            m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::INSTALLING;
+                        } else {
+                            *upgradeStatus = OVD_STATUS_DOWNLOADING;
+                            m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::DOWNLOADING;
+                        }
+                        break;
+                    case UpdateEvent::StatE::Done:
+                        // *upgradeStatus = OVD_STATUS_DONE;
+                        m_ctx.env.initMsg.is_normal_reboot = true;
+                        m_ctx.env.cfg.last_upgrade_state = OVD_STATUS_DONE;
+                        m_ctx.env.cfg.Save();
+                        m_ctx.env.initMsg.reason = (int)OVD_REBOOT_REASON_CLOUD_UPGRADE;
+                        m_ctx.env.initMsg.message = "installing, reboot";
+                        m_ctx.env.initMsg.ts = Time::GetMs();
+                        m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::DONE;
+                        m_ctx.env.initMsg.Save();
+                        Reboot::DoReboot(3);
+                        break;
+                    case UpdateEvent::StatE::Error:
+                        // *upgradeStatus = OVD_STATUS_FAILED;
+                        m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::FAILED;
+                        m_ctx.env.initMsg.Save();
+                        Reboot::DoReboot(3);
+                        //开始升级回调FirmwareUpgrade中已经将状态保存为失败的状态
+            //            m_ctx.env.cfg.last_upgrade_state = OVD_STATUS_FAILED;
+            //            m_ctx.env.cfg.Save();
+                        // m_ctx.env.initMsg.Save();
+                        // return 0;
+                    default:
+                        emxlogc("unexpected stat %d\n", (int) event.stat);
+                        return -1;
+                }
+                
+                if (event.download.total == 0)
+                    *upgradeProgress = 0;
+                else {
+                    int downloadProgress = event.download.current * 100 / event.download.total;
+                    int burnProgress = event.burn.total > 0 ? event.burn.current * 100 / event.burn.total : 0;
+                    *upgradeProgress = (downloadProgress + burnProgress) >> 1;
+                }
+                strncpy(version, m_ctx.env.devInfo.GetOuter()->version, version_len);
+                strncpy(last_upgrade_time, m_ctx.env.cfg.last_upgrade_time, time_len);
+                emxlogi("upgrade status:%d, progress:%d, ver:%s, last_upgrade_time:%s\n",
+                    *upgradeStatus, *upgradeProgress, version, last_upgrade_time);
+                return 0;
+            } else {
+                *upgradeStatus = OVD_STATUS_FAILED;
+            }
+        }
+        m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::unknown;
+        m_ctx.env.initMsg.is_normal_reboot = false;
+        m_ctx.env.initMsg.Save();    
+        return 0;
+    }
+    m_ctx.env.initMsg.is_normal_reboot = false;
+    m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::unknown;
     auto &event = m_ctx.running.updateEvent;
     switch (event.stat) {
         case UpdateEvent::StatE::Idle:
+            m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::IDLE;
             *upgradeStatus = OVD_STATUS_IDLE;
             break;
         case UpdateEvent::StatE::Start:
-            if (event.burn.total > 0)
+            if (event.burn.total > 0) {
                 *upgradeStatus = OVD_STATUS_INSTALLING;
-            else
+                m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::INSTALLING;
+            } else {
                 *upgradeStatus = OVD_STATUS_DOWNLOADING;
+                m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::DOWNLOADING;
+            }
             break;
         case UpdateEvent::StatE::Done:
-            *upgradeStatus = OVD_STATUS_DONE;
+            // *upgradeStatus = OVD_STATUS_DONE;
+            m_ctx.env.initMsg.is_normal_reboot = true;
             m_ctx.env.cfg.last_upgrade_state = OVD_STATUS_DONE;
             m_ctx.env.cfg.Save();
+            m_ctx.env.initMsg.reason = (int)OVD_REBOOT_REASON_CLOUD_UPGRADE;
+            m_ctx.env.initMsg.message = "installing, reboot";
+            m_ctx.env.initMsg.ts = Time::GetMs();
+            m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::DONE;
+            Reboot::DoReboot(3);
             break;
         case UpdateEvent::StatE::Error:
-            *upgradeStatus = OVD_STATUS_FAILED;
+            // *upgradeStatus = OVD_STATUS_FAILED;
+            m_ctx.env.initMsg.ota_update_status = EnvInitMsg::OtaUpdateStatus::FAILED;
+            Reboot::DoReboot(3);
             //开始升级回调FirmwareUpgrade中已经将状态保存为失败的状态
 //            m_ctx.env.cfg.last_upgrade_state = OVD_STATUS_FAILED;
 //            m_ctx.env.cfg.Save();
-            return 0;
+            // m_ctx.env.initMsg.Save();
+            // return 0;
         default:
             emxlogc("unexpected stat %d\n", (int) event.stat);
             return -1;
     }
+    m_ctx.env.initMsg.Save();
     if (event.download.total == 0)
         *upgradeProgress = 0;
     else {
@@ -2278,7 +3299,13 @@ OVD_int32 CallBackResp::StopAlarm(int alarmtype) {
 #endif
 
 #ifdef OVDSDK_APIVER_3_0
-OVD_int32 CallBackResp::GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void* out_response) {
+#ifdef OVDSDK1_38_1
+OVD_int32 CallBackResp::GetDevRunningInfo(ovd_probe_devrunning_info_e in_info, void* out_response)
+#else
+OVD_int32 CallBackResp::GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void* out_response) 
+#endif
+{
+    memset(out_response,0,64);
     OVD_int32 ret = -1;
     switch(in_info) {
         case OVD_CMD_GET_PACKET_LOSSRATE: /*丢包率 单位：%*/ {
@@ -2350,6 +3377,9 @@ OVD_int32 CallBackResp::GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void*
         case OVD_CMD_GET_PING:
         case OVD_CMD_GET_TRACEROUTE:
         case OVD_CMD_GET_RSSI_4G:
+        #ifdef OVDSDK1_38_1
+        case OVD_CMD_GET_POWER_MODE:
+        #endif
             ret = 101;
         break;
     }
@@ -2357,3 +3387,71 @@ OVD_int32 CallBackResp::GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void*
 }
 #endif
 
+OVD_int32 CallBackResp::SyncMacHash(OVD_char* in_machash) {
+    if (in_machash == nullptr) {
+        return -1;
+    }
+    m_ctx.env.initMsg.machash = std::string(in_machash);
+    m_ctx.env.initMsg.Save();
+    return 0;
+}
+
+OVD_int32 CallBackResp::SetAudioOutPlay(OVD_int32 channel, OVD_char *url, int repeat, int volume) {
+    emxlogd("channel:%d url:%s repeat:%d volume:%d\n",channel,url,repeat,volume);
+    m_audioOut.url = std::string(url);
+    if (!m_audioOut.work.IsWorking()) {
+        auto arg = new AudioOut::Arg;
+        arg->ret = -1;
+        arg->url = m_audioOut.url;
+        arg->channel = channel;
+        arg->repeat = repeat;
+        arg->volume = volume;
+        m_audioOut.work.Create(&m_ctx.loop, arg,
+                                [this](void *arg) {
+                                    auto audioArg = (AudioOut::Arg *) arg;
+                                    long http_code = 0;
+                                    char path[EMX_MAX_PATH_SIZE] = {};
+                                    snprintf(path, sizeof(path), "%s",m_ctx.deviceJsonCfg["audioOutPath"].asCString());
+                                    MediaClientAdecStreamSync::PlayCtrlQuit(0);
+                                    char cmd[EMX_MAX_PATH_SIZE] = {};
+                                    snprintf(cmd, sizeof(cmd) - 1, "rm -f %s", path);
+                                    Cmd::System(cmd);
+                                    emxlogd("url: %s\n",  audioArg->url.c_str());
+                                    audioArg->ret = OvdUtils::https_download_file_func(
+                                            audioArg->url.c_str(),
+                                            path, &http_code);
+                                },
+                                [this](ErrCodeE e, void *arg) {
+                                    auto audioArg = (AudioOut::Arg *) arg;
+                                    emxlogd("audioOut download file result[%s]\n", audioArg->ret == 0 ? "ok" : "failed");
+                                    if (audioArg->ret == 0) {
+                                        auto &spkVolumeMap = m_ctx.deviceJsonCfg["spkVolumeMap"];
+                                        int volume = audioArg->volume;
+                                        int adecVolume;
+                                        if (volume <= 20)
+                                            adecVolume = spkVolumeMap[0].asInt();
+                                        else if (volume <= 40)
+                                            adecVolume = spkVolumeMap[1].asInt();
+                                        else if (volume <= 60)
+                                            adecVolume = spkVolumeMap[2].asInt();
+                                        else if (volume <= 80)
+                                            adecVolume = spkVolumeMap[3].asInt();
+                                        else
+                                            adecVolume = spkVolumeMap[4].asInt();
+                                        MediaClientAdecStreamSync::PlayCtrlQuit(0);
+                                        emxlogd("audioOut play volume: %d\n", adecVolume);
+                                        MediaClientAdec adec(0);
+                                        std::string path = m_ctx.deviceJsonCfg["audioOutPath"].asString();
+                                        for (int i = 0; i < audioArg->repeat; i++) {
+                                            // MediaClientAdecStreamSync::PlayFileWithVolume(0, path.c_str(), adecVolume);
+                                            MediaClientAdecStreamSync::PlayFile(0, path.c_str());
+                                        }
+                                    }
+                                    m_invasion.work.Destroy();
+                                    delete audioArg;
+                                    audioArg = nullptr;
+                                });
+        m_audioOut.work.Run();
+    }
+    return 0;
+}

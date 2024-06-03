@@ -30,9 +30,12 @@ void EuvDns::Destroy() {
     }
     m_resolver->cb = OnDestroy;
     //work is running on thread pool
+
+    emxlogt("try cancel\n");
     if (uv_cancel((uv_req_t *) m_resolver) != 0) {
         while (m_resolver->work_req.work)usleep(10000);
         m_isRunning = false;
+        emxlogt("cancel done\n");
     }
     if (m_cb)
         m_cb(ErrCodeE::Destroyed, nullptr, m_data.arg);
@@ -58,6 +61,7 @@ ErrCodeE EuvDns::Run(const char *server, OnResolved cb, void *arg, EuvDns::TypeE
                              [](uv_getaddrinfo_t *resolver, int status, struct addrinfo *res) {
                                  auto data = (EuvDns::Data *) resolver->data;
                                  auto obj = (EuvDns *) data->obj;
+                                 emxlogt("EuvDns status=%d\n",status);
                                  if (status < 0) {
                                      obj->m_cb(ErrCodeE::Failure, res, data->arg);
                                  } else {
@@ -69,6 +73,8 @@ ErrCodeE EuvDns::Run(const char *server, OnResolved cb, void *arg, EuvDns::TypeE
         emxloge("failed:%s\n", uv_strerror(ret));
         return ErrCodeE::Failure;
     }
+    m_isRunning = true;
+    emxlogt("dns running\n");
     return ErrCodeE::Success;
 }
 

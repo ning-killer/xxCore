@@ -52,11 +52,19 @@ ErrCodeE NightVisionServerNormal::CreateSub(Json::Value &json) {
             m_cfg.color2day[i].soft.isoMin = color2day["soft"]["isoMin"][i].asInt();
             m_cfg.color2day[i].soft.isoMax = color2day["soft"]["isoMax"][i].asInt();
         }
+        if (json["2dayDelay"].isInt()) {
+            m_todayDelay = json["2dayDelay"].asInt();
+        }
+        if (json["2irDelay"].isInt()) {
+            m_toirDelay = json["2irDelay"].asInt();
+        }
 
         m_isp.Start(m_loop, m_buffer, sizeof(m_buffer), [this](MediaISP::Info &info) {
             //匹配使用的isp通道
-            if (info.chn == m_cfg.ispChn)
+            if (info.chn == m_cfg.ispChn) {
                 m_ispInfo = info;
+                m_ispInfo.iso = info.iso;
+            }
         });
 
         m_timer.Create(m_loop);
@@ -81,6 +89,8 @@ void NightVisionServerNormal::DoSwitch(NightVision::ModeE mode) {
                 m_bsp.irLight->SetEna(false, chn.irLight);
                 m_bsp.whiteLight->SetEna(false, chn.whiteLight);
                 MediaClientISP isp(chn.isp);
+                emxlogd("todayDelay[%d]\n", m_todayDelay);
+                usleep(m_todayDelay * 1000);
                 isp.SetRunMode(MediaISP::RunModeE::Day);
             }
             break;
@@ -91,6 +101,8 @@ void NightVisionServerNormal::DoSwitch(NightVision::ModeE mode) {
                 isp.SetRunMode(MediaISP::RunModeE::Night);
                 m_bsp.whiteLight->SetEna(false, chn.whiteLight);
                 m_bsp.irLight->SetEna(true, chn.irLight);
+                emxlogd("toirDelay[%d]\n", m_toirDelay);
+                usleep(m_toirDelay * 1000);
                 m_bsp.irCut->SwitchToNight(true, chn.irCut);
             }
             break;

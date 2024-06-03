@@ -51,6 +51,11 @@ ErrCodeE NetServerDev::Proc(uint32_t method, const char *data, int32_t size, std
             memcpy(&addr, data, sizeof(addr));
             return SetAddr(addr);
         }
+        case NetClientMethodE::SetTempAddr: {
+            Net::Addr addr = {};
+            memcpy(&addr, data, sizeof(addr));
+            return SetTempAddr(addr);
+        }
         case NetClientMethodE::GetAddr: {
             Net::Addr addr = {};
             if (GetAddr(addr) != ErrCodeE::Success) {
@@ -144,10 +149,130 @@ ErrCodeE NetServerDev::SetAddr(Addr &addr) {
     return ErrCodeE::Success;
 }
 
+ErrCodeE NetServerDev::SetTempAddr(Addr &addr) {
+    bool isChanged = false;
+    bool isMacChange = false;
+
+    if (addr.mac[0]) {
+        for (char &e : addr.mac) {
+            if (e >= 'a' && e <= 'f') {
+                e -= 32;
+            } else if (e == '-') {
+                e = ':';
+            }
+        }
+        if ((!m_devJsonParam["mac"].asString().empty()) && (strcmp(addr.mac, m_devJsonParam["mac"].asCString())) != 0) {
+            isMacChange = true;
+        }
+    }
+    if (addr.dhcp != m_devJsonParam["dhcp"].asBool()) {
+        isChanged = true;
+    }
+    if (!addr.dhcp) {
+        if (addr.ip4[0] && strcmp(addr.ip4, m_devJsonParam["ip4"].asCString()) != 0) {
+            isChanged = true;
+        }
+        if (addr.netmask4[0] && strcmp(addr.netmask4, m_devJsonParam["netmask4"].asCString()) != 0) {
+            isChanged = true;
+        }
+        if (addr.gateway4[0] && strcmp(addr.gateway4, m_devJsonParam["gateway4"].asCString()) != 0) {
+            isChanged = true;
+        }
+        if (addr.ip6[0] && strcmp(addr.ip6, m_devJsonParam["ip6"].asCString()) != 0) {
+            isChanged = true;
+        }
+        if (addr.netmask6[0] && strcmp(addr.netmask6, m_devJsonParam["netmask6"].asCString()) != 0) {
+            isChanged = true;
+        }
+        if (addr.gateway6[0] && strcmp(addr.gateway6, m_devJsonParam["gateway6"].asCString()) != 0) {
+            isChanged = true;
+        }
+    }
+    emxlogd("SetTempAddr isChanged[%d],isMacChange[%d]\n", isChanged, isMacChange);
+    if (isChanged || isMacChange) {
+        if (isMacChange) {
+            Cmd::Run("ifconfig %s down", m_interface);
+            Cmd::Run("ifconfig %s hw ether %s", m_interface, addr.mac);
+            Cmd::Run("ifconfig %s up", m_interface);
+        }
+        if (addr.dhcp) {
+            DhcpReNew();
+        } else {
+            DhcpRelease();
+            if (strlen(addr.ip4) > 0) {
+                Cmd::Run("ifconfig %s %s", m_interface, addr.ip4);
+            }
+            if (strlen(addr.netmask4) > 0) {
+                Cmd::Run("ifconfig %s netmask %s", m_interface, addr.netmask4);
+            }
+            if (strlen(addr.gateway4) > 0) {
+                Cmd::Run("route del default gw 0.0.0.0 dev %s", m_interface);
+                Cmd::Run("route add default gw %s dev %s", addr.gateway4, m_interface);
+            }
+            //todo modify
+            if (strlen(addr.ip6) > 0 && strlen(addr.netmask6) > 0) {
+                char maskStr[Net::Ipv6AddrSize] = {};
+                strncpy(maskStr, addr.netmask6, Net::Ipv6AddrSize);
+                int mask = 0;
+                for (char c : maskStr) {
+                    if (c == 'f')
+                        mask += 4;
+                }
+                Cmd::Run("ifconfig %s %s/%d", m_interface, addr.ip6, mask);
+            }
+            if (strlen(addr.netmask6) > 0) {
+                Cmd::Run("ifconfig %s netmask %s", m_interface, addr.netmask6);
+            }
+            if (strlen(addr.gateway6) > 0) {
+                Cmd::Run("route -A inet6 del default gw ::/0 dev %s", m_interface);
+                Cmd::Run("route -A inet6 add default gw %s dev %s", addr.gateway6, m_interface);
+            }
+        }
+        DoDns();
+    }
+    return ErrCodeE::Success;
+}
+
+std::string NetServerDev::GetMac() {
+    std::string mac = "";
+    FILE* pipe = popen("ifconfig", "r");
+    if (!pipe) {
+        return mac;
+    }
+    char buffer[256] = { 0 };
+    std::string result = "";
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        result += buffer;
+    }
+    pclose(pipe);
+    size_t pos = result.find("HWaddr");
+    if (pos != std::string::npos) {
+        mac = result.substr(pos + 6 + 1, 17);
+    }
+    return mac;
+}
+
+void NetServerDev::Ipv6Delete()
+{
+    Addr addr = {};
+    NetServerDev::GetAddr(addr);
+
+    emxlogi("ipv6 is %s\n", strlen(addr.ip6)>0?"null":addr.ip6);
+    if (strlen(addr.ip6) > 0)
+        Cmd::Run("ip addr del %s/64 dev %s", addr.ip6, m_interface);
+}
+
 ErrCodeE NetServerDev::GetAddr(Addr &addr) {
     memset(&addr, 0, sizeof(Addr));
     addr.dhcp = m_devJsonParam["dhcp"].asBool();
     Net::GetLocalAddr(GetInterface(), addr);
+    if (strlen(addr.mac) == 0) {
+        std::string s_mac = GetMac();
+        if (s_mac.size() <= sizeof(addr.mac)) {
+            memset(addr.mac, 0, sizeof(addr.mac));
+            memcpy(addr.mac, s_mac.c_str(), s_mac.size());
+        } 
+    }
     /*
     Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
     default         192.168.31.1    0.0.0.0         UG        0 0          0 wlan0
@@ -224,6 +349,7 @@ void NetServerDev::DhcpRelease() {
 //    if (pid > 0)
 //        kill(pid, SIGUSR2);
     Cmd::Run("ps | grep udhcpc |  grep %s | grep -v grep | awk '{print $1}' | xargs kill ", GetInterface());
+    sleep(1);//杀掉udhcpc之后立刻通过ifconfig操作网卡会导致网卡操作失败，这里延时1秒再返回就正常了
 }
 
 void NetServerDev::DhcpReNew() {
@@ -323,7 +449,6 @@ ErrCodeE NetServerDev::ConfigEna(bool ena) {
         ConfigAddr();
     } else {
         DhcpRelease();
-        sleep(1);//DhcpRelease 之后立刻 down 会导致down不掉
         Cmd::Run("ifconfig %s down", GetInterface());
     }
     return ErrCodeE::Success;
@@ -350,7 +475,7 @@ void NetServerDev::DoDns() {
     }
     Cmd::Run("ps | grep udhcpc |  grep dns | grep -v grep | awk '{print $1}' | xargs kill -9");
     auto &dns = m_res.param["dns"];
-    if (dns["manual"]) {
+    if (dns["manual"].asBool()) {
         std::string tmp;
         for (auto &elem : dns["server"])
             tmp.append("nameserver " + elem.asString() + "\n");
@@ -362,7 +487,7 @@ void NetServerDev::DoDns() {
         for (auto &elem : dns["append"])
             tmp.append("nameserver " + elem.asString() + "\n");
         File::Write("/tmp/dnsAppend.conf", tmp.data(), (int) tmp.size());
-        Cmd::System("udhcpc -b -t 5 -T 2 -A 5 -q -i %s -s %s/dns.script -R&",
+        Cmd::System("udhcpc -b -t 5 -T 2 -A 5 -q -i %s -s %s/dns.script &",
                     m_devJsonParam["interface"].asCString(), m_res.netConfigDir);
     }
 }

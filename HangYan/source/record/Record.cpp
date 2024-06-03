@@ -323,6 +323,7 @@ ErrCodeE Record::CompleteFile(uint32_t endUtc) {
         m_mutex.lock();
         m_index[m_current.date][m_current.time / 10000].push_back(m_current);
         m_mutex.unlock();
+        // sync();
         emxlogt("%s completed\n", newName);
     }
     return ErrCodeE::Success;

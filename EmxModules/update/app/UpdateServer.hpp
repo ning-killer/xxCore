@@ -71,6 +71,7 @@ namespace Emx {
         void TestOffsetStr();
 
     private:
+        static const uint32_t m_sdcardUpdateSession = 11534941;//SDCardUpdate定义的升级session，用于判断设备升级完成后，不要重启，卡刷由用户自己重启
         FlashInf *m_flash;//flash的基类，指向具体的nor/nand/emmc
         enum class ModeE : uint8_t {
             DoubleSystem = 0,
@@ -139,6 +140,8 @@ namespace Emx {
         } m_cipherBlock;
         int m_deBlockSize;      //解密块大小
         int m_burnBlockSize;    //烧写块大小
+        std::string m_partitionEnvName; //partition env环境命令名称
+        bool m_eraseallFlash;    //全量擦除flash
     };
 };
 

@@ -90,6 +90,7 @@ namespace Emx {
         using TrackPair = std::pair<MediaFrame::TypeE, int>;
         std::map<TrackPair, int> m_trackIdxMap;
         RecFile m_current;
+    public:
         struct SDCardStat {
             bool normal;
             int chn;

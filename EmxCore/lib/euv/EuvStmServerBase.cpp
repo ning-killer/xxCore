@@ -89,7 +89,7 @@ ErrCodeE EuvStmServerClientBase::Send(std::shared_ptr<std::string> &data) {
         return ErrCodeE::ResNotAvailable;
     }
     if (BufferOverflow()) {
-        emxlogd("%p drop send data\n", this);
+        emxlogt("%p drop send data\n", this);
         return ErrCodeE::BufferOverflow;
     }
     auto writeReq = new(std::nothrow) WriteReq;

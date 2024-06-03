@@ -1,11 +1,12 @@
 {
-  "maxIntervalS": 600,
+  "intervalS": 14400,
   "server": [
-    {"name": "ntp.aliyun.com", "isIpv6": false},
-    {"name": "pool.ntp.org", "isIpv6": false},
-    {"name": "time.cloudflare.com", "isIpv6": true},
-    {"name": "ntp.tuna.tsinghua.edu.cn", "isIpv6": true}
-  ]
+    { "name": "ntp.aliyun.com", "isIpv6": false },
+    { "name": "pool.ntp.org", "isIpv6": false },
+    { "name": "time.cloudflare.com", "isIpv6": true },
+    { "name": "ntp.tuna.tsinghua.edu.cn", "isIpv6": true }
+  ],
+  "21cnSpecial": false
 }
 
 

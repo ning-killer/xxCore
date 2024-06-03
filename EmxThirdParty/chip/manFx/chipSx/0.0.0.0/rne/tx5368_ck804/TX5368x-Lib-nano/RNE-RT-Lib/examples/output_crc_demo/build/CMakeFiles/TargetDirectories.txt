@@ -1,0 +1,3 @@
+/home/niuyongfeng/tx511_sdk_orgin/libs/trp/rne/tx5386_ck804/TX5368x-Lib-nano/RNE-RT-Lib/examples/output_crc_demo/build/CMakeFiles/rebuild_cache.dir
+/home/niuyongfeng/tx511_sdk_orgin/libs/trp/rne/tx5386_ck804/TX5368x-Lib-nano/RNE-RT-Lib/examples/output_crc_demo/build/CMakeFiles/edit_cache.dir
+/home/niuyongfeng/tx511_sdk_orgin/libs/trp/rne/tx5386_ck804/TX5368x-Lib-nano/RNE-RT-Lib/examples/output_crc_demo/build/CMakeFiles/output_crc_demo.elf.dir

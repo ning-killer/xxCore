@@ -1,0 +1,123 @@
+add_link_options(-fPIC)
+set(MEDIA_LIBS
+        mpi
+        3a
+        vpu_comm
+        mpi
+		vpu_sw
+        actuator_ms41929
+        actuator_ms41929_aux
+        buf_mgr
+		cjson
+        cmd_if
+        frm_mgr
+		isp
+        isp_dpc
+        isp_hal
+        isp_lsh
+        isp_mvd
+        isp_osif
+        isp_top
+        isp_vin
+        json_convert
+        pcap
+        sensor
+        cmdr
+        isp_tpg
+        isp_submod_common
+		sen_modules
+		ui_uart
+		vpu_comm
+		sensor_gc4023
+		sensor_gc4653
+		sensor_sc430ai
+		csi2d_gc4023
+		csi2d_gc4653
+		csi2d_sc430ai
+		tuning_gc4023_normal
+		tuning_gc4653_normal
+		tuning_sc430ai_normal
+		calibration_gc4023
+		calibration_gc4653
+		calibration_sc430ai
+		omx
+		aecd
+		awbd
+		afcd
+		aec1d
+		awb1d
+		afc1d
+		niss
+		-Wl,--start-group
+		libalgmotiondetect.a
+		libalgfacedetect.a
+		libalgfacebigangle.a
+		libalgfaceheadpose.a
+		libalgfacemaskclassify.a
+		libalgfaceocclusion.a
+		libalgfacerecosolution.a
+		libcve.a
+		libalgbytetrack.a
+		libalgcarsolution.a
+		libalglicenseplatedet.a
+		libalglicenseplate.a
+		libalgpbcedetect.a
+		libalgcommon.a
+		librne_common.a
+		librne_rt_g3.a
+		librne_pal_linux_a7.a
+		-Wl,--end-group
+        )
+set(MEDIA_SRC
+        sample
+		sample/easylogger/src
+		sample/str2bitmap/src
+        )
+set(MEDIA_LIB_DIR
+        lib
+		rne/TX5215x_TX5119x_TX5112_1.3.0.8_0831/RNE-RT-Lib/glibc/32bit
+		algstore/libalgmotiondetect/lib/tx5215/glibc
+		algstore/libalgcommon/lib/tx5215/glibc
+		algstore/libalgfacedetect_v1_7/lib/tx5215/glibc
+		algstore/libalgfacerecosolution/libs/tx5215/glibc
+		algstore/libalgbytetrack_v1_0/lib/tx5215/glibc
+		algstore/libalglicenseplatedet_v2.3/lib/tx5215/glibc
+		algstore/libalgcarsolution_v1.0/lib/tx5215/glibc
+		algstore/libalgpbcedetect_v1_1/lib/tx5215/glibc
+        )
+set(MEDIA_INC_DIR
+        sample
+        include
+        sample/easylogger/include
+        sample/str2bitmap/include
+        sample/asj_hdr
+		rne/TX5215x_TX5119x_TX5112_1.3.0.8_0831/RNE-RT-Lib/include
+        algstore/libalgcommon/include
+		algstore/libalgmotiondetect/include
+		algstore/libalgfacedetect_v1_7/include
+		algstore/libalgfacedetect_v1_7/model/tx5215
+		algstore/libalgfacerecosolution/include
+		algstore/libalgfacerecosolution/model/tx5215
+		algstore/libalgbytetrack_v1_0/include
+		algstore/libalgbytetrack_v1_0/model
+		algstore/libalglicenseplatedet_v2.3/include
+		algstore/libalglicenseplatedet_v2.3/model/tx5215
+		algstore/libalglicenseplate_v1.1/include	
+		algstore/libalgcarsolution_v1.0/include
+		algstore/libalgcarsolution_v1.0/model/tx5215
+		algstore/libalgpbcedetect_v1_1/include/
+		algstore/libalgpbcedetect_v1_1/model/tx5215
+        )
+add_definitions(-DSENSOR0_TYPE=EVB_SENSOR_4MP)
+add_definitions(-DSENSOR1_TYPE=SONY_IMX327_MIPI_2M_30FPS_12BIT)
+add_definitions(-DTX5239)
+#add_definitions(-DDBG_JCY_MOTION)
+#add_definitions(-DDBG_JCY_MUTITARGET)
+#add_definitions(-DDBG_JCY_FACE)
+
+#add_definitions(-DDBG_JCY_FACEPLAN)
+#add_definitions(-DDBG_JCY_BODYTRACK)
+
+add_definitions(-DDBG_JCY_PLATE)
+#add_definitions(-DDBG_JCY_PLATERECO)
+

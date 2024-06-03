@@ -150,8 +150,23 @@ int BspWhiteLightCvitek::GetLuma(int chn) {
     if (chn >= (int) m_channels.size())
         return -1;
     auto inst = BspUtils::GetInst();
+    auto &channel = m_channels[chn];
     inst->Lock();
-    int luma = m_channels[chn].luma;
+    int luma = 0;
+    do {
+        char path[EMX_MAX_PATH_SIZE];
+        sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/duty_cycle", channel.chipNum, channel.pwmNum);
+        FILE *fp = fopen(path, "r");
+        if (!fp) {
+            emxloge("cannot open %s\n", path);
+            break;
+        }
+        char buf[16] = {};
+        fread(buf, sizeof(char), sizeof(buf) - 1, fp);
+        luma = strtol(buf, nullptr, 10);
+        luma = (luma - channel.dutyMin) * (LumaMaxValue - LumaMinValue) / (channel.dutyMax - channel.dutyMin);
+        fclose(fp);
+    } while (false);
     inst->UnLock();
     return luma;
 }

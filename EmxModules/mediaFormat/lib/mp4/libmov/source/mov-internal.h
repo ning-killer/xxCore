@@ -186,6 +186,8 @@ struct mov_track_t
     uint64_t offset; // write only
     int64_t last_dts; // write fmp4 only
     int64_t turn_last_duration; // write fmp4 only
+	int64_t first_frame_pts;
+	int64_t first_frame_dts;	
 
 	unsigned int flags;
 };

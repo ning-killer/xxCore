@@ -29,7 +29,6 @@ namespace Emx {
             bool isAudioAlarm = false; //是否处于警觉告警中。
             int alarmVolume = 2; //警戒告警音量
         };
-
     public:
         Json::Value deviceJsonCfg;
         EuvLoop loop;
@@ -39,6 +38,7 @@ namespace Emx {
         char *buffer;
         int bufferSize;
         EuvAsync timeSyncInfo;
+        SoundAlarmControl soundAlarmControl;
 
     public:
         static const int UpdateSession = 1230001;//Update模块需要提供一个session号作为触发升级主体的标识

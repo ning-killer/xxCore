@@ -59,6 +59,8 @@ void FileFunctionWrite::OnGetData(char *data, int size) {
             emxloge("md5 miss match except[%.*s],actual[%s]\n",
                    sizeof(m_inHeader.md5), m_inHeader.md5, actualMd5.c_str());
         } else {
+            fflush(m_fp);
+            fsync(fileno(m_fp));
             fclose(m_fp);
             m_fp = nullptr;
             code = CodeE::Success;

@@ -15,7 +15,7 @@ ErrCodeE EnvAlarmMotion::Load() {
     }
     ena = json["ena"].asBool();
     sensitivity = json["sensitivity"].asInt();
-    if (zone.SetOvdZone(json["ovdZone"]) == ErrCodeE::Success)
+    if (zone.SetOvdZoneEx(json["ovdZone"]) == ErrCodeE::Success)
         zone.ovdZone = json["ovdZone"];
     auto &jsonMap = json["map"];
     for (int i = 0; i < (int) sizeof(map) / (int) sizeof(map[0]) && i < (int) jsonMap.size(); i++) {

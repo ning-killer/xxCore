@@ -92,9 +92,11 @@ ErrCodeE ParamServer::Set(const char *name, const char *data) {
             File::Copy(normal, backup);
     }
     std::string text = data;
+#ifndef EMX_PLAIN_PARAM
     Pkcs7Padding::Pad(text);
     m_aes.Init(m_key, m_iv);
     m_aes.Encrypt((uint8_t *) text.data(), text.size());
+#endif
     auto e = File::Write(normal, (char *) text.data(), (int) text.size());
     return e;
 }
@@ -110,7 +112,7 @@ ErrCodeE ParamServer::Get(const char *name, std::string &data) {
         return ErrCodeE::Success;
     if (Load(backup, data) == ErrCodeE::Success) {
         File::Copy(backup, normal);
-        emxloge("%s normal load failed, load backup\n");
+        emxloge("%s normal load failed, load backup\n", name);
         return ErrCodeE::Success;
     }
     auto e = Load(def, data);
@@ -136,16 +138,18 @@ ErrCodeE ParamServer::Load(const char *path, std::string &data) {
     data.clear();
     if (File::Read(path, data) != ErrCodeE::Success)
         return ErrCodeE::Failure;
+#ifndef EMX_PLAIN_PARAM
     m_aes.Init(m_key, m_iv);
     m_aes.Decrypt((uint8_t *) data.data(), data.size());
     Pkcs7Padding::UnPad(data);
+#endif
     Json::Value dataJson;
     JSONCPP_STRING errs;
     Json::CharReaderBuilder builder;
     std::unique_ptr<Json::CharReader> const reader(builder.newCharReader());
     if (!reader->parse(data.data(), data.data() + data.size(), &dataJson, &errs)) {
-        emxloge("%s Cannot parse : %s\n", data.data(),
-               errs.empty() ? "unknown" : errs.data());
+        emxloge("file:%s, %s Cannot parse : %s\n", path, data.data(),
+                errs.empty() ? "unknown" : errs.data());
         return ErrCodeE::ParseFailed;
     }
     return ErrCodeE::Success;

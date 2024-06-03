@@ -2,13 +2,12 @@
 /.idea/
 /*build*/
 /output/
-/scripts/debug.py
 /scripts/__pycache__
 /firmware/app/bin
 /firmware/app/lib
 /firmware/app/param
-/firmware/media/bin
 /firmSpare
 /imgs/firmware.bin
 /imgs/spare.bin
-
+/imgs/rootfs.bin
+/firmware/app/configs/devInfo.json

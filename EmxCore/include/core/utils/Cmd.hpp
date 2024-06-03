@@ -38,6 +38,15 @@ namespace Emx {
          */
         static ErrCodeE System(const char *cmd, ...);
 
+        /*!
+         * @brief 使用vfork()的方式执行命令，支持格式化字符串输入
+         * @param cmd [in] 格式化字符串
+         * @param ... [in] 可变参数
+         * @return ErrCodeE
+         */
+        static ErrCodeE VforkRun(const char *cmd, ...);
+
+
     };
 }
 

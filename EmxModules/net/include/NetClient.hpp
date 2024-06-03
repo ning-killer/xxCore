@@ -79,6 +79,8 @@ namespace Emx {
 
         ErrCodeE SetAddr(Addr &addr) override;
 
+        ErrCodeE SetTempAddr(Addr &addr) override;
+
         ErrCodeE GetAddr(Addr &addr) override;
 
         ErrCodeE SetEna(bool ena) override;

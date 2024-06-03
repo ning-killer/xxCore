@@ -53,6 +53,8 @@ namespace Emx {
 
         bool IsMounted();
 
+        int GetPartitionNum(void);
+
         ErrCodeE DoMount();
 
         ErrCodeE GetSize();
@@ -87,7 +89,6 @@ namespace Emx {
         EuvWork m_formatWork;
         ErrCodeE m_formatResult;
 
-
         struct Part {
             char devPath[Info::MaxDevSize];
             const char *blk;
@@ -96,8 +97,11 @@ namespace Emx {
         char m_devMajor[Info::MaxDevSize];
         bool m_optMask;
         bool m_autoMount;
+        bool m_forceMount;
+        bool m_forceMerge;
         uint8_t m_tryCnt;
         std::mutex m_locker;
+        bool m_isFdiskFormat;
     };
 
 }

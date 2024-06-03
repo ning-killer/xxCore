@@ -49,11 +49,13 @@ namespace Emx {
         PostData* GetMsg();
         PostData* Clone(const PostData *data);
         int GetTimerInterval();
+        void OnMsgSync();
         
       private:
         EuvLoop *m_loop;
         EuvWork m_postWork;
         EuvTimer m_postTimer;
+        EuvAsync m_msgSyncInfo;
         int m_maxSize;
         bool m_isStarted;
         bool m_isCreated;

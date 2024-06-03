@@ -43,7 +43,11 @@ namespace Emx {
 
         OVD_int32 ReBootChannel(OVD_int32 channel);
 
+        #ifdef OVDSDK1_38_1
+        OVD_int32 ReBootDevice(ovd_reboot_reason_e reason);
+        #else
         OVD_int32 ReBootDevice();
+        #endif
 
         OVD_int32 KeepAwakenUtilExpired(OVD_int32 channel, OVD_int32 notAllowHibernate,
                                         OVD_int32 expired, OVDHibernateReason reason);
@@ -131,10 +135,24 @@ namespace Emx {
 
 #ifdef OVDSDK_APIVER_3_0
         OVD_int32 StopAlarm(int alarmtype);
-        OVD_int32 GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void* out_response);
         OVD_int32 SetAudioOutPlay(OVD_int32 channel, OVD_char *url, int repeat, int volume);
+#ifdef OVDSDK1_38_1
+        OVD_int32 GetDevRunningInfo(ovd_probe_devrunning_info_e in_info, void* out_response);
+#else
+        OVD_int32 GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void* out_response);
+#endif
 #endif
         void SetVolume();
+
+        void SetLinkageStrategy(const Json::Value &json, EnvStrategy &strategy, std::string alarmVoice);
+        void SetAlertTime(const Json::Value &json, EnvSchedule &schedule);
+        void GetLinkageStrategy(Json::Value &json, const EnvStrategy &strategy);
+        void GetAlertTime(Json::Value &json, const EnvSchedule &schedule);
+        OVD_int32 SyncMacHash(OVD_char* in_machash);
+
+        void ShowPassengerFlowOsd();
+
+        void ShowRegionalPeopleOsd();
 
     private:
         Ovd *m_ovd;
@@ -189,8 +207,10 @@ namespace Emx {
 
             struct Arg {
                 std::string url;
+                std::string alarmVoice;
                 bool playVoiceA;
                 int ret;
+                EnvStrategy *strategy = nullptr;
             };
 
             void OnDownloadVoice(void *arg);
@@ -202,6 +222,18 @@ namespace Emx {
             bool urlChanged;
         } m_invasion;
 
+        //用于声音下载测试
+        struct AudioOut {
+            struct Arg {
+                int ret;
+                int channel;
+                int repeat;
+                int volume;
+                std::string url;
+            };
+            std::string url;
+            EuvWork work;
+        } m_audioOut;
     };
 }
 

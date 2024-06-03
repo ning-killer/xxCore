@@ -28,8 +28,15 @@ void VoipBase::HangUp() {
 }
 
 ErrCodeE VoipBase::Create(OvdCtx *ctx) {
+    if (m_pauseHandle) {
+        m_resp->PauseHandle(false);
+        m_pauseHandle = false;
+        return ErrCodeE::Success;;
+    }
     m_ctx = ctx;
-    m_resp = new VoipCallBackResp(this);
+    if (m_resp == nullptr) {
+        m_resp = new VoipCallBackResp(this);
+    }
     m_resp->Start();
     m_ctx->running.voip.handle = this;
     gAudioParam.isPlayVoiceCall = &(m_ctx->running.alarm.isPlayVoiceCall);
@@ -80,7 +87,7 @@ ErrCodeE VoipBase::Create(OvdCtx *ctx) {
     static cmcc_rtc_log_config_t voip_log_config = {};
     voip_log_config.log_size = 1024 * 100;
     voip_log_config.console_log_enable = 0;
-    voip_log_config.log_path = "/tmp/cmcc_voip.txt";
+    voip_log_config.log_path = "/tmp/syslog/cmcc_voip.txt";
 
     static cmcc_rtc_event_handler_t voip_event_handler = {};
     InitEventHandlerList(&voip_event_handler);
@@ -104,11 +111,12 @@ ErrCodeE VoipBase::Create(OvdCtx *ctx) {
     // 【厂家发送视频流的分辨率原则上以协商结果为准，即以__on_recv_notify接口回调上来的分辨率为准】
     // 【特殊情况下，如果不能发送协商结果对应分辨率的流，则可以降一档分辨率发送。如协商结果为1080P，厂家不能发送1080P的流，则发送720P的流】
     // 【厂家需调用如下接口，设置支持的最高分辨率（如1080P）】
-    char resolution[16] = {};
+    char resolution[23] = {};
     snprintf(resolution, sizeof(resolution), "width=%d,height=%d",
              m_ctx->deviceJsonCfg["voip"]["resolution"]["width"].asInt(),
              m_ctx->deviceJsonCfg["voip"]["resolution"]["height"].asInt());
     cmcc_rtc_setopt(CMCC_OPT_VIDEO_RESOLUTION, resolution);
+    //emxlogd("CMCC_OPT_VIDEO_RESOLUTION:%s\n",resolution);
     //【设置SDK 信令发送线程调度模型为轮询方式】
     // cmcc_rtc_setopt(CMCC_OPT_THREAD_MODE_LOOP, "1");
 
@@ -157,8 +165,18 @@ ErrCodeE VoipBase::Create(OvdCtx *ctx) {
 }
 
 void VoipBase::Destroy() {
+    // 调整停止业务不释放资源，只检验启停标志位
+    if (m_resp != nullptr) {
+        m_resp->PauseHandle(true);
+    }
+    m_pauseHandle = true;
+}
+
+VoipBase::~VoipBase() {
     cmcc_rtc_fini();
     m_workLogin.Destroy();
     m_timerReLogin.Destroy();
-    m_resp->Stop();
+    if (m_resp != nullptr) {
+        m_resp->Stop();
+    }
 }

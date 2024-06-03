@@ -1,6 +1,7 @@
 #include "CurlClient.hpp"
 
 using namespace Emx;
+#define TestPrint 0
 
 CurlClient::CurlClient() {
 }
@@ -27,17 +28,22 @@ void CurlClient::FreePostData(PostData *data) {
     //     data = nullptr;
     // }
 
-    data->url.clear();
-    data->url.shrink_to_fit();
-    data->param.clear();
-    data->param.shrink_to_fit();
-    data->response.clear();
-    data->response.shrink_to_fit();
-    data->responseHead.clear();
-    data->responseHead.shrink_to_fit();
+    // data->url.clear();
+    // data->url.shrink_to_fit();
+    // data->param.clear();
+    // data->param.shrink_to_fit();
+    // data->response.clear();
+    // data->response.shrink_to_fit();
+    // data->responseHead.clear();
+    // data->responseHead.shrink_to_fit();
+    // data->proxy.addr.clear();
+    if (data != nullptr) {
+        delete data;
+        data = nullptr;
+    }
 }
 
-void CurlClient::Send(PostData *data) {
+void CurlClient::Send(PostData *data, bool is_free_header) {
     data->code = CURLE_FAILED_INIT;
     if (data == nullptr) {
         emxloge("send data is null\n");
@@ -55,8 +61,29 @@ void CurlClient::Send(PostData *data) {
     }
     //配置请求头信息
     if (data->header != nullptr) {
+#if TestPrint
+        Json::Value json;
+        curl_slist* currentHeader = data->header;
+        while (currentHeader) {
+            std::string header(currentHeader->data);
+            size_t colonPos = header.find(':');
+            if (colonPos != std::string::npos) {
+                std::string field = header.substr(0, colonPos);
+                std::string value = header.substr(colonPos + 1);
+                json[field] = value;
+            }
+            currentHeader = currentHeader->next;
+        }
+        emxlogt("header-data: %s\n", json.toStyledString().c_str());
+#endif
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, data->header);
+    } else {
+        emxlogt("data header is null!\n");
     }
+
+#if TestPrint
+    emxlogt("curl-data: %s\n", data->url.c_str());
+#endif
     //配置请求地址
     curl_easy_setopt(curl, CURLOPT_URL, data->url.c_str());
     //配置http请求方法
@@ -91,9 +118,11 @@ void CurlClient::Send(PostData *data) {
         curl_easy_cleanup(curl);
         curl = nullptr;
     }
-    if (data->header != nullptr) {
-        curl_slist_free_all(data->header);
-        data->header = nullptr;
+    if (is_free_header) {
+        if (data->header != nullptr) {
+            curl_slist_free_all(data->header);
+            data->header = nullptr;
+        }
     }
     if (data->code != CURLE_OK) {
         emxloge("curl_easy_perform failed, error code(%d) : %s\n"

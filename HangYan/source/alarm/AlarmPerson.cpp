@@ -10,28 +10,41 @@ using namespace Emx;
 
 ErrCodeE AlarmPerson::Create() {
     m_cacheIdx = 0;
-    memset(m_cache, 0, sizeof(m_cache));
+    // memset(m_cache, 0, sizeof(m_cache));
 
     // 创建一个timer用于检测到移动侦测触发后，才认为人行有效
     m_ai = new MediaClientAiDataAsync(m_ctx->loop);
     m_ai->Start(nullptr, [this](MediaAi::AiInfoHeader &header) {
         if (!m_ctx->env.person.ena)
             return;
-        if (header.type != MediaAi::AiTypeE::PersonDetection)
+        if (header.type != MediaAi::AiTypeE::ClassifyDetection)
             return;
         if (m_ai->GetDataByInfo(header) != ErrCodeE::Success)
             return;
 
-        auto *data = (MediaAi::AiInfoPersonDetectionData *) header.data;
+        if (!CheckHeadSrcSize(header.srcPicSize)) {
+            emxloge("header.srcPicSize.h[%d];header.srcPicSize.w[%d]\n", header.srcPicSize.h, header.srcPicSize.w);
+            return;
+        }
+        auto *data = (MediaAi::AiInfoClassifyData *) header.data;
         int maxArea = 0;
         int maxAreaIdx = 0;
-        for (int i = 0; i < header.size / (int) sizeof(MediaAi::AiInfoPersonDetectionData); i++) {
-            if (AlarmInZone(header.srcPicSize, data[i], m_ctx->env.person.zone)) {
-                if (data[i].Area() > maxArea) {
-                    maxArea = data[i].Area();
+        bool isHavePerson = false;
+        for (int i = 0; i < header.size / (int) sizeof(MediaAi::AiInfoClassifyData); i++) {
+            if (data[i].type != MediaAi::ClassifyTypeE::Person) {
+                continue;
+            }
+            isHavePerson = true;
+            if (AlarmInZone(header.srcPicSize, data[i].rect, m_ctx->env.person.zone)) {
+                if (data[i].rect.Area() > maxArea) {
+                    maxArea = data[i].rect.Area();
                     maxAreaIdx = i;
                 }
             }
+        }
+        if (isHavePerson) {
+            emxlogd("no person!\n");
+            return;
         }
         int targetArea;
         if (m_ctx->env.person.sensitivity <= 20) {
@@ -45,9 +58,10 @@ ErrCodeE AlarmPerson::Create() {
         } else {
             targetArea = m_ctx->env.person.map[4];
         }
-        if (maxArea * 1000 / header.srcPicSize.w * header.srcPicSize.h > targetArea) {
+        double currentTraget = (double)(maxArea) / (double)(header.srcPicSize.w * header.srcPicSize.h) * 1000;
+        if (currentTraget > (double)targetArea) {
             //判断此人行是否静态人行，如果是静态人行则忽略掉
-            if (!IsStaticPerson(header.srcPicSize, data[maxAreaIdx])) {
+            if (!IsStaticPerson(header.srcPicSize, data[maxAreaIdx].rect)) {
                 AlarmTrigger();
             }
         }
@@ -61,7 +75,7 @@ void AlarmPerson::Destroy() {
 }
 
 //896*512 16*16 pd_filter
-bool AlarmPerson::IsStaticPerson(Size &size, MediaAi::AiInfoPersonDetectionData &data) {
+bool AlarmPerson::IsStaticPerson(Size &size, Rect &data) {
     //判断cache里的框与当前data最近的中心距离是否小于静态阈值
     bool isStatic = false;
     float minDist = (float) size.w / 100;

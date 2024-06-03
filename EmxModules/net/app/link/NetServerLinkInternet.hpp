@@ -10,66 +10,92 @@
 
 namespace Emx {
 
-    class NetServerLinkInternet {
-    public:
-        using OnInternetChanged = std::function<void(bool con4, bool con6)>;
+class NetServerLinkInternetConnect {
+   public:
+    using OnConnectionChanged = std::function<void(bool connected)>;
+    using Socket = std::function<int()>;
+    NetServerLinkInternetConnect(const char *interface, NetServerResource &res,
+                                 int family)
+        : m_interface(interface), m_res(res), m_family(family), m_sock(-1), m_id(0), m_pingSend(false) {}
+    virtual ~NetServerLinkInternetConnect() {}
 
-        NetServerLinkInternet(const char *interface, NetServerResource &res) :
-                m_interface(interface),
-                m_res(res) {}
+    void Create(OnConnectionChanged cb);
+    void Destroy();
 
-        virtual ~NetServerLinkInternet() {}
+   private:
+    void OnResolve(ErrCodeE e, struct addrinfo *addr, void *arg);
+    void Start();
+    void ReStart();
+    void RunDns();
+    void ConnectTcp();
+    void OnConnectResult(bool connected);
+    const char *GetProtoName() { return m_family == AF_INET ? "ipv4" : "ipv6"; }
 
-        void Create(OnInternetChanged cb);
-
-        void Destroy();
-
+    void RecvPong();
+    int SocketCreate();
+    void SendPingPack(int sock, const char *ip, uint16_t id, uint16_t sequence, uint32_t timeMs);
+    bool RecvPongPack(int sock, uint16_t &id, uint16_t &sequence, uint32_t &timeMs, char *ip);
+    
     protected:
-        void Run();
+    static uint16_t CheckSum(uint16_t *buffer, int length);
 
-        struct InetCon {
-            void Reset() {
-                conTmp = false;
-                tcpIdx = 0;
-                addrArray.clear();
-            }
-
-            EuvTcp tcp;
-            struct Addr {
-                char ip[Net::Ipv6AddrSize];
-                uint16_t port;
-            };
-            std::vector<Addr> addrArray;
-            int tcpIdx;
-            bool conTmp;
-            bool connected;
-            using Socket = std::function<int()>;
-            Socket socket;
+   private:
+    const char *m_interface;
+    NetServerResource m_res;
+    int m_family;
+    struct Domain {
+        char name[EMX_MAX_PATH_SIZE];
+        uint16_t port;
+        struct Addr {
+            char ip[Net::MaxAddrSize];
         };
-
-        void ConnectTcp(InetCon &con);
-
-        void OnResolve(ErrCodeE e, struct addrinfo *addr, void *arg);
-
-        void OnConnectResult(InetCon &con, bool connected);
-
-    private:
-        const char *m_interface;
-        NetServerResource &m_res;
-        EuvTimer m_timer;
-
-        EuvDns m_dns;
-        struct Domain {
-            char name[EMX_MAX_PATH_SIZE];
-            uint16_t port;
-        };
-        std::vector<Domain> m_domainArray;
-        int m_dnsIdx;
-        InetCon m_con4, m_con6;
-        OnInternetChanged m_cb;
+        std::vector<Addr> addrArray;
     };
+    int m_domainIdx;
+    std::vector<Domain> m_domainArray;
+    EuvDns m_dns;
+    EuvTcp m_tcp;
+    int m_tcpIdx;
+    EuvTimer m_timer;
+    OnConnectionChanged m_cb;
+    char m_gateway[Net::MaxAddrSize];
 
+    EuvPoll m_poll;
+    int m_sock;
+    uint16_t m_id;
+    bool m_pingSend;
+    // bool m_created;
+};
 
-}
+class NetServerLinkInternet {
+   public:
+    using OnInternetChanged = std::function<void(bool con4, bool con6)>;
 
-#endif //EMX_NetServerLinkInternet_HPP
+    NetServerLinkInternet(const char *interface, NetServerResource &res)
+        : m_interface(interface),
+          m_res(res),
+          m_connect4(interface, res, AF_INET),
+          m_connect6(interface, res, AF_INET6) {}
+
+    virtual ~NetServerLinkInternet() {}
+
+    void Create(OnInternetChanged cb);
+
+    void Destroy();
+
+   private:
+    void OnConnect4Done(bool connected);
+    void OnConnect6Done(bool connected);
+
+   private:
+    const char *m_interface;
+    NetServerResource &m_res;
+    OnInternetChanged m_cb;
+    NetServerLinkInternetConnect m_connect4;
+    bool m_connect4last;
+    NetServerLinkInternetConnect m_connect6;
+    bool m_connect6last;
+};
+}  // namespace Emx
+
+#endif  // EMX_NetServerLinkInternet_HPP

@@ -1,0 +1,53 @@
+{
+	"on": false,
+	"detect_mode_list": "electromobile",
+	"alarm_sensitivity": 60,
+	"quality": 60,
+	"capture_mode": 0,
+	"scheduled_capture_time": 10,
+	"strategy": {
+		"speech": {
+			"ena": false,
+			"volume": 60,
+			"repeat": 3,
+			"url": "https://oss4.komect.com/voicelib/default/5AlertAreaLeaveAsSoonAsPossible.wav?voiceId=1",
+			"playVoiceA": true
+		},
+		"light": {
+			"ena": false,
+			"mode": 1,
+			"duration": 3
+		},
+		"buzz": {
+			"ena": false,
+			"duration": 0
+		}
+	},
+	"ovdZone": [
+		{
+			"areaId": 0,
+			"point": [
+				{
+					"pointId": 0,
+					"x": 0,
+					"y": 0
+				},
+				{
+					"pointId": 1,
+					"x": 10000,
+					"y": 0
+				},
+				{
+					"pointId": 2,
+					"x": 10000,
+					"y": 10000
+				},
+				{
+					"pointId": 3,
+					"x": 0,
+					"y": 10000
+				}
+			]
+		}
+	]
+}

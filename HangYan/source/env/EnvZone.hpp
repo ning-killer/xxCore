@@ -8,15 +8,25 @@
 #include "Zone.hpp"
 
 namespace Emx {
-
     class EnvZone : public Zone {
-    public:
+      public:  
         EnvZone() : Zone() {}
 
+        /**
+         * @brief 矩形区域填充
+         * @param json [in] 区域json数据
+         * @return 结果
+         */
         ErrCodeE SetOvdZone(const Json::Value &json);
+        
+        /**
+         * @brief 多边形区域填充
+         * @param json [in] 区域json数据
+         * @return 结果
+         */
+        ErrCodeE SetOvdZoneEx(const Json::Value &json);
 
         Json::Value ovdZone;
-
     };
 }
 

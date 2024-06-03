@@ -101,6 +101,18 @@ ErrCodeE NetClient::SetAddr(Net::Addr &addr) {
     return e;
 }
 
+ErrCodeE NetClient::SetTempAddr(Net::Addr &addr) {
+    std::string resp;
+    ErrCodeE e = MsgRpcReqSync::Request(NET_SERVER_RESP_ID,
+                                        (uint32_t) m_dev,
+                                        (uint32_t) NetClientMethodE::SetTempAddr,
+                                        (char *) &addr, sizeof(addr), &resp);
+    if (e != ErrCodeE::Success) {
+        emxloge("failed:%d\n", e);
+    }
+    return e;
+}
+
 ErrCodeE NetClient::GetAddr(Net::Addr &addr) {
     std::string resp;
     ErrCodeE e = MsgRpcReqSync::Request(NET_SERVER_RESP_ID,

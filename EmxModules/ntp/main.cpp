@@ -2,16 +2,14 @@
 * @Author: xiong
 * @Date: 2023/5/31
 */
-#include "csignal"
 #include "EmxCore.hpp"
-#include "NtpClientLib.hpp"
+#include "NtpServerLib.hpp"
+#include "csignal"
 
 using namespace Emx;
 
 int main(int argc, char *argv[]) {
-    if (!Misc::ApplicationExist("EmxCoreServer")) {
-        emxloge("not found EmxCoreServer\n");
-    }
+    if (!Misc::ApplicationExist("EmxCoreServer")) { emxloge("not found EmxCoreServer\n"); }
     Misc::KillBeforeRun(argv[0]);
     signal(SIGPIPE, SIG_IGN);
     // 第一个参数为-b代表后台执行
@@ -26,7 +24,7 @@ int main(int argc, char *argv[]) {
             return 0;
         }
     }
-    NtpClientLib lib;
-    lib.Create(false);
+    NtpServerLib lib;
+    lib.Create(nullptr, false);
     return 0;
 }

@@ -9,6 +9,14 @@
 #include "AlarmPerson.hpp"
 #include "AlarmInvasion.hpp"
 #include "AlarmFace.hpp"
+#include "AlarmLicensePlate.hpp"
+#include "AlarmBatteryCar.hpp"
+#include "AlarmTransgression.hpp"
+#include "AlarmAlertarea.hpp"
+#include "AlarmMask.hpp"
+#include "AlarmOffduty.hpp"
+#include "AlarmPassengerFlow.hpp"
+#include "AlarmRegionalPeople.hpp"
 
 using namespace Emx;
 
@@ -26,13 +34,40 @@ ErrCodeE Alarm::Create(OvdCtx *ctx) {
     if (m_ctx->env.cap.info.ovdCapInfo_alarms.have_alarms_body)
         m_alarmList.push_back(new AlarmPerson(OVD_MAN, m_ctx, &m_alarmList,
                                               std::bind(&Alarm::OnAlarmUploadReqCallBack, this, ph_1, ph_2)));
+#ifndef OVDSDK1_38_1
     if (m_ctx->env.cap.info.ovdCapInfo_alarms.have_alarms_alertarea)
         m_alarmList.push_back(new AlarmInvasion(OVD_ALERTAREA, m_ctx, &m_alarmList,
                                                 std::bind(&Alarm::OnAlarmUploadReqCallBack, this, ph_1, ph_2)));
+#endif // OVDSDK1_38_1
     if (m_ctx->env.cap.info.ovdCapInfo_alarms.have_alarms_face)
         m_alarmList.push_back(new AlarmFace(OVD_FACE, m_ctx, &m_alarmList,
                                                 std::bind(&Alarm::OnAlarmUploadReqCallBack, this, ph_1, ph_2)));
-
+    if (m_ctx->env.cap.info.ovdAICapInfo.AIvehicle.vehicle_detection)
+        m_alarmList.push_back(new AlarmLicensePlate(OVD_VEHICLE_GEN, m_ctx, &m_alarmList,
+                                                std::bind(&Alarm::OnAlarmUploadReqCallBack, this, ph_1, ph_2)));
+    if (m_ctx->env.cap.info.ovdAICapInfo.AInonmotorvehicle.nonmotorvehicle_detection)
+        m_alarmList.push_back(new AlarmBatteryCar(OVD_VEHICLE_MOTOR, m_ctx, &m_alarmList,
+                                                std::bind(&Alarm::OnAlarmUploadReqCallBack, this, ph_1, ph_2)));
+#ifdef OVDSDK1_38_1
+    if (m_ctx->env.cap.info.ovdCapInfo_alarms.have_alarms_transgression)
+        m_alarmList.push_back(new AlarmTransgression(OVD_TRANSGRESSION, m_ctx, &m_alarmList,
+                                                std::bind(&Alarm::OnAlarmUploadReqCallBack, this, ph_1, ph_2)));
+    if (m_ctx->env.cap.info.ovdAICapInfo.AInonmotorvehicle.nonmotorvehicle_detection)
+        m_alarmList.push_back(new AlarmAlertarea(OVD_ALERTAREA, m_ctx, &m_alarmList,
+                                                std::bind(&Alarm::OnAlarmUploadReqCallBack, this, ph_1, ph_2)));
+#endif // OVDSDK1_38_1
+    if (m_ctx->env.cap.info.ovdAICapInfo.AIface.mask_detection)
+        m_alarmList.push_back(new AlarmMask(OVD_FACE_MASK, m_ctx, &m_alarmList,
+                                                std::bind(&Alarm::OnAlarmUploadReqCallBack, this, ph_1, ph_2)));
+    if (m_ctx->env.cap.info.ovdAICapInfo.AIpassenger.passenger)
+        m_alarmList.push_back(new AlarmPassengerFlow(OVD_OTHER, m_ctx, &m_alarmList,
+                                                std::bind(&Alarm::OnAlarmUploadReqCallBack, this, ph_1, ph_2)));
+    if (m_ctx->env.cap.info.ovdAICapInfo.AIregionalPeopleStat.regionalPeopleStat)
+        m_alarmList.push_back(new AlarmRegionalPeople(OVD_REGIONAL_PEOPLE_STAT, m_ctx, &m_alarmList,
+                                                std::bind(&Alarm::OnAlarmUploadReqCallBack, this, ph_1, ph_2)));
+    if (m_ctx->env.cap.info.ovdAICapInfo.AIOffDuty.offDuty_detection)
+        m_alarmList.push_back(new AlarmOffduty(OVD_OFF_DUTY, m_ctx, &m_alarmList,
+                                                std::bind(&Alarm::OnAlarmUploadReqCallBack, this, ph_1, ph_2)));
     for (auto alarm : m_alarmList) {
         alarm->Create();
     }

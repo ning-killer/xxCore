@@ -80,6 +80,42 @@ ErrCodeE Env::LoadAll() {
         emxloge("load voip failed\n");
         return e;
     }
+    if ((e = batteryCar.Load()) != ErrCodeE::Success) {
+        emxloge("load batteryCar failed\n");
+        return e;
+    }
+    if ((e = licensePlate.Load()) != ErrCodeE::Success) {
+        emxloge("load licensePlate failed\n");
+        return e;
+    }
+    if ((e = alertarea.Load()) != ErrCodeE::Success) {
+        emxloge("load alertarea failed\n");
+        return e;
+    }
+    if ((e = transgression.Load()) != ErrCodeE::Success) {
+        emxloge("load transgression failed\n");
+        return e;
+    }
+    if ((e = initMsg.Load()) != ErrCodeE::Success) {
+        emxloge("load initMsg failed\n");
+        return e;
+    }
+    if ((e = laneLine.Load()) != ErrCodeE::Success) {
+        emxloge("load laneLine failed\n");
+        return e;
+    }
+    if ((e = passengerFlow.Load()) != ErrCodeE::Success) {
+        emxloge("load passengerFlow failed\n");
+        return e;
+    }
+    if ((e = regionalPeople.Load()) != ErrCodeE::Success) {
+        emxloge("load regionalPeople failed\n");
+        return e;
+    }
+    if ((e = offDuty.Load()) != ErrCodeE::Success) {
+        emxloge("load offDuty failed\n");
+        return e;
+    }
     emxlogi("env load done\n");
     return ErrCodeE::Success;
 }

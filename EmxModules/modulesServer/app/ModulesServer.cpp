@@ -56,7 +56,7 @@ ErrCodeE ModulesServer::Destroy() {
     m_netServer.Destroy();
     // m_ntpClient.Destroy();
     m_sdcardServer.Destroy();
-    m_rtspServer.Destroy();
+    // m_rtspServer.Destroy();
     m_updateServer.Destroy();
     m_nightServer.Destroy();
     m_sdcardUpdate.Destroy();
@@ -68,7 +68,7 @@ void ModulesServer::CreateSubSystem() {
     // m_ntpClient.Create(true);
     m_sdcardServer.Create(nullptr, true);
     if (m_factoryMode != ExitFactory) {
-        m_rtspServer.Create(true);
+        // m_rtspServer.Create(true);
     }
     m_updateServer.Create(true);
     m_nightServer.Create(nullptr, true);

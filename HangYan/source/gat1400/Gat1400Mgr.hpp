@@ -21,7 +21,7 @@ namespace Emx {
         void Start();
         void Stop();
         void ReStart();
-        bool Upload(const Gat1400Util::UploadDataParam &upload_param);
+        bool Upload(const Gat1400Util::UploadDataParam *upload_param);
         static void SetNetState(bool netConnect);
         static bool GetNetState();
         bool IsUploadSceneImg() {

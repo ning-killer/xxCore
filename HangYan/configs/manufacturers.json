@@ -1,12 +1,13 @@
 {
-  "deviceVendor": "深圳市兆能讯通科技有限公司",
-  "deviceBrand": "兆能讯通",
-  "deviceType": "232839",
+  "deviceVendor": "XuLiYun",
+  "deviceBrand": "XuLiYun",
+  "deviceType": "2320594",
   "os": "Linux-4.9.37",
   "reserve": "Eapil",
-  "chipFactory": "Cvitek",
-  "chipModel": "ARM",
-  "chipUuid": "",
-  "romSize": "128M",
-  "power": "USB"
+  "chipFactory": "QingWei",
+  "chipModel": "TX5239",
+  "chipUuid": "111095380000002",
+  "romSize": "16MB",
+  "ramSize": "128MB",
+  "power": "POE"
 }

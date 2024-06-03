@@ -19,9 +19,9 @@ struct AudioParam {
 namespace Emx {
     class VoipBase {
     public:
-        VoipBase() {}
+        VoipBase() : m_resp(nullptr), m_pauseHandle(false) {}
 
-        virtual ~VoipBase() {}
+        virtual ~VoipBase();
 
         ErrCodeE Create(OvdCtx *ctx);
 
@@ -46,6 +46,7 @@ namespace Emx {
             char app_secret[128];
             char device_id[128];
         };
+        bool m_pauseHandle;
     };
 
 }

@@ -1,0 +1,53 @@
+#add_link_options(-fPIC)
+set(MEDIA_LIBS
+        libcam_os_wrapper.so
+        libmi_isp.so
+        libispalgo.so
+        libcus3a.so
+        libmi_sys.so
+        libmi_ai.so
+        libmi_ao.so
+        libmi_common.so
+        libmi_sensor.so
+        libmi_vif.so
+        libmi_isp.so
+        libmi_scl.so
+        libmi_venc.so
+        libmi_rgn.so
+        libmi_vdf.so
+        libmi_shadow.so
+        libmi_ipu.so
+        libcam_fs_wrapper.so
+        libsstar_algo_detection.a
+        libsstar_algo.a
+        libiniparser.a
+        libdictionary.a
+        libMD_LINUX.so
+        libmi_iqserver.a
+		librgn.a
+		libAEC_LINUX.so
+		libAPC_LINUX.so
+        )
+set(MEDIA_SRC
+        sample
+        )
+set(MEDIA_LIB_DIR
+        lib
+        )
+set(MEDIA_INC_DIR
+        sample
+        include
+        )
+add_definitions(
+        #-DCV1821
+        #-DCV1821_WATCHDOG
+        #-DCV1821_ADC
+        #-DSUPPORT_EXTERNAL_AAC
+        -DCVI_MODIFIED
+        -DARCH_CV183X
+        #-DCV1821_ROTATE_180
+        #-DPERSON_REGION_SUPPORT
+        #-DICR_AE_SUPPORT
+        #-DCV1821_OSD_OVERLAYEX_SUPPORT
+        #-DSUPPORT_ISP_PQTOOL
+)

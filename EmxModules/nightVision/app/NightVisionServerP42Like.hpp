@@ -20,6 +20,8 @@ namespace Emx {
         void DestroySub() override {}
 
         void DoSwitch(ModeE mode) override {}
+
+        void PublishReset() override { }
     };
 
 }

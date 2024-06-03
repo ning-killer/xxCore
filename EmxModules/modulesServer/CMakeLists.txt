@@ -36,7 +36,7 @@ target_link_libraries(
     SDCardServerLib
     NightVisionServerLib
     RtspServerLib
-    NtpClientLib
+    NtpServerLib
     SDCardUpdateLib
     ComEnv
     EmxCore

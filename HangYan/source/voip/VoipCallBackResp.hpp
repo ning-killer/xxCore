@@ -21,6 +21,8 @@ namespace Emx {
 
         void Stop();
 
+        void PauseHandle(bool isPause);
+
     private:
         void ProcCallBack(ThreadInvoke::Packet &packet);
 
@@ -72,6 +74,7 @@ namespace Emx {
         int m_width;
         int m_height;
         int m_keyFrameCnt;
+        bool m_pauseHandle;
 
     public:
         void Clear();

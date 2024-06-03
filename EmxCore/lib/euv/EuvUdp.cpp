@@ -56,6 +56,49 @@ ErrCodeE EuvUdp::Bind(const struct sockaddr *addr, unsigned int flags) {
     return ErrCodeE::Success;
 }
 
+ErrCodeE EuvUdp::Bind(const char *ip, int port, unsigned int flags) {
+    struct sockaddr_in addr = {0};
+    uv_ip4_addr(ip, port, &addr);
+    return Bind((struct sockaddr *) &addr, flags);
+}
+
+ErrCodeE EuvUdp::SetMembership(const char *multicastAddr, const char *interfaceAddr, EuvMembership membership) {
+    int ret = uv_udp_set_membership(m_udp, multicastAddr, interfaceAddr, (uv_membership) membership);
+    if (ret) {
+        emxloge("%p failed:%s\n", m_udp, uv_strerror(ret));
+        return ErrCodeE::Failure;
+    }
+    return ErrCodeE::Success;
+}
+
+ErrCodeE EuvUdp::SetMulticastLoop(bool ena) {
+    int on = ena;
+    int ret = uv_udp_set_multicast_loop(m_udp, on);
+    if (ret) {
+        emxloge("%p failed:%s\n", m_udp, uv_strerror(ret));
+        return ErrCodeE::Failure;
+    }
+    return ErrCodeE::Success;
+}
+
+ErrCodeE EuvUdp::SetMulticastTTL(int ttl) {
+    int ret = uv_udp_set_multicast_ttl(m_udp, ttl);
+    if (ret) {
+        emxloge("%p failed:%s\n", m_udp, uv_strerror(ret));
+        return ErrCodeE::Failure;
+    }
+    return ErrCodeE::Success;
+}
+
+ErrCodeE EuvUdp::SetMulticastInterface(const char *interfaceAddr) {
+    int ret = uv_udp_set_multicast_interface(m_udp, interfaceAddr);
+    if (ret) {
+        emxloge("%p failed:%s\n", m_udp, uv_strerror(ret));
+        return ErrCodeE::Failure;
+    }
+    return ErrCodeE::Success;
+}
+
 ErrCodeE EuvUdp::SetBroadcast(bool ena) {
     int on = ena;
     int ret = uv_udp_set_broadcast(m_udp, on);

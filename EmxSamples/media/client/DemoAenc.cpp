@@ -13,6 +13,12 @@
 using namespace Emx;
 
 int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        emxloge("argument error: [volume]\n");
+        return -1;
+    }
+    int volume = std::stoi(argv[1]);
+
     int num;
     if (MediaClientAenc::GetChnNum(num) != ErrCodeE::Success
         || num < 1) {
@@ -29,18 +35,11 @@ int main(int argc, char *argv[]) {
     emxlogd("aenc param: codec[%d];bitRate[%d];sampleRate[%d];volume[%d];bitWidth[%d];mute[%d]\n"
             , param.codec, param.bitRate, param.sampleRate
             , param.volume, param.bitWidth, param.mute);
-    
-    // 编码切换
-    if (param.codec ==  AudioCodecE::G711A) {
-        param.codec = AudioCodecE::AAC;
-    } else {
-        param.codec = AudioCodecE::G711A;
-    }
 
     // 静音
-    // param.mute = true;
+    param.volume = volume;
 
-    emxlogd("aenc switch codec[%d].\n", param.codec);
+    emxlogd("aenc switch volume[%d].\n", param.volume);
     if (aencClient.SetParam(param) != ErrCodeE::Success) {
         emxloge("aenc GetParam failed.\n");
         return -1;

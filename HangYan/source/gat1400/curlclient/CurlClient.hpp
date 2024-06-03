@@ -74,7 +74,7 @@ namespace Emx {
         void FreePostData(PostData *data);
 
       protected:
-        void Send(PostData *data);
+        void Send(PostData *data, bool is_free_header = true);
     };
 }
 

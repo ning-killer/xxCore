@@ -16,7 +16,7 @@ ErrCodeE EnvAlarmInvasion::Load() {
     }
     ena = json["ena"].asBool();
     sensitivity = json["sensitivity"].asInt();
-    if (zone.SetOvdZone(json["ovdZone"]) == ErrCodeE::Success)
+    if (zone.SetOvdZoneEx(json["ovdZone"]) == ErrCodeE::Success)
         zone.ovdZone = json["ovdZone"];
     schedule.Parse(json["schedule"]);
     strategy.Parse(json["strategy"]);

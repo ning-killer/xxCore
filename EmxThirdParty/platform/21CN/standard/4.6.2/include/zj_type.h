@@ -25,6 +25,7 @@ extern "C" {
 #define IOT_POLICYNAME_HIGHPARABOLIC (char*)"HIGHPARABOLICALARM" // 高空抛物检测报警策略名
 #define IOT_POLICYNAME_MASK         (char*)"MASKALARM"           // 口罩检测报警策略名
 #define IOT_POLICYNAME_FLAMEDETECT  (char*)"FLAMEDETECT"         // 烟火检测报警策略名
+#define IOT_POLICYNAME_EBO_ROBOT    (char*)"EBOROBOT"            // ebo机器人报警策略名
 
 typedef enum enum_zj_os_type
 {
@@ -398,7 +399,8 @@ typedef enum enum_ZJ_AIIOT_TYPE{
     EN_ZJ_AIIOT_TYPE_CLICKBUTTON                = 1030,      // IPC按键报警
     EN_ZJ_AIIOT_TYPE_BATTERYBIKE                = 1031,      // 电瓶车识别
     EN_ZJ_AIIOT_TYPE_HIGHPARABOLIC              = 1032,      // 高空抛物识别
-    EN_ZJ_AIIOT_TYPE_MASK                       = 1033       // 口罩识别
+    EN_ZJ_AIIOT_TYPE_MASK                       = 1033,      // 口罩识别
+    EN_ZJ_AIIOT_TYPE_EBO_ROBOT                  = 1044,      // ebo机器人报警
 }EN_ZJ_AIIOT_TYPE;
 
 // IoT设备默认IoTID
@@ -440,6 +442,14 @@ typedef enum enum_zj_motion_event_type
     EN_ZJ_MOTION_EVENT_FENCE_NONMOTOR_OUT       = 0X21,         // 电子围栏非机动车离开事件
     EN_ZJ_MOTION_EVENT_FENCE_NONMOTOR_STAY      = 0X22,         // 逗留非机动车报警事件    
 }EN_ZJ_MOTION_EVENT_TYPE;
+
+// 区分EBO机器人中不同的报警类型
+typedef enum enum_zj_ebo_robot_event_type
+{
+    EN_ZJ_EBO_ROBOT_EVENT_SHAKE                 = 0X00,    // 连续摇晃事件类型
+    EN_ZJ_EBO_ROBOT_EVENT_LOW_POWER             = 0X01,    // 低电量事件类型
+    EN_ZJ_EBO_ROBOT_EVENT_RECHARGE_FAILED       = 0X02,    // 回充失败事件类型
+}EN_ZJ_EBO_ROBOT_EVENT_TYPE;
 
 // 0x01 、0x08表示原生方向
 typedef enum enum_ZJ_ROTATE_TYPE {

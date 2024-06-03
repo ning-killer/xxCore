@@ -1,0 +1,31 @@
+{
+  "on": false,
+  "laneLineNum": 1,
+  "ovdZone": [
+    {
+      "areaId": 0,
+      "point": [
+        {
+          "pointId": 0,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "pointId": 1,
+          "x": 10000,
+          "y": 0
+        },
+        {
+          "pointId": 2,
+          "x": 10000,
+          "y": 10000
+        },
+        {
+          "pointId": 3,
+          "x": 0,
+          "y": 10000
+        }
+      ]
+    }
+  ]
+}

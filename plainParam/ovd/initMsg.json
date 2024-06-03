@@ -1,0 +1,21 @@
+{
+    "rebootParam": {
+        "reason": 1000,
+        "ts": 0,
+        "message": ""
+    },
+    "clientParam": {
+        "machash": "",
+        "enable_servicschedule": 1,
+        "servicescheduleurl": "",
+        "cafilepath": "",
+        "tz": 8,
+        "local_storage_path": "",
+        "ovd_data_path": "/root/configs/ovd/data",
+        "ovd_log_path": "/tmp/syslog"
+    },
+    "updateStatus": {
+        "state": 5,
+        "isNormalReboot": false
+    }
+}

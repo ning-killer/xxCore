@@ -33,6 +33,7 @@ bool CurlAsyncClient::Create(EuvLoop *loop) {
     m_postWork.Create(loop, nullptr
                 , std::bind(&CurlAsyncClient::PostMsg, this, ph_1)
                 , std::bind(&CurlAsyncClient::PostMsgDone, this, ph_1, ph_2));
+    m_msgSyncInfo.Create(*loop, std::bind(&CurlAsyncClient::OnMsgSync, this));
     m_postTimer.Create(*loop);
     m_isCreated = true;
     Start();
@@ -45,7 +46,9 @@ bool CurlAsyncClient::Start() {
     }
     m_isStarted = true;
     m_postTimer.Start(0, 0, [this]() {
-        RunPostWork();
+        if (!m_postWork.IsWorking()) {
+            RunPostWork();
+        }
     });
     return true;
 }
@@ -62,10 +65,14 @@ bool CurlAsyncClient::Post(const PostData *data) {
     if (!AddMsg(data)) {
         return false;
     }
+    m_msgSyncInfo.Send();
+    return true;
+}
+
+void CurlAsyncClient::OnMsgSync() {
     if (!m_postWork.IsWorking()) {
         RunPostWork();
     }
-    return true;
 }
 
 bool CurlAsyncClient::AddMsg(const PostData *data) {
@@ -99,6 +106,7 @@ CurlAsyncClient::PostData* CurlAsyncClient::GetMsg() {
             break;
         }
         data = m_msgList.front();
+        emxlogt("data header[%p]\n", data->header);
     } while(false);
     return data;
 }
@@ -134,6 +142,9 @@ CurlAsyncClient::PostData* CurlAsyncClient::Clone(const PostData *data) {
 }
 
 void CurlAsyncClient::RunPostWork() {
+    if (m_postWork.IsWorking()) {
+        return;
+    }
     if (!m_isStarted) {
         emxlogd("CurlAsyncClient is stop!\n");
         return;
@@ -155,7 +166,7 @@ void CurlAsyncClient::PostMsg(void *arg) {
     msg->response.shrink_to_fit();
     msg->responseHead.clear();
     msg->responseHead.shrink_to_fit();
-    Send(msg);
+    Send(msg, false);
 }
 
 void CurlAsyncClient::PostMsgDone(Emx::ErrCodeE e, void *arg) {
@@ -165,12 +176,18 @@ void CurlAsyncClient::PostMsgDone(Emx::ErrCodeE e, void *arg) {
         emxloge("post msg is null\n");
         return;
     }
-    emxlogd("result:%s; code:%d; response: %s\n"
+    emxlogd("result:%s; code:%d; response: %s; postevent: %d\n"
                 , msg->code == CURLE_OK ? "success" : "failed"
-                , msg->code, msg->response.c_str());
-    Gat1400FaceUploadUserOpera *faceUser = dynamic_cast<Gat1400FaceUploadUserOpera*>(msg->userOperation);
-    if (faceUser != nullptr && faceUser->isUploadOk(msg->response) && msg->code == CURLE_OK) {
-        emxlogd("face upload is ok!\n");
+                , msg->code, msg->response.c_str()
+                , (int)msg->userOperation->m_postEvent);
+    bool isPosted = false;
+    if (msg->userOperation != nullptr 
+        && msg->userOperation->isUploadOk(msg->response) 
+        && msg->code == CURLE_OK) {
+        isPosted = true;
+    }
+    if (isPosted) {
+        emxlogd("event[%d] upload is ok!\n", (int)msg->userOperation->m_postEvent);
         m_failedCount = 0;
         //note: 判断上传成功时，链表头节点资源释放
         {   
@@ -179,28 +196,32 @@ void CurlAsyncClient::PostMsgDone(Emx::ErrCodeE e, void *arg) {
             m_msgList.pop_front();
         }
     } else {
+        //note: 更新鉴权头信息
+        // msg->userOperation->UpdateAuthHeader(msg->header);
         m_failedCount++;
-        // if (faceUser == nullptr && msg->code != CURLE_OK) {
-        //     m_failedCount++;
-        // }
+        emxlogt("m_failedCount[%d]\n", m_failedCount);
+        emxlogt("msg header[%p]\n", msg->header);
     }
+
     if (!m_msgList.empty()) {
         m_postTimer.Start(GetTimerInterval(), 0, [this]() {
-            RunPostWork();
+            if (!m_postWork.IsWorking()) {
+                RunPostWork();
+            }
         });
     }
 }
 
 int CurlAsyncClient::GetTimerInterval() {
-    int interval = 100; //ms
+    int interval = 1000; //ms
     if (m_failedCount <= 5) {
-        interval = 100;
+        interval = 1000;
     } else if (m_failedCount > 5 && m_failedCount <= 10) {
-        interval = 500;
-    } else if (m_failedCount > 10 && m_failedCount <= 20) {
-        interval = 2000;
-    } else {
         interval = 5000;
+    } else if (m_failedCount > 10 && m_failedCount <= 20) {
+        interval = 10000;
+    } else {
+        interval = 30000;
     }
     return interval;
 }

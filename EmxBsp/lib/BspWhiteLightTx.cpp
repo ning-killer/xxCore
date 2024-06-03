@@ -1,0 +1,194 @@
+//
+// Created by xiong on 2022/6/29.
+//
+
+#include "BspWhiteLightTx.hpp"
+#include "BspUtils.hpp"
+
+using namespace Emx;
+
+BspWhiteLightTx::BspWhiteLightTx() : Bsp::WhiteLight() {
+    m_created = false;
+    auto inst = BspUtils::GetInst();
+    inst->Lock();
+    do {
+        if (!inst->GetCfg().isMember("whiteLightTx"))
+            break;
+        auto &cfg = inst->GetCfg()["whiteLightTx"];
+        m_defaultChnIdx = cfg["defaultChnIdx"].asInt();
+        for (auto &item : cfg["channels"]) {
+            Channel chn = {};
+            chn.luma = 0;
+            chn.chipNum = item["chipNum"].asInt();
+            chn.pwmNum = item["pwmNum"].asInt();
+            chn.period = item["period"].asInt();
+            chn.dutyMin = item["dutyMin"].asInt();
+            chn.dutyMax = item["dutyMax"].asInt();
+
+            char path[EMX_MAX_PATH_SIZE];
+            sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d", chn.chipNum, chn.pwmNum);
+            if (!File::Exist(path)) {
+                if (item.isMember("system")) {
+                    Cmd::RunCheck(item["system"].asCString());
+                }
+                //注册pwm
+                sprintf(path, "/sys/class/pwm/pwmchip%d/export", chn.chipNum);
+                FILE *fp = fopen(path, "w");
+                if (!fp) {
+                    emxloge("cannot open %s\n", path);
+                    break;
+                }
+                fprintf(fp, "%d", chn.pwmNum);
+                fclose(fp);
+                /*设置 PWM 一个周期的持续时间， 单位为 ns*/
+                sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/period", chn.chipNum, chn.pwmNum);
+                fp = fopen(path, "w");
+                if (!fp) {
+                    emxloge("cannot open %s\n", path);
+                    break;
+                }
+                fprintf(fp, "%d", chn.period);
+                fclose(fp);
+                /*设置一个周期中的”ON” 时间，单位为 ns*/
+                sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/duty_cycle", chn.chipNum, chn.pwmNum);
+                fp = fopen(path, "w");
+                if (!fp) {
+                    emxloge("cannot open %s\n", path);
+                    break;
+                }
+                fprintf(fp, "%d", 0);
+                fclose(fp);
+                /*设置 PWM 使能*/
+                sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/enable", chn.chipNum, chn.pwmNum);
+                fp = fopen(path, "w");
+                if (!fp) {
+                    emxloge("cannot open %s\n", path);
+                    break;
+                }
+                fprintf(fp, "%d", 1);
+                emxlogd("test enable\n");
+                fclose(fp);
+            }
+            m_channels.emplace_back(chn);
+        }
+        m_created = true;
+    } while (false);
+    inst->UnLock();
+}
+
+BspWhiteLightTx::~BspWhiteLightTx() {
+    m_channels.clear();
+}
+
+ErrCodeE BspWhiteLightTx::SetEna(bool ena, int chn) {
+    if (!m_created)
+        return ErrCodeE::ResNotAvailable;
+    if (chn < 0) chn = m_defaultChnIdx;
+    if (chn >= (int) m_channels.size())
+        return ErrCodeE::IllegalParam;
+    ErrCodeE e;
+    auto inst = BspUtils::GetInst();
+    inst->Lock();
+    if (ena) {
+        e = DoSetLuma(m_channels[chn].luma, chn);
+    } else {
+        e = DoSetLuma(-1, chn);
+    }
+    inst->UnLock();
+    return e;
+}
+
+bool BspWhiteLightTx::GetEna(int chn) {
+    if (!m_created)
+        return false;
+    if (chn < 0) chn = m_defaultChnIdx;
+    if (chn >= (int) m_channels.size())
+        return false;
+    auto &channel = m_channels[chn];
+    auto inst = BspUtils::GetInst();
+    inst->Lock();
+    bool ena = false;
+    do {
+        char path[EMX_MAX_PATH_SIZE];
+        sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/duty_cycle", channel.chipNum, channel.pwmNum);
+        FILE *fp = fopen(path, "r");
+        if (!fp) {
+            emxloge("cannot open %s\n", path);
+            break;
+        }
+        char buf[16] = {};
+        fread(buf, sizeof(char), sizeof(buf) - 1, fp);
+        fclose(fp);
+        ena = strtol(buf, nullptr, 10) != 0;
+    } while (false);
+    inst->UnLock();
+    return ena;
+}
+
+ErrCodeE BspWhiteLightTx::SetLuma(int luma, int chn) {
+    if (!m_created)
+        return ErrCodeE::ResNotAvailable;
+    if (luma > LumaMaxValue || luma < LumaMinValue) {
+        emxloge("illegal luma value %d\n", luma);
+        return ErrCodeE::IllegalParam;
+    }
+    if (chn < 0) chn = m_defaultChnIdx;
+    if (chn >= (int) m_channels.size())
+        return ErrCodeE::IllegalParam;
+    auto inst = BspUtils::GetInst();
+    inst->Lock();
+    ErrCodeE ret = DoSetLuma(luma, chn);
+    if (ret == ErrCodeE::Success)
+        m_channels[chn].luma = luma;
+    inst->UnLock();
+    return ret;
+}
+
+int BspWhiteLightTx::GetLuma(int chn) {
+    if (!m_created)
+        return -1;
+    if (chn < 0) chn = m_defaultChnIdx;
+    if (chn >= (int) m_channels.size())
+        return -1;
+    auto inst = BspUtils::GetInst();
+    auto &channel = m_channels[chn];
+    inst->Lock();
+    int luma = 0;
+    do {
+        char path[EMX_MAX_PATH_SIZE];
+        sprintf(path, "/sys/class/pwm/pwmchip%d/pwm%d/duty_cycle", channel.chipNum, channel.pwmNum);
+        FILE *fp = fopen(path, "r");
+        if (!fp) {
+            emxloge("cannot open %s\n", path);
+            break;
+        }
+        char buf[16] = {};
+        fread(buf, sizeof(char), sizeof(buf) - 1, fp);
+        luma = strtol(buf, nullptr, 10);
+        luma = (luma - channel.dutyMin) * (LumaMaxValue - LumaMinValue) / (channel.dutyMax - channel.dutyMin);
+        fclose(fp);
+    } while (false);
+    inst->UnLock();
+    return luma;
+}
+
+ErrCodeE BspWhiteLightTx::DoSetLuma(int luma, int chn) {
+    auto &channel = m_channels[chn];
+    char path1[EMX_MAX_PATH_SIZE];
+   
+    sprintf(path1, "/sys/class/pwm/pwmchip%d/pwm%d/duty_cycle", channel.chipNum, channel.pwmNum);
+    
+    FILE *fp1 = fopen(path1, "w");
+    if (!fp1) {
+        emxloge("cannot open %s\n", path1);
+        return ErrCodeE::OpenFailed;
+    }
+    emxlogd("luma:%d \n",luma);
+    if (luma == -1) {
+        fprintf(fp1, "%d", 0);
+    } else {
+        fprintf(fp1, "%d", (channel.dutyMax - channel.dutyMin) * luma / (LumaMaxValue - LumaMinValue) + channel.dutyMin);
+    }
+    fclose(fp1);
+    return ErrCodeE::Success;
+}

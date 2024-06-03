@@ -31,26 +31,26 @@ int main(int argc, char *argv[]) {
             , param.codec, param.width, param.height, param.fps, param.bitRate);
     
     // 视频编码切换
-    if (param.codec == VideoCodecE::H264) {
-        param.codec = VideoCodecE::H265;
-    } else {
-        param.codec = VideoCodecE::H264;
-    }
+    // if (param.codec == VideoCodecE::H264) {
+    //     param.codec = VideoCodecE::H265;
+    // } else {
+    //     param.codec = VideoCodecE::H264;
+    // }
 
-    // 分辨率切换
-    if (param.width == 1920 && param.height == 1080) {
-        param.width = 2560;
-        param.height = 1440;
-    } else {
-        param.width = 1920;
-        param.height = 1080;
-    }
-    param.bitRate = 285;
+    // // 分辨率切换
+    // if (param.width == 1920 && param.height == 1080) {
+    //     param.width = 2560;
+    //     param.height = 1440;
+    // } else {
+    //     param.width = 1920;
+    //     param.height = 1080;
+    // }
+    // param.bitRate = 285;
     
-    emxlogd("changed width[%d];height[%d]\n", param.width, param.height);
-    if (vencClient.SetParam(param) != ErrCodeE::Success) {
-        emxloge("venc SetParam failed.\n");
-        return -1;
-    }
+    // emxlogd("changed width[%d];height[%d]\n", param.width, param.height);
+    // if (vencClient.SetParam(param) != ErrCodeE::Success) {
+    //     emxloge("venc SetParam failed.\n");
+    //     return -1;
+    // }
     return 0;
 }

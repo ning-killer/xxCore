@@ -41,6 +41,8 @@ namespace Emx {
         std::map<Ptz::TypeE, Config> m_map;
         int m_fd;
         MotorArgInit m_arg;
+        bool m_Vertical;
+        bool m_Horizon;
     };
 
 }

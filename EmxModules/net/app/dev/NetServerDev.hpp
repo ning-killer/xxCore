@@ -31,6 +31,8 @@ namespace Emx {
 
         ErrCodeE SetAddr(Addr &addr) override;
 
+        ErrCodeE SetTempAddr(Addr &addr) override;
+
         ErrCodeE GetAddr(Addr &addr) override;
 
         ErrCodeE SetEna(bool ena) override;
@@ -61,6 +63,9 @@ namespace Emx {
 
         void OnLinkChanged(LinkStat &link);
 
+        std::string GetMac();
+
+        void Ipv6Delete();
     protected:
 
         virtual ErrCodeE CreateDev() { return ErrCodeE::Success; }

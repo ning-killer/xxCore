@@ -21,6 +21,7 @@ namespace Emx {
                 spk(std::make_shared<Spk>()),
                 rca(std::make_shared<Rca>()),
                 wifi(std::make_shared<Wifi>()),
+                mobile(std::make_shared<Mobile>()),
                 led(std::make_shared<Led>()),
                 updateIndicator(std::make_shared<UpdateIndicator>()) {}
 
@@ -118,6 +119,13 @@ namespace Emx {
 
         std::shared_ptr<WhiteLight> whiteLight;
 
+        class SoundCheck : public GpioLike {
+        public:
+            SoundCheck() : GpioLike() {}
+        };
+
+        std::shared_ptr<SoundCheck> SoundCheck;
+
         class KeyCall : public GpioLike {
         public:
             KeyCall() : GpioLike() {}
@@ -152,6 +160,13 @@ namespace Emx {
         };
 
         std::shared_ptr<Wifi> wifi;
+
+        class Mobile : public GpioLike {
+        public:
+            Mobile() : GpioLike() {}
+        };
+
+        std::shared_ptr<Mobile> mobile;
 
         class Led {
         public:

@@ -12,7 +12,27 @@
 
 using namespace Emx;
 
-void RunMediaClientOSD() {
+void Filter(std::string& text, int limit) {
+    if ((int)text.size() < limit) {
+        return;
+    }
+    int index = 0;
+    for (;;) {
+        unsigned char c = static_cast<unsigned char>(text[index]);
+        int charLength = 1; 
+        if (c <= 127) {
+        } else if (c >= 192 && c <= 247) {
+            charLength = (c <= 223) ? 2 : ((c <= 239) ? 3 : 4);
+        }
+        if (index + charLength >= limit) {
+            break;
+        }
+        index += charLength;
+    }
+    text = text.substr(0, index);
+}
+
+void RunMediaClientOSD(const Json::Value &data) {
     int num;
     if (MediaClientOSD::GetChnNum(num) != ErrCodeE::Success
         || num < 1) {
@@ -26,80 +46,36 @@ void RunMediaClientOSD() {
         emxloge("osd GetParam failed.\n");
         return;
     }
-    Json::Value chn;
-    chn["time"].resize(0);
-    chn["text"].resize(0);
-    chn["image"].resize(0);
-    for (auto &item : osdParam) {
-        if (item->type == MediaOSD::TypeE::Time) {
-            Json::Value json;
-            json["ena"] = item->time.ena;
-            json["size"] = item->time.size;
-            json["thickness"] = item->time.thickness;
-            json["layer"] = item->time.layer;
-            json["font"] = item->time.font;
-            json["format"] = (int) item->time.format;
-            json["margin"]["horizon"]["rate"] = item->time.margin.rateX;
-            json["margin"]["horizon"]["align"] = (int) item->time.margin.horizon;
-            json["margin"]["vertical"]["rate"] = item->time.margin.rateY;
-            json["margin"]["vertical"]["align"] = (int) item->time.margin.vertical;
-            chn["time"].append(json);
-        } else if (item->type == MediaOSD::TypeE::Text) {
-            Json::Value json;
-            json["ena"] = item->text.ena;
-            json["size"] = item->text.size;
-            json["thickness"] = item->text.thickness;
-            json["layer"] = item->text.layer;
-            json["font"] = item->text.font;
-            json["content"] = item->text.content;
-            json["margin"]["horizon"]["rate"] = item->text.margin.rateX;
-            json["margin"]["horizon"]["align"] = (int) item->text.margin.horizon;
-            json["margin"]["vertical"]["rate"] = item->text.margin.rateY;
-            json["margin"]["vertical"]["align"] = (int) item->text.margin.vertical;
-            chn["text"].append(json);
-        } else if (item->type == MediaOSD::TypeE::Image) {
-            Json::Value json;
-            json["ena"] = item->image.ena;
-            json["layer"] = item->image.layer;
-            json["width"] = item->image.width;
-            json["height"] = item->image.height;
-            json["alpha"] = item->image.alpha;
-            json["path"] = item->image.path;
-            json["margin"]["horizon"]["rate"] = item->image.margin.rateX;
-            json["margin"]["horizon"]["align"] = (int) item->image.margin.horizon;
-            json["margin"]["vertical"]["rate"] = item->image.margin.rateY;
-            json["margin"]["vertical"]["align"] = (int) item->image.margin.vertical;
-            chn["image"].append(json);
-        }
+    for (auto iter = osdParam.begin(); iter != osdParam.end();) {
+        if ((*iter)->type == MediaOSD::TypeE::Text)
+            iter = osdParam.erase(iter);
+        else
+            iter++;
     }
-    emxlogd("osd message chn0: %s\n", chn.toStyledString().c_str());
-
-    int text_rateX = 100;
-    int text_rateY = 100;
-    for (auto &item : osdParam) {
-        if (item->type == MediaOSD::TypeE::Time) {
-            item->text.ena = true;
-            item->text.margin.vertical = MediaOSD::VAlignE::Top;
-            item->text.margin.rateY = 0;
-            item->text.margin.horizon = MediaOSD::HAlignE::Left;
-            item->text.margin.rateX= 0;
-        } else if (item->type == MediaOSD::TypeE::Text) {
-            item->text.ena = true;
-            item->text.margin.vertical = MediaOSD::VAlignE::Top;
-            item->text.margin.rateY = text_rateY;
-            text_rateY += 100;
-            item->text.margin.horizon = MediaOSD::HAlignE::Left;
-            item->text.margin.rateX= text_rateX;
-            text_rateX += 200; 
-        } else if (item->type == MediaOSD::TypeE::Image) {
-            memset(item->image.path, 0 ,sizeof(item->image.path));
-            snprintf(item->image.path, sizeof(item->image.path) - 1, "/customer/nfs/code-projects/Platform/MMC233Z/firmware/app/configs/logo/2560x1440.rgba");
-            item->text.margin.vertical = MediaOSD::VAlignE::Top;
-            item->text.margin.rateY = 500;
-            item->text.margin.horizon = MediaOSD::HAlignE::Left;
-            item->text.margin.rateX= 500;
+    try {
+        for (auto text : data["text"]) {
+            auto param = std::make_shared<MediaOSD::Param>();
+            memset(param.get(), 0, sizeof(MediaOSD::Param));
+            param->type = MediaOSD::TypeE::Text;
+            std::string s_text = text["content"].asString();
+            Filter(s_text, 256);
+            memcpy(param->text.content, s_text.c_str(), s_text.size());
+            param->text.margin.horizon = (MediaOSD::HAlignE)text["margin"]["horizon"]["align"].asInt();
+            param->text.margin.rateX = text["margin"]["horizon"]["rate"].asInt();
+            param->text.margin.vertical = (MediaOSD::VAlignE)text["margin"]["vertical"]["align"].asInt();
+            param->text.margin.rateY = text["margin"]["vertical"]["rate"].asInt();
+            param->text.thickness = 1;
+            param->text.ena = true;
+            param->text.size = text["size"].asInt();
+            param->text.layer = text["layer"].asInt();
+            memcpy(param->text.font, text["font"].asString().c_str(), sizeof(param->text.font));
+            osdParam.emplace_back(param);
         }
+    } catch(const std::exception& e) {
+        std::cerr << e.what() << '\n';
+        return;
     }
+    
     if (osdClient.SetParam(osdParam) != ErrCodeE::Success) {
         emxloge("osd GetParam failed.\n");
         return;
@@ -107,7 +83,42 @@ void RunMediaClientOSD() {
     return;
 }
 
+// DemoOsd textFile note: x，y坐标基准1000传入
+// {
+// 	"text": [
+// 		{
+// 			"content": "你好",
+// 			"ena": true,
+// 			"font": "font.ttf",
+// 			"layer": 0,
+// 			"margin": {
+// 				"horizon": {
+// 					"align": 0,
+// 					"rate": 30
+// 				},
+// 				"vertical": {
+// 					"align": 0,
+// 					"rate": 905
+// 				}
+// 			},
+// 			"size": 56,
+// 			"thickness": 1
+// 		}
+// 	]
+// }
+
 int main(int argc, char *argv[]) {
-    RunMediaClientOSD();
+    if (argc < 2) {
+        emxloge("argument error: [DemoOsd textFile]\n");
+        return -1;
+    }
+    std::string textfile = std::string(argv[1]);
+    
+    Json::Value dataJson;
+    if (EasyJson::Load(textfile.c_str(), dataJson) == ErrCodeE::Failure) {
+        emxloge("read %s failed\n", textfile.c_str());
+        return -1;
+    }
+    RunMediaClientOSD(dataJson);
     return 0;
 }

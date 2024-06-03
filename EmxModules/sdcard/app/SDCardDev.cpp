@@ -37,6 +37,16 @@ SDCardDev::SDCardDev(SDCardResource &res, Json::Value &cfg, int chn) : SDCard(ch
     m_partBak.blk = m_partBak.devPath + strlen("/dev/");
     snprintf(m_devMajor, sizeof(m_devMajor), "/dev/%s", cfg["devMajor"].asCString());
 
+    m_forceMount = false;
+    m_isFdiskFormat = false;
+    if (cfg["forceMount"].isBool()) {
+        m_forceMount = cfg["forceMount"].asBool();
+    }
+    m_forceMerge = false;
+    if (cfg["forceMerge"].isBool()) {
+        m_forceMerge = cfg["forceMerge"].asBool();
+    }
+    emxlogd("SDCardServer forceMount[%d],forceMerge[%d]\n", m_forceMount,m_forceMerge);
 }
 
 void SDCardDev::Create() {
@@ -65,6 +75,7 @@ void SDCardDev::InitStat() {
     if (m_partMain) {
         if (!IsMounted()) {
             //如果当前没有挂载则尝试挂载
+            m_info.stat = SDCard::StatE::Inserted;
             m_tryCnt = 3;
             m_timer.Start(0, 1000, std::bind(&SDCardDev::OnTryingMount, this));
         } else {
@@ -221,8 +232,8 @@ void SDCardDev::OnMonitor() {
         return;
 //    printf("#%s#\n", m_res.buffer);
     if (strncmp(m_res.buffer, "add@", 4) == 0) {
+        emxlogd("%s\n", m_res.buffer);
         if (strstr(m_res.buffer, m_partBak.blk) || strstr(m_res.buffer, m_part.blk)) {
-            emxlogd("%s\n", m_res.buffer);
             m_info.stat = SDCard::StatE::Inserted;
             m_optMask = true;
             m_autoMount = true;
@@ -256,14 +267,24 @@ void SDCardDev::OnTryingUnmount() {
         if (m_info.stat == SDCard::StatE::Formatting) {
             m_formatResult = ErrCodeE::Failure;
             m_formatWork.Run();
-        } else if (m_autoMount) {
-            if (m_info.stat == SDCard::StatE::Inserted) {
-                //if the sdcard is exist, then try to mount it
-                m_tryCnt = 3;
-                m_timer.Start(0, 1000, std::bind(&SDCardDev::OnTryingMount, this));
-            } else {
-                //else allow the user ctrl operation
-                m_optMask = false;
+        } else if (m_autoMount && m_info.stat == SDCard::StatE::Inserted) {
+            //if the sdcard is exist, then try to mount it
+            m_tryCnt = 3;
+            m_timer.Start(0, 1000, std::bind(&SDCardDev::OnTryingMount, this));
+        } else {
+            m_optMask = false;
+        }
+    } else {
+        if (m_forceMount) {
+            // 卸载失败，检测sdcard是否重新插入，并进行挂载
+            if (m_autoMount) {
+                if (m_info.stat == SDCard::StatE::Inserted) {
+                    //if the sdcard is exist, then try to mount it
+                    m_timer.Stop();
+                    SelectPartMain();
+                    m_tryCnt = 3;
+                    m_timer.Start(0, 1000, std::bind(&SDCardDev::OnTryingMount, this));
+                }
             }
         }
     }
@@ -289,14 +310,16 @@ void SDCardDev::OnTryingMount() {
 
 void SDCardDev::OnFormat(void *arg) {
     if (m_partMain) {
+        m_isFdiskFormat = false;
         emxlogi("formatting %s ...\n", m_partMain->devPath);
-        if (m_partMain != &m_part) {
+        if ((m_partMain != &m_part) ||
+           ( m_forceMerge && (GetPartitionNum() >2)) ) {
             m_formatResult = Cmd::RunCheck("fdisk.sh %s", m_devMajor);
             if (m_formatResult != ErrCodeE::Success)
                 return;
-            int cnt = 10;
-            while (cnt--) {
-                emxlogd("trying update dev table:%d\n", 10 - cnt);
+            Cmd::RunCheck("mdev -s");
+            /*while (cnt--) {
+                emxlogd("trying update dev table:%s\n", 10 - cnt,m_part.devPath);
                 int fd = open(m_part.devPath, O_RDONLY);
                 ioctl(fd, BLKRRPART, nullptr);
                 close(fd);
@@ -304,8 +327,9 @@ void SDCardDev::OnFormat(void *arg) {
                 if (File::Exist(m_part.devPath)) {
                     break;
                 }
-            }
+            }*/
             m_partMain = &m_part;
+            m_isFdiskFormat = true;
         }
         m_formatResult = Cmd::RunCheck("mkfs.sh %s", m_partMain->devPath);
     } else {
@@ -316,9 +340,11 @@ void SDCardDev::OnFormat(void *arg) {
 void SDCardDev::OnFormatDone(ErrCodeE e, void *arg) {
     m_info.stat = SDCard::StatE::Inserted;
     if (m_formatResult == ErrCodeE::Success) {
-        emxlogi("format successful\n");
-       m_tryCnt = 3;
-       m_timer.Start(0, 1000, std::bind(&SDCardDev::OnTryingMount, this));
+        emxlogd("format successful;isFdiskFormat[%d]\n", m_isFdiskFormat);
+        m_tryCnt = 3;
+        if (!m_isFdiskFormat) {
+        m_timer.Start(0, 1000, std::bind(&SDCardDev::OnTryingMount, this));
+        }
     } else {
         emxloge("format failed\n");
     }
@@ -373,7 +399,7 @@ int SDCardDev::Mount(const char* dev_path, const char* mount_point) {
         if (Cmd::RunCheck(mount_cmd) != ErrCodeE::Success) {
             break;
         }
-        
+
         char check_cmd[64] = { 0 };
         snprintf(check_cmd, sizeof(check_cmd) - 1
                 , "df | grep %s", mount_point);
@@ -459,4 +485,30 @@ void SDCardDev::SelectPartMain() {
         m_partMain = &m_partBak;
     else
         m_partMain = nullptr;
+}
+
+int SDCardDev::GetPartitionNum(void) {
+    FILE *file = fopen("/proc/partitions", "r");
+    if (file == NULL) {
+        fprintf(stderr, "Cannot open /proc/partitions\n");
+        return 0;
+    }
+
+    char line[64];
+    int sdcardPartitions = 0;
+    while (fgets(line, sizeof(line), file)) {
+        if (strstr(line, "mmcblk0") != NULL) {
+            char dev[64];
+            int major = 0, minor = 0, blocks = 0;
+            sscanf(line, "%d %d %d %s", &major, &minor, &blocks, dev);
+            if (strstr(dev, "mmcblk0") != NULL) {
+                emxlogi("Found partition for %s, major: %d, minor: %d, blocks: %d\n", dev, major, minor, blocks);
+                sdcardPartitions++;
+            }
+        }
+    }
+
+    fclose(file);
+    emxlogi("Total partitions for the SD card: %d\n", sdcardPartitions);
+    return sdcardPartitions;
 }

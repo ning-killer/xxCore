@@ -1,4 +1,39 @@
 {
   "rom": "/mnt/sdcard/rom.bin",
-  "resultDir": "/mnt/sdcard"
+  "resultDir": "/mnt/sdcard",
+  "updateFlag comment": "检测到此标志位文件，则升级后设备不重启;未检测到，设备自动重启",
+  "updateFlag": "/mnt/sdcard/TfUpdate",
+  "update comment": "升级成功,灯每invMs秒闪烁一次;升级失败,灯每invMs秒切换一次状态,然后按照invFastMs快闪,如果invFastMs为0,则不处理",
+  "updateSuccessful": {
+    "invMs": 2000,
+    "invFastMs": 0,
+    "allChannels": [
+      {
+        "dir": 1,
+        "active": false,
+        "default": false,
+        "num": 56
+      }
+    ],
+    "channelsCycleIdx": [
+      0,
+      -1
+    ]
+  },
+  "updateFail": {
+    "invMs": 2000,
+    "invFastMs": 200,
+    "allChannels": [
+      {
+        "dir": 1,
+        "active": false,
+        "default": false,
+        "num": 56
+      }
+    ],
+    "channelsCycleIdx": [
+      0,
+      -1
+    ]
+  }
 }

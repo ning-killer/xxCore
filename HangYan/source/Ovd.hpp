@@ -96,6 +96,11 @@ namespace Emx {
         Record m_record;
         Schedule m_scheduleSleep;
         Schedule m_scheduleInv;
+        Schedule m_scheduleAlertarea;
+        Schedule m_scheduleTransgression;
+        Schedule m_scheduleMaskDetection;
+        Schedule m_scheduleregionalPeople;
+        Schedule m_scheduleOffduty;
         AutoMaintain m_autoMaintain;
         SoftProbe m_softProbe;
         Alarm m_alarm;

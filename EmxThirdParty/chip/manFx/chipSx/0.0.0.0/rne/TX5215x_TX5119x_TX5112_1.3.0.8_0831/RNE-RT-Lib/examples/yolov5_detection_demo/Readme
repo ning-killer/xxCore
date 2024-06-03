@@ -1,0 +1,17 @@
+step1: 确保配置好交叉编译工具链
+
+step2:  编译demo
+    make clean;make
+
+step3:  将输出 build_linux_a53/Release/yolov5_detection_demo.elf 传输到板端
+        将 resource 传输到板端
+
+step4:  运行demo
+        参数1: resource/yolov5_quantize_r.cfg
+        参数2: resource/yolov5_quantize_r.weight
+        参数3: resource/1.jpg or resource/2.jpg or resource/3.jpg or resource/4.jpg
+        参数4: 检测结果保存文件名
+        参数5: 前处理是否使用int8 hwc的格式, 0 : 不使用, 1 : 使用
+        ./yolov5_detection_demo.elf 参数1 参数2 参数3 参数4 参数5
+
+注: 读入模型文件cfg和weight时, 需保证*.cfg和*.weight的前缀一致

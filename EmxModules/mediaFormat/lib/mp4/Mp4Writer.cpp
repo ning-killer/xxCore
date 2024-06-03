@@ -32,6 +32,8 @@ ErrCodeE Mp4Writer::Create(const char *path, Json::Value *usr) {
         m_mov = nullptr;
     }
     if (m_fp) {
+        fflush(m_fp);
+        fsync(fileno(m_fp));
         fclose(m_fp);
         m_fp = nullptr;
         remove(path);
@@ -41,6 +43,8 @@ ErrCodeE Mp4Writer::Create(const char *path, Json::Value *usr) {
 
 void Mp4Writer::Destroy() {
     mov_writer_destroy(m_mov);
+    fflush(m_fp);
+    fsync(fileno(m_fp));
     fclose(m_fp);
 }
 

@@ -25,7 +25,16 @@
 #include "EnvAlarmInvasion.hpp"
 #include "EnvManufacturers.hpp"
 #include "EnvVoip.hpp"
-
+#include "EnvAlarmBatteryCar.hpp"
+#include "EnvAlarmLicensePlate.hpp"
+#include "EnvAlarmAlertarea.hpp"
+#include "EnvAlarmTransgression.hpp"
+#include "EnvInitMsg.hpp"
+#include "EnvCommon.hpp"
+#include "EnvAlarmLaneLine.hpp"
+#include "EnvAlarmPassengerFlow.hpp"
+#include "EnvAlarmOffduty.hpp"
+#include "EnvAlarmRegionalPeople.hpp"
 
 namespace Emx {
 
@@ -52,6 +61,15 @@ namespace Emx {
         EnvAlarmVoice voice;
         EnvManufacturers manufacturers;
         EnvVoip voip;
+        EnvAlarmBatteryCar batteryCar;
+        EnvAlarmLicensePlate licensePlate;
+        EnvAlarmAlertarea alertarea;
+        EnvAlarmTransgression transgression;
+        EnvInitMsg initMsg;
+        EnvAlarmLaneLine laneLine;
+        EnvAlarmPassengerFlow passengerFlow;
+        EnvAlarmRegionalPeople regionalPeople;
+        EnvAlarmOffduty offDuty;
     };
 }
 

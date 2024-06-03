@@ -15,6 +15,11 @@ ErrCodeE EnvCap::Load() {
             return e;
         }
         memset(&info, 0, sizeof(info));
+        memset(info.have_support_extension,0,sizeof(info.have_support_extension));
+        std::string have_support_extersion = json["talk_protocol"].asString();
+        int cmySize = have_support_extersion.size() > sizeof(have_support_extersion) ? sizeof(have_support_extersion) : have_support_extersion.size();
+        memcpy(info.have_support_extension,have_support_extersion.c_str(),cmySize);
+
         info.have_ptz = json["have_ptz"].asBool();
         info.support_ptz_preset = json["support_ptz_preset"].asBool();
         info.have_battery = json["have_battery"].asBool();
@@ -33,6 +38,38 @@ ErrCodeE EnvCap::Load() {
         AIface.faceExposureAdjust = AIfaceJson["faceExposureAdjust"].asBool();
         strncpy(AIface.CaptureModeList, AIfaceJson["CaptureModeList"].asCString(), sizeof(AIface.CaptureModeList));
         AIface.alarm_zone = AIfaceJson["alarm_zone"].asInt();
+        AIface.mask_detection = AIfaceJson["mask_detection"].asBool();
+
+        auto &AIpassenger = ovdAICapInfo.AIpassenger;
+        auto &AIpassengerJson = ovdAICapInfoJson["AIpassenger"];
+        AIpassenger.passenger = AIpassengerJson["passenger_flow_statistics_detection"].asBool();
+        AIpassenger.passengerExposureAdjust = AIpassengerJson["exposure_adjust"].asBool();
+        strncpy(AIpassenger.passengerCaptureModeList, AIpassengerJson["capture_mode_list"].asCString(), sizeof(AIpassenger.passengerCaptureModeList));
+        AIpassenger.passengerAlarmzone = AIpassengerJson["alarm_zone"].asInt();
+        AIpassenger.support_osd_status = AIpassengerJson["support_osd_status"].asBool();
+
+        auto &AIoffduty = ovdAICapInfo.AIOffDuty;
+        auto &AIoffdutyJson = ovdAICapInfoJson["AIoffduty"];
+        AIoffduty.offDuty_detection = AIoffdutyJson["off_duty_detection"].asBool();
+        AIoffduty.support_on_duty_count = AIoffdutyJson["support_on_duty_count"].asInt();
+        AIoffduty.support_off_duty_durtion = AIoffdutyJson["support_off_duty_durtion"].asInt();
+        AIoffduty.support_alert_time = AIoffdutyJson["support_alert_time"].asBool();
+        AIoffduty.detect_plan_num = AIoffdutyJson["detect_plans_num"].asInt();
+        AIoffduty.alarm_area_num = AIoffdutyJson["alarm_area_num"].asInt();
+        AIoffduty.alarm_zone = AIoffdutyJson["alarm_zone"].asInt();
+
+        auto &AIregionalPeopleStat = ovdAICapInfo.AIregionalPeopleStat;
+        auto &AIregionalPeopleStatJson = ovdAICapInfoJson["AIregionalPeopleStat"];
+        AIregionalPeopleStat.regionalPeopleStat = AIregionalPeopleStatJson["regional_people_statistics_detection"].asBool();
+        AIregionalPeopleStat.support_alert_time = AIregionalPeopleStatJson["support_alert_time"].asBool();
+        AIregionalPeopleStat.support_osd_status = AIregionalPeopleStatJson["support_osd_status"].asBool();
+        AIregionalPeopleStat.support_regional_people_count = AIregionalPeopleStatJson["support_regional_people_count"].asInt();
+        AIregionalPeopleStat.support_alarm_report_duration = AIregionalPeopleStatJson["support_alarm_report_duration"].asInt();
+        AIregionalPeopleStat.support_detect_result_report_duration = AIregionalPeopleStatJson["support_detect_result_report_duration"].asInt();
+        AIregionalPeopleStat.detect_plans_num = AIregionalPeopleStatJson["detect_plans_num"].asInt();
+        AIregionalPeopleStat.alarm_area_num = AIregionalPeopleStatJson["alarm_area_num"].asInt();
+        AIregionalPeopleStat.alarm_zone = AIregionalPeopleStatJson["alarm_zone"].asInt();
+
 
         auto &AIkitchen = ovdAICapInfo.AIkitchen;
         auto &AIkitchenJson = ovdAICapInfoJson["AIkitchen"];
@@ -52,6 +89,20 @@ ErrCodeE EnvCap::Load() {
 #endif 
         
         AIvehicle.alarm_zone = AIvehicleJson["alarm_zone"].asInt();
+        AIvehicle.vehicle_detect_site = AIvehicleJson["vehicle_detect_site"].asBool();
+        
+        auto &AInonmotorvehicle = ovdAICapInfo.AInonmotorvehicle;
+        auto &AInonmotorvehicleJson = ovdAICapInfoJson["AInonmotorvehicle"];
+        AInonmotorvehicle.nonmotorvehicle_detection = AInonmotorvehicleJson["nonmotorvehicle_detection"].asBool();
+        strncpy(AInonmotorvehicle.CaptureModeList, AInonmotorvehicleJson["CaptureModeList"].asCString(),
+                sizeof(AInonmotorvehicle.CaptureModeList));
+        AInonmotorvehicle.alarm_zone = AInonmotorvehicleJson["alarm_zone"].asInt();
+
+        auto &AILaneLine = ovdAICapInfo.AILaneLine;
+        auto &AILaneLineJson = ovdAICapInfoJson["AILaneLine"];
+        AILaneLine.laneLineAlarmzone = AILaneLineJson["laneLineAlarmzone"].asInt();
+        AILaneLine.laneLine = AILaneLineJson["laneLine"].asBool();
+        AILaneLine.laneLineNum = AILaneLineJson["laneLineNum"].asInt();
         //ovdAICapInfo end
 
         //alarm begin
@@ -71,7 +122,23 @@ ErrCodeE EnvCap::Load() {
         ovdCapInfo_alarms.have_alarms_pir_staymode = ovdCapInfo_alarmsJson["have_alarms_pir_staymode"].asBool();
         ovdCapInfo_alarms.have_alarms_lossLock = ovdCapInfo_alarmsJson["have_alarms_lossLock"].asBool();
         ovdCapInfo_alarms.have_alarms_alertarea = ovdCapInfo_alarmsJson["have_alarms_alertarea"].asBool();
+#ifdef OVDSDK1_38_1
+        ovdCapInfo_alarms.hava_alarms_alertarea_zone = ovdCapInfo_alarmsJson["support_alarms_alertarea_zone"].asInt();
+
+        // 周界区域入侵
+        ovdCapInfo_alarms.alertarea_params.support_set_target = ovdCapInfo_alarmsJson["alertarea_params"]["support_set_target"].asInt();
+        ovdCapInfo_alarms.alertarea_params.support_staymode_time = ovdCapInfo_alarmsJson["alertarea_params"]["support_staymode_time"].asBool();
+        ovdCapInfo_alarms.alertarea_params.support_set_alerttime = ovdCapInfo_alarmsJson["alertarea_params"]["support_set_alerttime"].asBool();
+        ovdCapInfo_alarms.alertarea_params.support_alarms_alertarea_zone = ovdCapInfo_alarmsJson["alertarea_params"]["support_alarms_alertarea_zone"].asInt();
+
+        // 周界越界检测
+        ovdCapInfo_alarms.have_alarms_transgression = ovdCapInfo_alarmsJson["have_alarms_transgression"].asBool();
+        ovdCapInfo_alarms.transgression_params.support_set_target = ovdCapInfo_alarmsJson["transgression_params"]["support_set_target"].asInt();
+        ovdCapInfo_alarms.transgression_params.support_set_alerttime = ovdCapInfo_alarmsJson["transgression_params"]["support_set_alerttime"].asBool();
+        ovdCapInfo_alarms.transgression_params.support_set_statistics_line = ovdCapInfo_alarmsJson["transgression_params"]["support_set_statistics_line"].asBool();
+#else
         ovdCapInfo_alarms.support_alarms_alertarea_zone = ovdCapInfo_alarmsJson["support_alarms_alertarea_zone"].asInt();
+#endif 
         //alarm end
 
         //linkage begin
@@ -81,6 +148,14 @@ ErrCodeE EnvCap::Load() {
                 sizeof(ovdlinkage_mode.alertarea));
         strncpy(ovdlinkage_mode.vehicle_detection, ovdlinkage_modeJson["vehicle_detection"].asCString(),
                 sizeof(ovdlinkage_mode.vehicle_detection));
+        strncpy(ovdlinkage_mode.mask_detection, ovdlinkage_modeJson["mask_detection"].asCString(),
+                sizeof(ovdlinkage_mode.mask_detection));
+        strncpy(ovdlinkage_mode.nonmotorvehicle_detection, ovdlinkage_modeJson["nonmotorvechicle_detection"].asCString(),
+                sizeof(ovdlinkage_mode.nonmotorvehicle_detection));
+        strncpy(ovdlinkage_mode.transgression, ovdlinkage_modeJson["transgression"].asCString(),
+                sizeof(ovdlinkage_mode.transgression));
+        strncpy(ovdlinkage_mode.regionalPeopleStat_detection, ovdlinkage_modeJson["regionalPeopleStat_detection"].asCString(),
+                sizeof(ovdlinkage_mode.regionalPeopleStat_detection));
         //linkage end
 #ifdef OVDSDK_APIVER_1_0
         info.log_upload_https = json["log_upload_https"].asBool();
@@ -114,6 +189,11 @@ ErrCodeE EnvCap::Load() {
         hjkh_mode.not_disturb_device_mode = hjkh_modeJson["not_disturb_device_mode"].asBool();
         hjkh_mode.auto_hangup = hjkh_modeJson["auto_hangup"].asBool();
         //hjkh_mode end
+
+#ifdef OVDSDK1_38_1
+        info.stream_encryption_mode = (ovd_media_encrypt_type_e)json["stream_encryption_mode"].asInt();
+        info.support_detect_nightvision_mask = json["support_set_detect_nightvision_mask"].asInt();
+#endif
         return ErrCodeE::Success;
     } catch (std::exception &e) {
         emxlogc("load ovd cap failed:%s\n", e.what());

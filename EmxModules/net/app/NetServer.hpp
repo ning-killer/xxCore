@@ -34,6 +34,9 @@ namespace Emx {
 
         ErrCodeE SaveParam();
 
+        //配置参数初始化
+        ErrCodeE ParamInit();
+
     private:
         bool m_quit;
         NetServerResource m_res;

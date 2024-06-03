@@ -47,7 +47,8 @@ class DemoTalkbackPlay {
     ~DemoTalkbackPlay() { Destroy(); }
     void Create(EuvLoop &loop) {
         char path[EMX_MAX_PATH_SIZE] = { 0 };
-        snprintf(path, sizeof(path) - 1, "%s/audio/aginging.aac", Misc::GetAppConfigsDir());
+        // snprintf(path, sizeof(path) - 1, "%s/audio/aginging.aac", Misc::GetAppConfigsDir());
+        snprintf(path, sizeof(path) - 1, "/mnt/nfs/voip.pcm");
         // 打开aac音频文件，需要保证解码通道配置为aac解码
         m_fp = fopen(path, "rb");
         // 初始化定时器
@@ -57,16 +58,23 @@ class DemoTalkbackPlay {
         m_timer.Start(0, 20, [this]() {
             // 读取aac音频文件
             char buffer[2048];
-            auto n = fread(buffer, 1, 7, m_fp);
+            // auto n = fread(buffer, 1, 7, m_fp);
+            // if (n <= 0) {
+            //     fseek(m_fp, SEEK_SET, 0);
+            //     emxlogd("EOF\n");
+            //     return;
+            // }
+            // auto size = ((buffer[3] & 0x03) << 11) | (buffer[4] << 3) | (buffer[5] >> 5);
+            // n = fread(buffer + 7, 1, size - 7, m_fp);
+            // if ((int) n != size - 7) {
+            //     emxloge("Not an ADTS packet\n");
+            //     return;
+            // }
+            int size = 320;
+            auto n = fread(buffer, 1, size, m_fp);
             if (n <= 0) {
                 fseek(m_fp, SEEK_SET, 0);
                 emxlogd("EOF\n");
-                return;
-            }
-            auto size = ((buffer[3] & 0x03) << 11) | (buffer[4] << 3) | (buffer[5] >> 5);
-            n = fread(buffer + 7, 1, size - 7, m_fp);
-            if ((int) n != size - 7) {
-                emxloge("Not an ADTS packet\n");
                 return;
             }
             // 将音频帧发送给MediaServer进行解码播放
@@ -75,8 +83,8 @@ class DemoTalkbackPlay {
             frame.size = (int) size;
             frame.tsInUs = 0;
             frame.seq = 0;
-            emxlogd("PushFrame.\n");
-            MediaClientAdecStreamSync::PushFrame(0, frame);
+            emxlogd("PushFrame. size[%d]\n", frame.size);
+            MediaClientAdecStreamSync::PushRawPcm(0, frame);
         });
 
         // 初始化定时器
@@ -106,46 +114,59 @@ class DemoTalkbackPlay {
 };
 
 void TestBase() {
-    int num;
-    if (MediaClientAdec::GetChnNum(num) != ErrCodeE::Success
-        || num < 1) {
-        emxloge("adec GetChnNum failed, num(%d).\n", num);
-        return;
-    }
+    // int num;
+    // if (MediaClientAdec::GetChnNum(num) != ErrCodeE::Success
+    //     || num < 1) {
+    //     emxloge("adec GetChnNum failed, num(%d).\n", num);
+    //     return;
+    // }
 
-    MediaClientAdec adecClient(0);
-    MediaAdec::Param param;
-    if (adecClient.GetParam(param) != ErrCodeE::Success) {
-        emxloge("adec GetParam failed.\n");
-        return;
-    }
-    emxlogd("adec param: codec[%d];bitRate[%d];sampleRate[%d];volume[%d];bitWidth[%d]\n"
-            , param.codec, param.bitRate, param.sampleRate, param.volume, param.bitWidth);
-    int vol = param.volume;
-    if (vol == 60) {
-        vol = 30;
-    }
-    if (adecClient.SetVolume(vol) != ErrCodeE::Success) {
-        emxloge("adec SetVolume failed.\n");
-        return;
-    }
-    if (adecClient.GetParam(param) != ErrCodeE::Success) {
-        emxloge("adec GetParam failed.\n");
-        return;
-    }
-    emxlogd("adec param: codec[%d];bitRate[%d];sampleRate[%d];volume[%d];bitWidth[%d]\n"
-            , param.codec, param.bitRate, param.sampleRate, param.volume, param.bitWidth);
+    // MediaClientAdec adecClient(0);
+    // MediaAdec::Param param;
+    // if (adecClient.GetParam(param) != ErrCodeE::Success) {
+    //     emxloge("adec GetParam failed.\n");
+    //     return;
+    // }
+    // emxlogd("adec param: codec[%d];bitRate[%d];sampleRate[%d];volume[%d];bitWidth[%d]\n"
+    //         , param.codec, param.bitRate, param.sampleRate, param.volume, param.bitWidth);
+    // int vol = param.volume;
+    // if (vol == 60) {
+    //     vol = 30;
+    // }
+    // if (adecClient.SetVolume(vol) != ErrCodeE::Success) {
+    //     emxloge("adec SetVolume failed.\n");
+    //     return;
+    // }
+    // if (adecClient.GetParam(param) != ErrCodeE::Success) {
+    //     emxloge("adec GetParam failed.\n");
+    //     return;
+    // }
+    // emxlogd("adec param: codec[%d];bitRate[%d];sampleRate[%d];volume[%d];bitWidth[%d]\n"
+    //         , param.codec, param.bitRate, param.sampleRate, param.volume, param.bitWidth);
     
     // 验证PlayFileWithVolume()
-    int playNum = 10;
+    int playNum = 5;
     for (int i = 0; i < playNum; i++) {
         char path[EMX_MAX_PATH_SIZE] = { 0 };
-        snprintf(path, sizeof(path) - 1, "%s/audio/aginging.aac", Misc::GetAppConfigsDir());
-        MediaClientAdecStreamSync::PlayFileWithVolume(0, path, 5);
+        snprintf(path, sizeof(path) - 1, "%s/audio/music.aac", Misc::GetAppConfigsDir());
+        MediaClientAdecStreamSync::PlayFileWithVolume(0, path, 60);
     }
 }
 
 int main(int argc, char *argv[]) {
+    // if (argc < 2) {
+    //     emxloge("argument error: [volume]\n");
+    //     return -1;
+    // }
+    // int volume = std::stoi(argv[1]);
+    // MediaClientAdec adec(0);
+    // adec.SetVolume(volume);
+    // char path[EMX_MAX_PATH_SIZE] = { 0 };
+    // snprintf(path, sizeof(path) - 1, "%s/audio/music.al", Misc::GetAppConfigsDir());
+    // MediaClientAdecStreamSync::PlayCtrlQuit(0);
+    // MediaClientAdecStreamSync::PlayFile(0, path);
+
+
     // TestBase();
 
     EuvLoop loop;

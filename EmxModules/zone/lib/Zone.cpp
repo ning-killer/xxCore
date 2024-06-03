@@ -3,8 +3,56 @@
 //
 
 #include "Zone.hpp"
+#include <queue>
 
 using namespace Emx;
+
+PolygonFiller::PolygonFiller(int width, int height)
+    : m_width(width)
+    , m_height(height) {
+    m_map.resize(width * height, false);
+}
+
+void PolygonFiller::AddPoint(int x, int y) {
+    m_points.emplace_back(x, y);
+}
+
+void PolygonFiller::FillPolygon() {
+    for (int y = 0; y < m_height; y++) {
+        for (int x = 0; x < m_width; x++) {
+            if (IsInsidePolygon(x, y)) {
+                m_map[y * m_width + x] = 1;
+            }
+        }
+    }
+}
+
+ bool PolygonFiller::IsInsidePolygon(int x, int y) {
+    int numPoints = m_points.size();
+    bool inside = false;
+    for (int i = 0, j = numPoints - 1; i < numPoints; j = i++) {
+        int xi = m_points[i].x;
+        int yi = m_points[i].y;
+        int xj = m_points[j].x;
+        int yj = m_points[j].y;
+
+        // 检查点 (x, y) 是否在边界线段 (xi, yi) 到 (xj, yj) 内部
+        if (((yi > y) != (yj > y)) &&
+            (x < (xj - xi) * (y - yi) / (double)(yj - yi) + xi)) {
+            inside = !inside;
+        }
+    }
+    return inside;
+}
+
+void PolygonFiller::PrintMap() {
+    for (int y = 0; y < m_height; y++) {
+        for (int x = 0; x < m_width; x++) {
+            printf("%d", (int)m_map[y * m_width + x]);
+        }
+        printf("\n");
+    }
+}
 
 ErrCodeE Zone::Parse(const Json::Value &json) {
     if (json.size() != Width * Height / 8)

@@ -10,6 +10,12 @@
 namespace Emx {
 
     class EnvCfg : public EnvBase {
+    public: 
+        enum NightvisionDetectMode {
+            person = 0, //人形
+            motion = 1, //移动
+        };
+
     public:
         EnvCfg() : EnvBase("cfg") {}
 
@@ -40,6 +46,7 @@ namespace Emx {
         int last_upgrade_state;     //上一次升级的状态
         char last_upgrade_time[64];               //<必填，只读,字符串型：最后一次升级时间，格式”YY-MM-DDTHH:MM:SS”>
         bool intelligentNightVision;
+        NightvisionDetectMode nightvision_detect_mode;  //触发全彩行为类型分类
     };
 
 }

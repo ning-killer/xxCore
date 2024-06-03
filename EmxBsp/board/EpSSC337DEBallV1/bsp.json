@@ -1,0 +1,110 @@
+{
+  "led": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 1,
+        "active": true,
+        "default": true,
+        "num": 57
+      },
+      {
+        "dir": 1,
+        "active": true,
+        "default": true,
+        "num": 56
+      }
+    ]
+  },
+  "updateIndicator": {
+    "invMs": 300,
+    "allChannels": [
+      {
+        "dir": 1,
+        "active": true,
+        "default": true,
+        "num": 56
+      }
+    ],
+    "channelsCycleIdx": [
+      0, -1
+    ]
+  },
+  "keyReset": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 0,
+        "active": false,
+        "default": true,
+        "num": 28
+      }
+    ]
+  },
+  "irLight": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 1,
+        "active": true,
+        "default": false,
+        "num": 13
+      }
+    ]
+  },
+  "whiteLightCvitek": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "chipNum": 0,
+        "pwmNum": 1,
+        "period": 50000,
+        "dutyMin": 500,
+        "dutyMax": 50000,
+        "system": "io_check_maruko 14 11"
+      }
+    ]
+  },
+  "spk": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 1,
+        "active": true,
+        "default": false,
+        "num": 43
+      }
+    ]
+  },
+  "irCut2Wire": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "delayMs": 200,
+        "wire0": {
+          "dir": 1,
+          "active": true,
+          "default": false,
+          "num": 81
+        },
+        "wire1": {
+          "dir": 1,
+          "active": true,
+          "default": false,
+          "num": 80
+        }
+      }
+    ]
+  },
+  "adcCvitek": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "chnNum": 0,
+        "reference": 1,
+        "adcValueAtMaxLuma": 4096,
+        "adcValueAtMinLuma": 0
+      }
+    ]
+  }
+}

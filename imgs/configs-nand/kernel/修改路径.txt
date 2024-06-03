@@ -1,9 +1,0 @@
-1.linux\arch\arm\boot\dts\cvitek 目录 高温配置
-cv182x_asic.dtsi
-
-2.build\cv1821_wevb_0005b_spinor 目录  编译配置相关
-.config
-
-4.sdk\build\boards\cv1821_wevb_0005b_spinor\linux 目录 配置相关
-cv1821_wevb_0005b_spinor.dts
-cvitek_cv1821_wevb_0005b_spinor_defconfig

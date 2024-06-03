@@ -31,7 +31,6 @@ BspIrCut2Wire::BspIrCut2Wire() : Bsp::IrCut(), m_created(false) {
         m_created = true;
     }
     inst->UnLock();
-    BspIrCut2Wire::SwitchToNight(false, -1);
 }
 
 BspIrCut2Wire::~BspIrCut2Wire() {

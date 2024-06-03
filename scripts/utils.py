@@ -400,6 +400,8 @@ def pack_raw_flash_img(topdir, img_info, out):
 # |32Byte             md5 of all(encrypted) below  |
 # |4Byte              rom header size(<64KB)       |
 # |header sizeByte    rom json header              |
+# |xByte              pre_script.sh                |
+# |xByte              pre_script.sh                |
 # |xByte              img0                         |
 # |xByte              img1                         |
 # |xByte              ....                         |
@@ -417,8 +419,7 @@ def pack_raw_flash_img(topdir, img_info, out):
 #     "img": [
 #         {"name": "boot", "size": 0},
 #         {"name": "kernel", "size": 0},
-#         {"name": "app", "size": 0},
-#         {"name": "media", "size": 0}
+#         {"name": "firmware", "size": 0}
 #     ]
 # }
 def pack_rom(dev_info, out, img_info, img_list, pre_script_file=None, post_script_file=None):

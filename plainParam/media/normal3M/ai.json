@@ -1,39 +1,51 @@
 [
-  {
-    "ena": true,
-    "motionDetection": {
-      "ena": true,
-      "drawing": true,
-      "threshold": 64
-    },
-    "personDetection": {
-      "ena": true,
-      "drawing": true
-    },
-    "classify": {
-      "ena": true,
-      "drawing": true,
-      "type": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-    },
-    "personRecognition": {
-      "ena": true,
-      "drawing": true
-    },
-    "faceRecognition": {
-      "ena": true,
-      "drawing": true
-    },
-    "facePersonDetection": {
-      "ena": false,
-      "faceDraw": false,
-      "personDraw": false,
-      "aeEna": false,
-      "aeValue": 60,
-      "captureNum": 1,
-      "captureMode": 0,
-      "captureQuality": 20,
-      "captureInterval": 10,
-      "captureSensitivity": 0.5
-    }
-  }
+	{
+		"ena": true,
+		"motionDetection": {
+			"ena": true,
+			"threshold": 64,
+			"interval": 1000,
+			"isDraw": false
+		},
+		"classifyDetection": {
+			"ena": true,
+			"interval": 1000,
+			"isDraw": false
+		},
+		"batteryCarDetection": {
+			"ena": false,
+			"interval": 1000,
+			"sensitivity": 60,
+			"quality": 60,
+			"snapMode": 0,
+			"regularTimer": 10,
+			"objectMaxNum": 5,
+			"isDraw": false
+		},
+		"vehicleLicensePlateDetection": {
+			"ena": false,
+			"interval": 1000,
+			"sensitivity": 60,
+			"quality": 60,
+			"snapMode": 0,
+			"regularTimer": 10,
+			"detectSite": 2,
+			"exitMode": 1,
+			"objectMaxNum": 3,
+			"isDraw": false,
+			"autoExposure": false
+		},
+		"faceDetection": {
+			"ena": false,
+			"exposureOn": false,
+			"exposureAdjust": 60,
+			"snapMode": 0,
+			"qualityValue": 60,
+			"maskDetected": false,
+			"isPackPanorama": false,
+			"interval": 1000,
+			"objectMaxNum": 5,
+			"isDraw": false
+		}
+	}
 ]

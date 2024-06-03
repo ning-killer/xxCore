@@ -19,5 +19,6 @@
   "last_upgrade_state": 0,
   "last_upgrade_time": "",
   "intelligentNightVision": true,
-  "softprobe_on": true
+  "softprobe_on": true,
+  "nightvision_detect_mode": 0
 }

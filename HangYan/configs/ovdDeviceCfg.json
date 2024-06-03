@@ -14,7 +14,7 @@
       "logo": {"width": 66, "height": 18, "file": "640x360.rgba"}
     },
     "sd": {
-      "venc": {"width": 960, "height": 540, "bitRate": 384},
+      "venc": {"width": 960, "height": 544, "bitRate": 384},
       "font": {"size": 24},
       "logo": {"width": 96, "height": 26, "file": "960x540.rgba"}
     },

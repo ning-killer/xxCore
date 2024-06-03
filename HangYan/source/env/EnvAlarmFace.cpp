@@ -19,7 +19,7 @@ ErrCodeE EnvAlarmFace::Load() {
     exposure_adjust = json["exposure_adjust"].asInt();
     mode = (SnapMode)json["mode"].asInt();
     quality = json["quality"].asInt();
-    if (zone.SetOvdZone(json["ovdZone"]) == ErrCodeE::Success) {
+    if (zone.SetOvdZoneEx(json["ovdZone"]) == ErrCodeE::Success) {
         zone.ovdZone = json["ovdZone"];
     }
     auto &sensitivityMap = json["sensitivity_map"];
@@ -30,6 +30,12 @@ ErrCodeE EnvAlarmFace::Load() {
     for (int i = 0; i < (int) qualityMap.size(); i++) {
         quality_map[i] = qualityMap[i].asInt();
     }
+
+    // mask_detection
+    mask_detection = json["mask_detection"]["on"].asBool();
+    schedule.Parse(json["mask_detection"]["schedule"]);
+    strategy.Parse(json["mask_detection"]["strategy"]);
+    strategy.type = SoundAlarmControl::Type::FACE_MASK;
     return ErrCodeE::Success;
 }
 
@@ -51,6 +57,11 @@ ErrCodeE EnvAlarmFace::Save() {
         for (auto m : quality_map) {
             qualityMap.append(m);
         }
+
+        // mask_detection
+        json["mask_detection"]["on"] = mask_detection;
+        schedule.Serialize(json["mask_detection"]["schedule"]);
+        strategy.Serialize(json["mask_detection"]["strategy"]);
         ErrCodeE e = Set(json);
         if (e != ErrCodeE::Success) {
             emxlogc("param set failed\n");

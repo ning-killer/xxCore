@@ -191,10 +191,10 @@ void *Mp4Reader::OnAlloc(void *param, uint32_t track, size_t bytes, int64_t pts,
     buffer->bytes = bytes;
     buffer->data.clear();
     if ((buffer->trackMap[track].type == MediaFmt::TrackTypeE::Video && ((flags & MOV_AV_FLAG_KEYFREAME) != 0)) ||
-        bytes > buffer->data.capacity()) {
+        bytes > buffer->data.capacity() - Ctx::DataReservedSize) {
         // I帧或者内存不够则修改内存大小(内存的大小时刻保持着和上一个I帧相同)
         try {
-            if (bytes > buffer->data.capacity())
+            if (bytes > buffer->data.capacity() - Ctx::DataReservedSize)
                 buffer->data.reserve(bytes + Ctx::DataReservedSize);
         } catch (std::exception &e) {
             emxloge("malloc %d failed\n", bytes + Ctx::DataReservedSize);

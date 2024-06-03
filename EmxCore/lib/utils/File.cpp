@@ -117,6 +117,8 @@ ErrCodeE File::Write(const char *path, const char *buffer, int size) {
         totalSize -= n;
         off += n;
     }
+    fflush(fp);
+    fsync(fileno(fp));
     fclose(fp);
     return totalSize ? ErrCodeE::Failure : ErrCodeE::Success;
 }

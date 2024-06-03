@@ -1,0 +1,76 @@
+{
+	"text": [
+		{
+			"content": "123456789123456789123456789123456789123456789123456789",
+			"ena": true,
+			"font": "font.ttf",
+			"layer": 0,
+			"margin": {
+				"horizon": {
+					"align": 0,
+					"rate": 20
+				},
+				"vertical": {
+					"align": 0,
+					"rate": 20
+				}
+			},
+			"size": 60,
+			"thickness": 1
+		},
+		{
+			"content": "何宁何宁何宁何宁何宁何宁何宁何宁何宁何宁何宁何宁何宁",
+			"ena": true,
+			"font": "font.ttf",
+			"layer": 0,
+			"margin": {
+				"horizon": {
+					"align": 1,
+					"rate": 20
+				},
+				"vertical": {
+					"align": 0,
+					"rate": 20
+				}
+			},
+			"size": 60,
+			"thickness": 1
+		},
+		{
+			"content": "1111\\n22\\n11\\naa\\n333333\\na\\ns\\n监控视频平台播放视频监控的时候除了满足正常视频播放\\n1283",
+			"ena": true,
+			"font": "font.ttf",
+			"layer": 0,
+			"margin": {
+				"horizon": {
+					"align": 0,
+					"rate": 20
+				},
+				"vertical": {
+					"align": 0,
+					"rate": 980
+				}
+			},
+			"size": 60,
+			"thickness": 1
+		},
+		{
+			"content": "1111\\n22\\n11\\naa\\n333333\\na\\ns\\n监控视频平台播放视频监控的时候除了满足正常视频播放\\n1283",
+			"ena": true,
+			"font": "font.ttf",
+			"layer": 0,
+			"margin": {
+				"horizon": {
+					"align": 1,
+					"rate": 20
+				},
+				"vertical": {
+					"align": 0,
+					"rate": 980
+				}
+			},
+			"size": 60,
+			"thickness": 1
+		}
+	]
+}

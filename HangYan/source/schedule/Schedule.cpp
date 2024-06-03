@@ -56,12 +56,15 @@ void Schedule::DoSchedule() {
         //这里会同时确认出当前状态与计算出下一个开启或关闭的时间点
         int64_t utcS = GetUtcByString(m_schedule->onceStartTime);//一次性时间段的起始utc时间
         int64_t utcE = GetUtcByString(m_schedule->onceEndTime);//一次性时间段的结束utc时间
+
+        emxlogi("newStarts: %d,nowUtc: %lld,utcS: %lld,utcE: %lld,manualUtc: %lld\n",newStatus,nowUtc,utcE,utcS,manualUtc);
         //检测手动生效时间与当前时间是否在同一区间
         if ((nowUtc < utcS && manualUtc < utcS) ||
             (nowUtc >= utcE && manualUtc >= utcE) ||
-            (nowUtc >= utcS && nowUtc < utcE && manualUtc >= utcS && manualUtc < utcE)) {
+            (nowUtc >= utcS && nowUtc < utcE && manualUtc >= utcS && manualUtc < utcE && nowUtc == manualUtc)) {
             //在同一区间则优先使用手动模式
             newStatus = m_schedule->manual ? EnvSchedule::Status::On : EnvSchedule::Status::Off;
+            emxlogi("one test1,newStarts: %d\n",newStatus);
             if (nowUtc < utcS)
                 nextPoint = utcS;
             else if (nowUtc >= utcE)
@@ -72,38 +75,73 @@ void Schedule::DoSchedule() {
             //不在同一区间
             //如果当前不在一次性区间中，则依然使用手动模式配置
             //如果当前在一次性区间中，则状态是开
+            emxlogi("not   !!! newStarts: %d,nowUtc: %lld,utcS: %lld,utcE: %lld,manualUtc: %lld\n",newStatus,nowUtc,utcE,utcS,manualUtc);
             if (nowUtc < utcS) {
                 nextPoint = utcS;
                 newStatus = m_schedule->manual ? EnvSchedule::Status::On : EnvSchedule::Status::Off;
+                emxlogi("one test2,newStarts: %d\n",newStatus);
             } else if (nowUtc >= utcE) {
                 nextPoint = -1;//后面没有待执行的计划了
                 newStatus = m_schedule->manual ? EnvSchedule::Status::On : EnvSchedule::Status::Off;
+                emxlogi("one test3,newStarts: %d\n",newStatus);
             } else {
                 nextPoint = utcE;
                 newStatus = EnvSchedule::Status::On;
+                emxlogi("one test4,newStarts: %d\n",newStatus);
             }
         }
     } else {
         //当前处于常规计划生效中
         Point sp = {}, ep = {};
+
+
         //获取到当前所处时间段的左右端点
         GetCurrentTimeSegmentByNormal(nowUtc, sp, ep);
         printf("%s:%d:nowUtc=%u sp.utc=%u ep.utc=%u\n", __FUNCTION__, __LINE__,
                (uint32_t) nowUtc, (uint32_t) sp.utc, (uint32_t) ep.utc);
         if (sp.utc == -1 || ep.utc == -1) {
+            printf("test1\n");
             //如果没有获取到区间，则使用手动模式
             newStatus = m_schedule->manual ? EnvSchedule::Status::On : EnvSchedule::Status::Off;
             nextPoint = -1;//后面没有待执行的计划了
         } else {
-            //如果获取到区间，则先判断手动模式是否处于这个区间
-            if (manualUtc >= sp.utc && manualUtc < ep.utc) {
-                //如果手动模式也处于这个区间内，则以手动模式优先
-                newStatus = m_schedule->manual ? EnvSchedule::Status::On : EnvSchedule::Status::Off;
-            } else {
-                //否则，判断当前区间的实际状态
-                newStatus = sp.active ? EnvSchedule::Status::On : EnvSchedule::Status::Off;
-            }
-            nextPoint = ep.utc;
+                emxlogi("newStarts = %d manualUtc = %lld\n",newStatus,manualUtc);
+                //如果获取到区间，则先判断手动模式是否处于这个区间
+
+                /*
+                if (manualUtc >= sp.utc && manualUtc < ep.utc) {
+                            
+                    //如果手动模式也处于这个区间内，则以手动模式优先
+                    newStatus = m_schedule->manual ? EnvSchedule::Status::On : EnvSchedule::Status::Off;
+                    emxlogi("test3,newStarts: %d\n",newStatus);
+                } else {
+                    //否则，判断当前区间的实际状态
+                        
+                    newStatus = sp.active ? EnvSchedule::Status::On : EnvSchedule::Status::Off;
+                    emxlogi("test4,newStarts: %d\n",newStatus);
+                }
+                */
+
+                if(manualUtc == nowUtc){
+                    newStatus = m_schedule->manual ? EnvSchedule::Status::On : EnvSchedule::Status::Off;
+                    emxlogi("test2,newStarts: %d\n",newStatus);
+                }else if((sp.utc < manualUtc) && (manualUtc < ep.utc) && (sp.utc < nowUtc) && (nowUtc < ep.utc)){
+                    newStatus = EnvSchedule::Status::Off;
+                    emxlogi("test3,newStarts: %d\n",newStatus);
+                    if((ep.utc - sp.utc) < 24 * 60 *60){
+                        newStatus = EnvSchedule::Status::On;
+                        emxlogi("test4,newStarts: %d\n",newStatus);
+                    }
+                }else if((sp.utc < nowUtc) && (nowUtc < ep.utc) && (manualUtc == -1)){
+                    newStatus = EnvSchedule::Status::On;
+                    emxlogi("test5,newStarts: %d\n",newStatus);
+                }else{
+                    newStatus = sp.active ? EnvSchedule::Status::On : EnvSchedule::Status::Off;
+                    emxlogi("test7,newStarts: %d\n",newStatus);
+                }
+
+                nextPoint = ep.utc;
+                
         }
     }
 

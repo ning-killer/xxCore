@@ -3,6 +3,7 @@ import json
 import os
 import sys
 import utils
+import subprocess
 
 # ./release [outer version]
 
@@ -35,11 +36,24 @@ os.system("rm -f firmware/app/lib/*.a")
 encrypt_plain_param = utils.AesDir(utils.ParamKey.key, utils.ParamKey.iv)
 encrypt_plain_param.encode(topdir + "/plainParam", app_dir + "/param")
 
+# pack system 并等待执行完成
+process = subprocess.Popen(["./scripts/packSystem.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1, universal_newlines=True)
+
+# 逐行读取标准输出和标准错误，并实时输出
+for line in process.stdout:
+    print(line, end='')
+
+# 等待脚本执行完成
+process.wait()
+
+# 输出脚本的返回码
+print("pack system Code:", process.returncode)
+
 imgs_dir = topdir + "/imgs"
 # pack firmware.bin
-firmware_bin = imgs_dir + "/firmware.bin"
-os.system("rm " + firmware_bin)
-utils.cmd_check("mksquashfs {} {} -b 64K -comp xz >> /dev/null".format(firmware_dir, firmware_bin))
+# firmware_bin = imgs_dir + "/firmware.bin"
+# os.system("rm " + firmware_bin)
+# utils.cmd_check("mksquashfs {} {} -b 64K -comp xz >> /dev/null".format(firmware_dir, firmware_bin))
 
 # output dir
 new_version = dev_info["outer"]["type"]
@@ -53,6 +67,18 @@ img_info = utils.pack_prepare(imgs_dir)
 
 # 打包用于烧片的裸flash文件
 utils.pack_raw_flash_img(topdir, img_info, output_dir + "/" + new_version + "_RawFlash.bin")
+flash_output_tmp = output_dir + "/RawFlash"
+kernel_tmp = imgs_dir + "/kernel.bin"
+boot_tmp = imgs_dir + "/boot.bin"
+rootfs_tmp = imgs_dir + "/rootfs.bin"
+partition_tmp = imgs_dir + "/partition.json"
+update_tmp = imgs_dir + "/update.ini"
+os.system("mkdir -p " + flash_output_tmp)
+os.system("cp " + kernel_tmp + " " + flash_output_tmp + " -v")
+os.system("cp " + boot_tmp + " " + flash_output_tmp + " -v")
+os.system("cp " + rootfs_tmp + " " + flash_output_tmp + " -v")
+os.system("cp " + partition_tmp + " " + flash_output_tmp + " -v")
+os.system("cp " + update_tmp + " " + flash_output_tmp + " -v")
 
 # 打包用于常规升级的rom文件
 dst_rom_file = output_dir + "/" + new_version + "_Rom.bin"
@@ -60,7 +86,7 @@ dst_rom_file = output_dir + "/" + new_version + "_Rom.bin"
 utils.pack_rom(dev_info,
                dst_rom_file,
                img_info,
-               ["kernel", "rootfs", "firmware"],
+               ["kernel", "rootfs"],
                imgs_dir + "/pre_script.sh",
                imgs_dir + "/post_script.sh")
 

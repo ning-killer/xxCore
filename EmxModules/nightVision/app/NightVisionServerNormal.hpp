@@ -25,6 +25,8 @@ namespace Emx {
 
         void DoSwitch(ModeE mode) override;
 
+        void PublishReset() override { }
+
     private:
 
         void OnAutoModeJudge();
@@ -88,6 +90,8 @@ namespace Emx {
         MediaISP::Info m_ispInfo;
         Bsp m_bsp;
         int m_debounceCount;
+        int m_todayDelay;
+        int m_toirDelay;
     };
 
 }

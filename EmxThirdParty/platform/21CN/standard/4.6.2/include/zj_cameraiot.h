@@ -19,8 +19,8 @@ extern "C" {
 1 移动侦测: EN_ZJ_AIIOT_TYPE_MOTION 1000
 
 电子围栏:dx只需要支持人形电子围栏,即EventType:1 ,
-prop:{"Motion":{"Sensitive":"灵敏度0-100默认80","Status":"运动侦测开关","Trace":"是否追踪","Interval":"告警间隔","ActiveTime":"持续时长"},
-      "Human": {"Sensitive":"灵敏度0-100默认80","Status":"人形侦测开关","Trace":"是否追踪","Interval":"告警间隔","ActiveTime":"持续时长"},
+prop:{"Motion":{"Sensitive":"灵敏度0-100默认80","Status":"运动侦测开关","Trace":"是否追踪","Interval":"告警间隔"},
+      "Human": {"Sensitive":"灵敏度0-100默认80","Status":"人形侦测开关","Trace":"是否追踪","Interval":"告警间隔"},
       "Face":  {"Sensitive":"灵敏度0-100默认80","Status":"人脸抓拍开关","DiscernFlag":"人脸识别(布控)状态","Trace":"是否追踪","Interval":"告警间隔"},
       "Fence": {"EventType":"事件检测类型 0(移动)/1(人形)/2(人脸)","OnlyFlag":"是否只触发电子围栏事件(暂弃)","Status":"电子围栏开关","Direction":"进入区域方向 1(进入)/2(离开)/3(进入或离开)",
                 "StayTime":"逗留时长",","StartTime":"当天开始秒数(0)","EndTime":"当天结束秒数(86400)","SpanFlag":"是否跨天","Capture":"图片抓拍开关","Video":"视频抓拍开关",

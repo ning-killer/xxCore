@@ -3,7 +3,7 @@
     "codec": 1,
     "bitRate": 64,
     "sampleRate": 8000,
-    "volume": 25,
+    "volume": 60,
     "bitWidth": 16,
     "mute": false
   }

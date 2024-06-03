@@ -3,6 +3,7 @@
 #include "sockutil.h"
 #include "Base64.h"
 #include "common.h"
+#include "EmxCore.hpp"
 
 const uint8_t* h265_nalu_find(const uint8_t* p, const uint8_t* end)
 {
@@ -177,6 +178,7 @@ MediaSource::MediaSource(const std::string& videoCodec, std::string& audioCodec,
 		_audioPT = 8;
 	else if (_audioCodec == "PCMU")
 		_audioPT = 0;
+    emxlogd("construct MediaSource:%p, _videoCodec:%s, _audioCodec:%s\n", this, _videoCodec.c_str(), _audioCodec.c_str());
 }
 
 MediaSource::~MediaSource()
@@ -189,7 +191,7 @@ MediaSource::~MediaSource()
 	delete[] _pps;
 	if (_vps)
 		delete[] _vps;
-	printf("deconstruct MediaSource\n");
+	emxlogd("deconstruct MediaSource:%p\n", this);
 }
 
 int MediaSource::inputFrame(const unsigned char* payload, size_t payload_size, unsigned int pts, bool keyFrame, unsigned char type)

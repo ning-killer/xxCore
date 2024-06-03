@@ -8,6 +8,8 @@
 #include "EnvBase.hpp"
 #include "Zone.hpp"
 #include "EnvZone.hpp"
+#include "EnvSchedule.hpp"
+#include "EnvStrategy.hpp"
 
 namespace Emx {
     class EnvAlarmFace : public EnvBase {
@@ -34,6 +36,10 @@ namespace Emx {
         EnvZone zone;
         float sensitivity_map[5];
         int quality_map[5];
+
+        bool mask_detection;
+        EnvSchedule schedule;
+        EnvStrategy strategy;
     };
 
 }

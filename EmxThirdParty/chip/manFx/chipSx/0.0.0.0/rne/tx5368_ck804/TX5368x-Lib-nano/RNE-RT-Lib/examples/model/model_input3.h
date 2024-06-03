@@ -1,0 +1,2 @@
+static unsigned char model_input3[] = {
+0x44, 0x4b, 0xe7, 0x9b, };

@@ -28,7 +28,8 @@ Gat1400Client::~Gat1400Client() {
 
 bool Gat1400Client::Create(OvdCtx *ctx) {
     CHECK_GAT1400_PTR(ctx, false);
-    if (!ctx->env.face.ena) {
+    if (!ctx->env.face.ena && !ctx->env.batteryCar.on && !ctx->env.licensePlate.on 
+        && !ctx->env.passengerFlow.on && !ctx->env.regionalPeople.on && !ctx->env.offDuty.on) {
         return false;
     }
     Gat1400Util::InitParam param = { 0 };
@@ -65,8 +66,9 @@ bool Gat1400Client::SetNetWorkStatus(const bool onConnect) {
     return true;
 }
 
-bool Gat1400Client::Upload(const Gat1400Util::UploadDataParam &upload_param) {
+bool Gat1400Client::Upload(const Gat1400Util::UploadDataParam *upload_param) {
     CHECK_GAT1400_PTR(m_gat1400Mgr, false);
+    CHECK_GAT1400_PTR(upload_param, false);
     if (!m_started) {
         emxloge("gat1400 client is stop!\n");
         return false;

@@ -64,6 +64,8 @@ void* flv_writer_create(const char* file)
 	flv = flv_writer_create2(1, 1, file_write, fp);
 	if (!flv)
 	{
+		fflush(fp);
+        fsync(fileno(fp));
 		fclose(fp);
 		return NULL;
 	}
@@ -97,8 +99,11 @@ void flv_writer_destroy(void* p)
 	if (NULL != flv)
 	{
 		flv_write_eos(flv);
-		if (flv->fp)
+		if (flv->fp) {
+			fflush(flv->fp);
+        	fsync(fileno(flv->fp));
 			fclose(flv->fp);
+		}
 		free(flv);
 	}
 }

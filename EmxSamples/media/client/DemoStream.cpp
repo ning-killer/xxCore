@@ -27,11 +27,12 @@ class DemoSaveAsyncStream {
         MediaClientStream::Channel channel;
         channel.Add(Emx::MediaFrame::TypeE::Venc, 0); // 加入视频编码通道0
         channel.Add(Emx::MediaFrame::TypeE::Aenc, 0); // 加入音频编码通道0
+        channel.Add(Emx::MediaFrame::TypeE::Pcm, 0); 
         // 注册当获取到媒体帧时候的回调
         m_stream.Start(channel, std::bind(&DemoSaveAsyncStream::OnRecvFrame, this, ph_1, ph_2));
         // 创建两个文件用来保存音频和视频的裸数据
-        m_fpVenc = fopen("video.raw", "wb+");
-        m_fpAenc = fopen("audio.raw", "wb+");
+        m_fpVenc = fopen("/mnt/nfs/video.raw", "wb+");
+        m_fpAenc = fopen("/mnt/nfs/audio.raw", "wb+");
     }
 
     void Destroy() {
@@ -59,19 +60,32 @@ class DemoSaveAsyncStream {
 
         //这里只会收到m_stream.Start的时候在channel中Add的帧类型+通道的帧
         if (frame.type == Emx::MediaFrame::TypeE::Venc) {
+            emxlogd("venc client get chn[%d]: frame seq[%d]; interval[%llu]; size[%d]; iskeyFrame[%d]\n", frame.chn
+                    , frame.seq, uint64_t(uint64_t(frame.tsInUs / 1000) - last_venc_ts), frame.size, frame.isKeyFrame);
             // 收到视频帧
-            fwrite(frame.data, 1, frame.size, m_fpVenc);
-        } else {
+            // fwrite(frame.data, 1, frame.size, m_fpVenc);
+            last_venc_ts = uint64_t(frame.tsInUs / 1000);
+        } else if (frame.type == Emx::MediaFrame::TypeE::Aenc) {
+            emxlogd("adec client get chn[%d]: frame seq[%d]; interval[%llu]; size[%d]; iskeyFrame[%d]\n", frame.chn
+                        , frame.seq, uint64_t(uint64_t(frame.tsInUs / 1000) - last_aenc_ts), frame.size, frame.isKeyFrame);
             // 收到音频帧
-            fwrite(frame.data, 1, frame.size, m_fpAenc);
+            // fwrite(frame.data, 1, frame.size, m_fpAenc);
+            last_aenc_ts = uint64_t(frame.tsInUs / 1000);
+        } else if (frame.type == Emx::MediaFrame::TypeE::Pcm) {
+            emxlogd("pcm client get chn[%d]: frame seq[%d]; interval[%llu]; size[%d]; iskeyFrame[%d]\n", frame.chn
+                        , frame.seq, uint64_t(uint64_t(frame.tsInUs / 1000) - last_pcm_ts), frame.size, frame.isKeyFrame);
+            last_pcm_ts = uint64_t(frame.tsInUs / 1000);
         }
-        emxlogd("async get stream ok .\n");
+        emxlogd("async get stream ok [%d].\n", (int)frame.type); 
     }
 
   private:
     MediaClientStreamAsync m_stream; // 定义一个异步音视频流的监听句柄
     FILE *m_fpVenc; // 定义file指针用来存储编码后的视频裸流
     FILE *m_fpAenc; // 定义file指针用来存储编码后的音频裸流
+    uint64_t last_pcm_ts = 0;
+    uint64_t last_aenc_ts = 0;
+    uint64_t last_venc_ts = 0;
 };
 
 // 同步实时流获取示例
@@ -81,8 +95,8 @@ class DemoSaveSyncStream {
     void Create() {
         m_quit = false;
         m_thread = std::thread([this]() {
-            FILE *fpVenc = fopen("video.raw", "wb+");// 定义file指针用来存储编码后的视频裸流
-            FILE *fpAenc = fopen("audio.raw", "wb+");// 定义file指针用来存储编码后的音频裸流
+            FILE *fpVenc = fopen("/mnt/nfs/video.raw", "wb+");// 定义file指针用来存储编码后的视频裸流
+            FILE *fpAenc = fopen("/mnt/nfs/audio.raw", "wb+");// 定义file指针用来存储编码后的音频裸流
             // 首先定义通道，并向通道中加入需要监听的媒体帧类型
             MediaClientStream::Channel channel;
             channel.Add(Emx::MediaFrame::TypeE::Venc, 0); // 加入视频编码通道0
@@ -103,7 +117,7 @@ class DemoSaveSyncStream {
                     // 收到音频帧
                     fwrite(frame.data, 1, frame.size, fpAenc);
                 }
-                emxloge("sync get stream ok.\n");
+                emxloge("sync get stream ok [%d].\n", (int)frame.type);
             }
             stream.Close();
             fclose(fpVenc);
@@ -128,14 +142,15 @@ int main(int argc, char *argv[]) {
     }
     int flag = std::stoi(argv[1]);
 
+    
     EuvLoop loop;
     loop.Init("DemoQRScan", []() { });
+    DemoSaveAsyncStream asyncStreamDemo(loop);
+    DemoSaveSyncStream syncStreamDemo;
 
     if (flag) {
-        DemoSaveAsyncStream asyncStreamDemo(loop);
         asyncStreamDemo.Create();
     } else {
-        DemoSaveSyncStream syncStreamDemo;
         syncStreamDemo.Create();
     }
 

@@ -17,6 +17,10 @@ void AES_CBC::Encrypt(uint8_t *buf, size_t length) {
 }
 
 void AES_CBC::Decrypt(uint8_t *buf, size_t length) {
+    if (length % 16 != 0) {
+        printf("no 16-byte alignment\n");
+        return;
+    } 
     AES_CBC_decrypt_buffer(&m_ctx, buf, length);
 }
 
@@ -123,6 +127,10 @@ int Pkcs7Padding::Pad(uint8_t *in, int inSize, uint8_t *out, int &outSize) {
 }
 
 void Pkcs7Padding::UnPad(std::string &data) {
+    if ((int)data.size() % 16 != 0) {
+        printf("no 16-byte alignment\n");
+        return;
+    } 
     auto pad = data[data.size() - 1];
     if (pad > (int) data.size()) {
         emxloge("UnPad error, pad size[%d] > data size[%d]\n", pad, (int) data.size());
@@ -132,6 +140,10 @@ void Pkcs7Padding::UnPad(std::string &data) {
 }
 
 int Pkcs7Padding::UnPad(uint8_t *data, int &size) {
+    if (size % 16 != 0) {
+        printf("no 16-byte alignment\n");
+        return -1;
+    }
     auto pad = data[size - 1];
     if (pad > (int) size) {
         emxloge("UnPad error, pad size[%d] > data size[%d]\n", pad, size);

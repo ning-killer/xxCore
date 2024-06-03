@@ -23,6 +23,7 @@ namespace Emx {
     enum class NetClientMethodE : uint32_t {
         GetInterface = 0,
         SetAddr,
+        SetTempAddr,
         GetAddr,
         SetEna,
         GetEna,

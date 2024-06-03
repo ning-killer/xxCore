@@ -56,6 +56,8 @@ ErrCodeE BspUpdateIndicator::Start() {
 ErrCodeE BspUpdateIndicator::Stop() {
     if (!m_started)
         return ErrCodeE::Success;
+    for (auto &gpio: m_allChannels)
+        gpio->SetValue(Gpio::ValueE::Disable);
     m_loop.StopAndDeInit();
     m_started = false;
     return ErrCodeE::Success;

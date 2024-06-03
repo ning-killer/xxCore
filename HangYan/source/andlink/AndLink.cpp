@@ -22,7 +22,8 @@ void AndLink::Create(OvdCtx *ctx) {
     strncpy(attr.deviceBrand, ctx->env.manufacturers.deviceBrand, sizeof(attr.deviceBrand));//设备品牌
     strncpy(attr.deviceModel, ctx->env.devInfo.GetOuter()->type, sizeof(attr.deviceModel));//设备型号
     strncpy(attr.deviceType, ctx->env.manufacturers.deviceType, sizeof(attr.deviceType));//设备类型ID,即门户上的 产品ID
-    strncpy(attr.deviceMac, ctx->env.mac.Get(), sizeof(attr.deviceMac));// 厂商可以填mac或sn,即设备唯一标识
+    //strncpy(attr.deviceMac, ctx->env.mac.Get(), sizeof(attr.deviceMac));// 厂商可以填mac或sn,即设备唯一标识
+    strncpy(attr.deviceMac, ctx->env.sn.Get(), sizeof(attr.deviceMac));// 厂商可以填mac或sn,即设备唯一标识
     strncpy(attr.andlinkToken, ctx->env.burn.andlinkID.data(),
             sizeof(attr.andlinkToken));//设备在开发者门户注册的产品类型对应的平台Token
     strncpy(attr.productToken, ctx->env.burn.andlinkKey.data(),

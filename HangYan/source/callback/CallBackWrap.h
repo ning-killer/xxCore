@@ -13,10 +13,19 @@ extern "C" {
 
 OVD_int32 GetOVDDeviceInfo(OVDDeviceInfo *deviceInfo);
 OVD_int32 GetOVDConfigureInfo(OVD_char **output_ovdconfig, OVD_int32 *output_size);
+#ifdef OVDSDK1_38_1
+OVD_int32 SetOVDConfigureInfo(OVD_char *in_ovdconfig, OUT OVD_char *errMsg, IN OVD_int32 errMsg_len);
+OVD_int32 ReBootDevice(ovd_reboot_reason_e reason);
+OVD_int32 ForceIFrame(OVD_int32 channel, OVDCodeStream code_stream);
+OVD_int32 SyncMacHash(OVD_char* in_machash);
+#else
 OVD_int32 SetOVDConfigureInfo(OVD_char *in_ovdconfig);
+OVD_int32 ReBootDevice();
+OVD_int32 ForceIFrame(OVD_int32 channel);
+#endif
 OVD_void OVCConnectStatus(OVD_int32 connectStatus);
 OVD_int32 ReBootChannel(OVD_int32 channel);
-OVD_int32 ReBootDevice();
+
 OVD_int32 KeepAwakenUtilExpired(OVD_int32 channel, OVD_int32 notAllowHibernate,
                                 OVD_int32 expired, OVDHibernateReason reason);
 OVD_int32 ResetConfiguration();
@@ -47,7 +56,6 @@ OVD_int32 AudioPlayStart(OVD_int32 channel, OVDAudioOutDataFormat andioFormat);
 OVD_int32 AudioPlayProGress(OVD_int32 channel, OVD_uchar *buf, OVD_int32 size);
 OVD_int32 AudioPlayStop(OVD_int32 channel);
 OVD_int32 VedioSwitchQuality(OVD_int32 channel, OVDEncodeQuality quality, OVDVideoDataFormat *vedioInfo);
-OVD_int32 ForceIFrame(OVD_int32 channel);
 OVD_int32 Snapshot(OVD_int32 channel, OVDImageInfo *imageInfo, OVD_int32 maxImageSize);
 
 OVD_int32 gettime(OVD_uint64 *out_time);
@@ -70,8 +78,12 @@ OVD_int32 SetAudioOutPlay(OVD_int32 channel, OVD_char *url);
 
 #ifdef OVDSDK_APIVER_3_0
 OVD_int32 StopAlarm(int alarmtype);
-OVD_int32 GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void* out_response);
 OVD_int32 SetAudioOutPlay(OVD_int32 channel, OVD_char *url, int repeat, int volume);
+#ifdef OVDSDK1_38_1
+OVD_int32 GetDevRunningInfo(ovd_probe_devrunning_info_e in_info, void* out_response);
+#else
+OVD_int32 GetDevRunningInfo(OVD_GetDevRunningInfo_e in_info, void* out_response);
+#endif
 #endif
 
 void InitCallBackList(OVD_CallBackFunList *list);

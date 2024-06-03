@@ -19,6 +19,8 @@ void NetServer::Create(OnCreated cb, bool newThread) {
         m_res.pub.DestroyMsgTopicPublisherAsync();
     }, newThread ? EuvLoop::ModeE::Dynamic : EuvLoop::Default);
 
+    ParamInit();//配置参数初始化
+
     Param param("netServer");
     if (param.Get(m_res.param) != ErrCodeE::Success) {
         emxlogc("get netManager configs failed\n");
@@ -167,4 +169,54 @@ ErrCodeE NetServer::Proc(uint32_t method, const char *data, int32_t size, std::s
             emxloge("main not support method[%u]\n", method);
             return ErrCodeE::OperationNotSupport;
     }
+}
+
+ErrCodeE NetServer::ParamInit() {
+    bool wiredSupported = false;
+    Json::Value json, jsonMac;
+
+    Param param("netServer");
+    if (param.Get(json) != ErrCodeE::Success) {
+        emxlogc("get netServer configs failed\n");
+        return ErrCodeE::Failure;
+    }
+
+    Param paramMac("mac");
+    if (paramMac.Get(jsonMac) != ErrCodeE::Success) {
+        emxlogc("get mac configs failed\n");
+        return ErrCodeE::Failure;
+    }
+    if (jsonMac["mac"].asString().empty()) {
+        emxlogi("mac json not config\n");
+        return ErrCodeE::Success;
+    }
+
+    //存在有线网卡则优先设置有线；没有有线网卡则设置无线网卡
+    for (auto &e : json["dev"]) {
+        if ((strstr(e["interface"].asCString(), "eth")) && (e["supported"].asBool())) {
+            wiredSupported = true;
+            if (jsonMac["mac"].asString() != e["mac"].asString()) {
+                e["mac"] = jsonMac["mac"].asString();
+                emxlogi("netServer set [%s] mac addr [%s]\n", e["interface"].asCString(), e["mac"].asCString());
+            }
+            break;
+        }
+    }
+    if (!wiredSupported) {
+        for (auto &e : json["dev"]) {
+            if ((strstr(e["interface"].asCString(), "wlan")) && (e["supported"].asBool())) {
+                if (jsonMac["mac"].asString() != e["mac"].asString()) {
+                    e["mac"] = jsonMac["mac"].asString();
+                    emxlogi("netServer set [%s] mac addr [%s]\n", e["interface"].asCString(), e["mac"].asCString());
+                }
+                break;
+            }
+        }
+    }
+    if (param.Set(json) != ErrCodeE::Success) {
+        emxlogc("Set netServer configs failed\n");
+        return ErrCodeE::Failure;
+    }
+    emxlogi("netServer mac addr config ok\n");
+    return ErrCodeE::Success;
 }

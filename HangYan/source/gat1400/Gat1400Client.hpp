@@ -45,7 +45,7 @@ namespace Emx {
          * @return true 成功; false 失败 
          * @note 内部异步投递上传，返回值无法检验是否成功上传。
          */
-        bool Upload(const Gat1400Util::UploadDataParam &upload_param);
+        bool Upload(const Gat1400Util::UploadDataParam *upload_param);
 
         /**
          * @brief 获取设备ID

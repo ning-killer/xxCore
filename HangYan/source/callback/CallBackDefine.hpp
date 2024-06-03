@@ -55,6 +55,7 @@ namespace Emx {
         extension_callback,
         StopAlarm,
         GetDevRunningInfo,
+        SyncMacHash,
     };
 }
 #endif //EAPIL_CallBackDefine_HPP

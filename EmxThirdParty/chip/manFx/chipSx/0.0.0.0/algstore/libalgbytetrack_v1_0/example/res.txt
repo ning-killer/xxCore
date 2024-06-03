@@ -1,0 +1,921 @@
+13:51:59-[DEBUG]: frameNo: 269, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 270, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 271, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 272, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 273, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 274, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 275, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 276, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 277, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 278, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 279, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 280, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 281, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 282, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 283, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 284, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 285, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 286, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 287, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 288, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:51:59-[DEBUG]: frameNo: 289, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:51:59-[DEBUG]: frameNo: 290, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:51:59-[DEBUG]: frameNo: 291, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 292, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 293, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 294, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:51:59-[DEBUG]: frameNo: 295, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:51:59-[DEBUG]: frameNo: 296, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:51:59-[DEBUG]: frameNo: 297, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 298, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 299, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 300, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 301, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 302, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:51:59-[DEBUG]: frameNo: 303, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:51:59-[DEBUG]: frameNo: 304, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 305, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 306, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 307, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:51:59-[DEBUG]: frameNo: 308, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:51:59-[DEBUG]: frameNo: 309, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:51:59-[DEBUG]: frameNo: 310, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 311, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:51:59-[DEBUG]: frameNo: 312, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 313, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 314, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 315, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 316, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 317, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 318, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 319, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 320, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 321, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 322, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 323, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 324, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 325, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 326, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 327, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:51:59-[DEBUG]: frameNo: 328, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:51:59-[DEBUG]: frameNo: 329, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 330, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 331, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 332, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 333, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 334, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 335, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 336, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 337, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 338, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 339, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 340, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 341, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 342, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 343, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 344, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 345, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 346, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 347, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 348, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 349, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 350, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 351, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 352, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 353, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 354, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 355, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 356, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 357, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 358, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 359, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 360, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 361, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 362, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 363, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 364, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 365, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 366, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 367, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 368, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 369, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 370, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 371, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 372, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 373, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 374, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 375, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 376, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 377, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 378, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 379, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 380, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 381, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 382, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 383, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 384, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 385, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 386, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 387, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 388, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 389, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 390, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 391, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 392, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 393, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 394, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 395, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 396, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 397, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 398, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 399, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 400, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 401, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 402, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 403, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 404, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 405, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 406, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 407, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 408, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 409, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 410, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 411, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 412, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 413, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 414, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 415, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 416, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 417, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 418, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 419, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 420, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 421, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 422, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 423, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 424, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 425, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 426, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 427, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 428, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 429, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 430, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 431, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 432, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 433, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 434, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:00-[DEBUG]: frameNo: 435, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:00-[DEBUG]: frameNo: 436, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 437, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 438, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 439, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 440, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 441, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 442, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 443, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 444, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 445, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 446, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 447, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 448, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 449, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 450, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 451, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 452, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 453, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 454, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 455, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 456, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 457, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 458, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 459, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 460, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 461, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 462, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 463, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 464, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 465, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 466, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 467, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 468, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 469, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 470, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 471, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 472, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 473, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 474, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 475, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:00-[DEBUG]: frameNo: 476, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 477, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:00-[DEBUG]: frameNo: 478, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 479, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 480, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 481, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 482, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 483, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 484, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 485, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 486, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 487, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 488, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 489, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 490, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 491, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:01-[DEBUG]: frameNo: 492, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 493, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 494, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:01-[DEBUG]: frameNo: 495, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:01-[DEBUG]: frameNo: 496, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 497, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 498, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:01-[DEBUG]: frameNo: 499, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:01-[DEBUG]: frameNo: 500, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 501, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 502, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:01-[DEBUG]: frameNo: 503, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 504, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 505, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 506, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 507, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:01-[DEBUG]: frameNo: 508, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 509, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 510, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:01-[DEBUG]: frameNo: 511, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:01-[DEBUG]: frameNo: 512, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 513, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 514, TS_ALG_MultibodyTrack_Processs: 6 ms            
+13:52:01-[DEBUG]: frameNo: 515, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 516, TS_ALG_MultibodyTrack_Processs: 5 ms            
+13:52:01-[DEBUG]: frameNo: 517, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 518, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 519, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 520, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 521, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 522, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 523, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 524, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 525, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 526, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 527, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 528, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 529, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 530, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 531, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 532, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 533, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 534, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 535, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 536, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 537, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 538, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 539, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 540, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 541, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 542, TS_ALG_MultibodyTrack_Processs: 7 ms            
+13:52:01-[DEBUG]: frameNo: 543, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: frameNo: 544, TS_ALG_MultibodyTrack_Processs: 8 ms            
+13:52:01-[DEBUG]: TS_ALG_MultibodyTrack_Processs: avg timecost 5.612132 ms  
+
+
+// 100f timecost
+12:18:49-[DEBUG]: track.predit all timecost: 11756 us                           
+12:18:49-[DEBUG]: _nncosine_distance all timecost: 78674 us                     
+12:18:49-[DEBUG]: cost_matrix all timecost: 112481 us                           
+12:18:49-[DEBUG]: cost_matrix all timecost: 306 us                              
+12:18:49-[DEBUG]: Solve all timecost: 8453 us                                   
+12:18:49-[DEBUG]: matching_cascade all timecost: 146176 us                      
+12:18:49-[DEBUG]: min_cost_matching all timecost: 1205 us                       
+12:18:49-[DEBUG]: _match all timecost: 159163 us                                
+12:18:49-[DEBUG]: tracks[track_idx].update all timecost: 26544 us               
+12:18:49-[DEBUG]: _initiate_track all timecost: 2491 us                         
+12:18:49-[DEBUG]: partial_fit all timecost: 2710 us                             
+12:18:49-[DEBUG]: multi obj track all timecost : 238825 ms  
+
+
+// 20230613
+
+
+Building target: build_dt56/Release/algmultibodytrack.elf.size
+arm-none-linux-gnueabihf-size build_dt56/Release/algmultibodytrack.elf |tee build_dt56/Release/algmultibodytrack.elf.size
+   text    data     bss     dec     hex filename
+ 272560 3717864   14136 4004560  3d1ad0 build_dt56/Release/algmultibodytrack.elf
+
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 0 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:52-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:52-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 84 ms                          
+08:13:52-[DEBUG]: frameNo : 65                                                  
+08:13:52-[DEBUG]: TS_ALG_ObjDet_Process: 31 ms                                  
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:52-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 81 ms                          
+08:13:52-[DEBUG]: frameNo : 66                                                  
+08:13:52-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:52-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 85 ms                          
+08:13:52-[DEBUG]: frameNo : 67                                                  
+08:13:52-[DEBUG]: TS_ALG_ObjDet_Process: 36 ms                                  
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:52-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 84 ms                          
+08:13:52-[DEBUG]: frameNo : 68                                                  
+08:13:52-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:52-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 90 ms                          
+08:13:52-[DEBUG]: frameNo : 69                                                  
+08:13:52-[DEBUG]: TS_ALG_ObjDet_Process: 39 ms                                  
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:52-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:52-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:52-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 92 ms                          
+08:13:52-[DEBUG]: frameNo : 70                                                  
+08:13:52-[DEBUG]: TS_ALG_ObjDet_Process: 38 ms                                  
+08:13:52-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:53-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 89 ms                          
+08:13:53-[DEBUG]: frameNo : 71                                                  
+08:13:53-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 0 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:53-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:53-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 91 ms                          
+08:13:53-[DEBUG]: frameNo : 72                                                  
+08:13:53-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:53-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 85 ms                          
+08:13:53-[DEBUG]: frameNo : 73                                                  
+08:13:53-[DEBUG]: TS_ALG_ObjDet_Process: 38 ms                                  
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 0 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:53-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:53-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 91 ms                          
+08:13:53-[DEBUG]: frameNo : 74                                                  
+08:13:53-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:53-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 88 ms                          
+08:13:53-[DEBUG]: frameNo : 75                                                  
+08:13:53-[DEBUG]: TS_ALG_ObjDet_Process: 39 ms                                  
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:53-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 89 ms                          
+08:13:53-[DEBUG]: frameNo : 76                                                  
+08:13:53-[DEBUG]: TS_ALG_ObjDet_Process: 31 ms                                  
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:53-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:53-[DEBUG]: multi obj track timecost : 4 ms                               
+08:13:53-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 84 ms                          
+08:13:53-[DEBUG]: frameNo : 77                                                  
+08:13:54-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:54-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 88 ms                          
+08:13:54-[DEBUG]: frameNo : 78                                                  
+08:13:54-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:54-[DEBUG]: multi obj track timecost : 4 ms                               
+08:13:54-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 91 ms                          
+08:13:54-[DEBUG]: frameNo : 79                                                  
+08:13:54-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:54-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 87 ms                          
+08:13:54-[DEBUG]: frameNo : 80                                                  
+08:13:54-[DEBUG]: TS_ALG_ObjDet_Process: 36 ms                                  
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:54-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 86 ms                          
+08:13:54-[DEBUG]: frameNo : 81                                                  
+08:13:54-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:54-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 88 ms                          
+08:13:54-[DEBUG]: frameNo : 82                                                  
+08:13:54-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:54-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 86 ms                          
+08:13:54-[DEBUG]: frameNo : 83                                                  
+08:13:54-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:54-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:54-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:55-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 88 ms                          
+08:13:55-[DEBUG]: frameNo : 84                                                  
+08:13:55-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:55-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 86 ms                          
+08:13:55-[DEBUG]: frameNo : 85                                                  
+08:13:55-[DEBUG]: TS_ALG_ObjDet_Process: 38 ms                                  
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:55-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 88 ms                          
+08:13:55-[DEBUG]: frameNo : 86                                                  
+08:13:55-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:55-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 89 ms                          
+08:13:55-[DEBUG]: frameNo : 87                                                  
+08:13:55-[DEBUG]: TS_ALG_ObjDet_Process: 40 ms                                  
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:55-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 90 ms                          
+08:13:55-[DEBUG]: frameNo : 88                                                  
+08:13:55-[DEBUG]: TS_ALG_ObjDet_Process: 36 ms                                  
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:55-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 87 ms                          
+08:13:55-[DEBUG]: frameNo : 89                                                  
+08:13:55-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:55-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:55-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:55-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:55-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 88 ms                          
+08:13:55-[DEBUG]: frameNo : 90                                                  
+08:13:56-[DEBUG]: TS_ALG_ObjDet_Process: 36 ms                                  
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:56-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 87 ms                          
+08:13:56-[DEBUG]: frameNo : 91                                                  
+08:13:56-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:56-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 85 ms                          
+08:13:56-[DEBUG]: frameNo : 92                                                  
+08:13:56-[DEBUG]: TS_ALG_ObjDet_Process: 36 ms                                  
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:56-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 90 ms                          
+08:13:56-[DEBUG]: frameNo : 93                                                  
+08:13:56-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:56-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 89 ms                          
+08:13:56-[DEBUG]: frameNo : 94                                                  
+08:13:56-[DEBUG]: TS_ALG_ObjDet_Process: 36 ms                                  
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 3 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:56-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 85 ms                          
+08:13:56-[DEBUG]: frameNo : 95                                                  
+08:13:56-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:56-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 88 ms                          
+08:13:56-[DEBUG]: frameNo : 96                                                  
+08:13:56-[DEBUG]: TS_ALG_ObjDet_Process: 36 ms                                  
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:56-[DEBUG]: TS_ALG_BodyFeat_Process: 6 ms                                 
+08:13:56-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:57-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 88 ms                          
+08:13:57-[DEBUG]: frameNo : 97                                                  
+08:13:57-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 4 ms                                 
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:57-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 90 ms                          
+08:13:57-[DEBUG]: frameNo : 98                                                  
+08:13:57-[DEBUG]: TS_ALG_ObjDet_Process: 37 ms                                  
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 1 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: multi obj track timecost : 3 ms                               
+08:13:57-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 86 ms                          
+08:13:57-[DEBUG]: frameNo : 99                                                  
+08:13:57-[DEBUG]: TS_ALG_ObjDet_Process: 36 ms                                  
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: TS_MPI_TRP_CVE_Resize: 2 ms                                   
+08:13:57-[DEBUG]: TS_ALG_BodyFeat_Process: 5 ms                                 
+08:13:57-[DEBUG]: multi obj track timecost : 2 ms                               
+08:13:57-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 79 ms               
+
+
+
+// 20230613 dt57
+
+08:06:44-[DEBUG]: frameNo : 92                                                  
+08:06:44-[DEBUG]: TS_ALG_ObjDet_Process: 40 ms                                  
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 16 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 16 ms                                
+08:06:44-[DEBUG]: multi obj track timecost : 3 ms                               
+08:06:44-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 174 ms                         
+08:06:44-[DEBUG]: frameNo : 93                                                  
+08:06:44-[DEBUG]: TS_ALG_ObjDet_Process: 40 ms                                  
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 16 ms                                
+08:06:44-[DEBUG]: multi obj track timecost : 3 ms                               
+08:06:44-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 173 ms                         
+08:06:44-[DEBUG]: frameNo : 94                                                  
+08:06:44-[DEBUG]: TS_ALG_ObjDet_Process: 40 ms                                  
+08:06:44-[DEBUG]: TS_ALG_Resize: 10 ms                                          
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:44-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:44-[DEBUG]: TS_ALG_BodyFeat_Process: 16 ms                                
+08:06:44-[DEBUG]: multi obj track timecost : 3 ms                               
+08:06:44-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 174 ms                         
+08:06:44-[DEBUG]: frameNo : 95                                                  
+08:06:45-[DEBUG]: TS_ALG_ObjDet_Process: 40 ms                                  
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: multi obj track timecost : 3 ms                               
+08:06:45-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 173 ms                         
+08:06:45-[DEBUG]: frameNo : 96                                                  
+08:06:45-[DEBUG]: TS_ALG_ObjDet_Process: 42 ms                                  
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 16 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 16 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 16 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 8 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 16 ms                                
+08:06:45-[DEBUG]: multi obj track timecost : 3 ms                               
+08:06:45-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 176 ms                         
+08:06:45-[DEBUG]: frameNo : 97                                                  
+08:06:45-[DEBUG]: TS_ALG_ObjDet_Process: 40 ms                                  
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 16 ms                                
+08:06:45-[DEBUG]: multi obj track timecost : 3 ms                               
+08:06:45-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 173 ms                         
+08:06:45-[DEBUG]: frameNo : 98                                                  
+08:06:45-[DEBUG]: TS_ALG_ObjDet_Process: 41 ms                                  
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:45-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:45-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:46-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:46-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:46-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:46-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:46-[DEBUG]: TS_ALG_BodyFeat_Process: 16 ms                                
+08:06:46-[DEBUG]: multi obj track timecost : 3 ms                               
+08:06:46-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 174 ms                         
+08:06:46-[DEBUG]: frameNo : 99                                                  
+08:06:46-[DEBUG]: TS_ALG_ObjDet_Process: 40 ms                                  
+08:06:46-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:46-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:46-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:46-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:46-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:46-[DEBUG]: TS_ALG_BodyFeat_Process: 17 ms                                
+08:06:46-[DEBUG]: TS_ALG_Resize: 9 ms                                           
+08:06:46-[DEBUG]: TS_ALG_BodyFeat_Process: 16 ms                                
+08:06:46-[DEBUG]: multi obj track timecost : 3 ms                               
+08:06:46-[DEBUG]: TS_ALG_MultiBodyTrack_Process: 148 ms                         
+08:06:46-[DEBUG]: TS_ALG_MultibodyTrack_Processs: avg timecost 169.500000 ms   
+
+
+100 frames
+max_age = 70: multi obj track all timecost : 178.025000 ms 
+max_age = 100: multi obj track all timecost : 184.865000 ms  
+max_age = 200: multi obj track all timecost : 196.716000 ms  

@@ -44,6 +44,41 @@ size_t Gat1400Req::OnUpLoadFaceWriteData(void* buffer
     return size * nmemb;
 }
 
+size_t Gat1400Req::OnUpLoadMotorVehiclesWriteData(void* buffer
+    , size_t size, size_t nmemb, void* user) {
+    std::string& response = *((std::string*)user);
+    response.append((char*)buffer, size * nmemb);
+    return size * nmemb;
+}
+
+size_t Gat1400Req::OnUpLoadTrafficWriteData(void* buffer
+    , size_t size, size_t nmemb, void* user) {
+    std::string& response = *((std::string*)user);
+    response.append((char*)buffer, size * nmemb);
+    return size * nmemb;
+}
+
+size_t Gat1400Req::OnUpLoadRegionWriteData(void* buffer
+    , size_t size, size_t nmemb, void* user) {
+    std::string& response = *((std::string*)user);
+    response.append((char*)buffer, size * nmemb);
+    return size * nmemb;
+}
+
+size_t Gat1400Req::OnUpLoadOnLeaveWriteData(void* buffer
+    , size_t size, size_t nmemb, void* user) {
+    std::string& response = *((std::string*)user);
+    response.append((char*)buffer, size * nmemb);
+    return size * nmemb;
+}
+
+size_t Gat1400Req::OnUpLoadNonMotorVehiclesWriteData(void* buffer
+    , size_t size, size_t nmemb, void* user) {
+    std::string& response = *((std::string*)user);
+    response.append((char*)buffer, size * nmemb);
+    return size * nmemb;
+}
+
 size_t Gat1400Req::OnRegisterWriteHeader(void* buffer
     , size_t size, size_t nmemb, void* user) {
     std::string& response = *((std::string*)user);
@@ -53,38 +88,74 @@ size_t Gat1400Req::OnRegisterWriteHeader(void* buffer
 
 Gat1400Req::Gat1400Req(Gat1400Util::InitParam *param)
     : m_initParam(param)
-    , m_faceAsyncCurlClient(new CurlAsyncClient(1))
-    , m_faceUploadUserOpera(new Gat1400FaceUploadUserOpera()) {
+    , m_AsyncCurlClient(new CurlAsyncClient(2))
+    , m_faceUploadUserOpera(new Gat1400FaceUploadUserOpera())
+    , m_motorVehiclesUploadUserOpera(new Gat1400MotorVehiclesUploadUserOpera())
+    , m_nonMotorVehiclesUploadUserOpera(new Gat1400NonMotorVehiclesUploadUserOpera())
+    , m_trafficUploadUserOpera(new Gat1400TrafficUploadUserOpera())
+    , m_regionUploadUserOpera(new Gat1400RegionUploadUserOpera())
+    , m_onLeaveUploadUserOpera(new Gat1400OnLeaveUploadUserOpera()) {
 }
 
 Gat1400Req::~Gat1400Req() {
     StopSyncCurlClient();
-    if (m_faceAsyncCurlClient != nullptr) {
-        delete m_faceAsyncCurlClient;
-        m_faceAsyncCurlClient = nullptr;
+    if (m_AsyncCurlClient != nullptr) {
+        delete m_AsyncCurlClient;
+        m_AsyncCurlClient = nullptr;
     }
-    Gat1400FaceUploadUserOpera *faceUser = dynamic_cast<Gat1400FaceUploadUserOpera*>(m_faceUploadUserOpera);
+    Gat1400FaceUploadUserOpera *faceUser = 
+        dynamic_cast<Gat1400FaceUploadUserOpera*>(m_faceUploadUserOpera);
     if (faceUser != nullptr) {
         delete faceUser;
         faceUser = nullptr;
     }
+    Gat1400MotorVehiclesUploadUserOpera *mvUser = 
+        dynamic_cast<Gat1400MotorVehiclesUploadUserOpera*>(m_motorVehiclesUploadUserOpera);
+    if (mvUser != nullptr) {
+        delete mvUser;
+        mvUser = nullptr;
+    }
+    Gat1400NonMotorVehiclesUploadUserOpera *nmvUser = 
+        dynamic_cast<Gat1400NonMotorVehiclesUploadUserOpera*>(m_nonMotorVehiclesUploadUserOpera);
+    if (nmvUser != nullptr) {
+        delete nmvUser;
+        nmvUser = nullptr;
+    }
+    Gat1400TrafficUploadUserOpera *trafficUser = 
+        dynamic_cast<Gat1400TrafficUploadUserOpera*>(m_trafficUploadUserOpera);
+    if (trafficUser != nullptr) {
+        delete trafficUser;
+        trafficUser = nullptr;
+    }
+    Gat1400RegionUploadUserOpera *regionUser = 
+        dynamic_cast<Gat1400RegionUploadUserOpera*>(m_regionUploadUserOpera);
+    if (regionUser != nullptr) {
+        delete regionUser;
+        regionUser = nullptr;
+    }
+    Gat1400OnLeaveUploadUserOpera *onLeaveUser = 
+        dynamic_cast<Gat1400OnLeaveUploadUserOpera*>(m_onLeaveUploadUserOpera);
+    if (onLeaveUser != nullptr) {
+        delete onLeaveUser;
+        onLeaveUser = nullptr;
+    }
 }
 
 bool Gat1400Req::StartSyncCurlClient(EuvLoop *loop) {
-    if (m_faceAsyncCurlClient == nullptr) {
+    if (m_AsyncCurlClient == nullptr) {
         return false;
     }
-    if (!m_faceAsyncCurlClient->Create(loop)) {
+    if (!m_AsyncCurlClient->Create(loop)) {
         return false;
     }
-    return m_faceAsyncCurlClient->Start();
+    return m_AsyncCurlClient->Start();
 }
 
 bool Gat1400Req::StopSyncCurlClient() {
-    if (m_faceAsyncCurlClient == nullptr) {
+    if (m_AsyncCurlClient == nullptr) {
         return false;
     }
-    return m_faceAsyncCurlClient->Stop();
+    return m_AsyncCurlClient->Stop();
 }
 
 void Gat1400Req::UpdateDeviceId() {
@@ -121,28 +192,28 @@ Gat1400Util::RegisterRet Gat1400Req::Register(Gat1400Util::RegisterAuthParam &au
     bodyJson["DeviceID"] = std::string(m_initParam->deviceId);
     dataJson["RegisterObject"] = bodyJson;
 
-    CurlClient::PostData data;
-    data.header = curl_slist_append(data.header, "Content-Type: application/viid+json");
+    auto *data = new CurlClient::PostData();
+    data->header = curl_slist_append(data->header, "Content-Type: application/viid+json");
     if (authHeader.size() != 0) {
-        data.header = curl_slist_append(data.header, authHeader.c_str());
+        data->header = curl_slist_append(data->header, authHeader.c_str());
     }
-    data.way = CurlClient::HttpPostWay::POST;
-    data.url = m_gateParam.host1400 + "/VIID/System/Register";
-    data.timeout = m_gateParam.timeout;
-    data.param = dataJson.toStyledString();
-    data.cbWriteData = (CurlClient::CbWriteData*)OnRegisterWriteData;
-    data.cbWriteHeader = (CurlClient::CbWriteData*)OnRegisterWriteHeader;
+    data->way = CurlClient::HttpPostWay::POST;
+    data->url = m_gateParam.host1400 + "/VIID/System/Register";
+    data->timeout = m_gateParam.timeout;
+    data->param = dataJson.toStyledString();
+    data->cbWriteData = (CurlClient::CbWriteData*)OnRegisterWriteData;
+    data->cbWriteHeader = (CurlClient::CbWriteData*)OnRegisterWriteHeader;
 
     CurlSyncClient curlClient;
     Gat1400Util::RegisterRet ret = Gat1400Util::RegisterRet::RegisterError;
     do {
-        if(!curlClient.Post(&data)) {
+        if(!curlClient.Post(data)) {
             emxloge("Register Post Failed!\n");
             break;
         }
-        emxlogi("Register Post response data: %s\n", data.response.c_str());
+        emxlogi("Register Post response data: %s\n", data->response.c_str());
         Json::Value ackJson;
-        if (EasyJson::Parse(data.response, ackJson) != ErrCodeE::Success) {
+        if (EasyJson::Parse(data->response, ackJson) != ErrCodeE::Success) {
             emxloge("Register ackJson Parse Failed!\n");
             break;
         }
@@ -157,9 +228,9 @@ Gat1400Util::RegisterRet Gat1400Req::Register(Gat1400Util::RegisterAuthParam &au
         if ((ackJson["status"].isInt() && ackJson["status"].asInt() == 401)
             && (ackJson["error"].isString() && ackJson["error"].asString() == "Unauthorized")) {
             // 设备未授权状态
-            emxlogd("gat1400 Register responseHead: %s\n", data.responseHead.c_str());
+            emxlogd("gat1400 Register responseHead: %s\n", data->responseHead.c_str());
             std::map<std::string, std::string> authHeaderMap;
-            ParseRegisterRplyHeader(data.responseHead, authHeaderMap);
+            ParseRegisterRplyHeader(data->responseHead, authHeaderMap);
             std::string authkeyStr = Gat1400Util::GetMapValueByKey("WWW-Authenticate",authHeaderMap);
             if (authkeyStr.size() == 0) {
                 emxloge("GetMapValue by WWW-Authenticate is failed!\n");
@@ -177,7 +248,7 @@ Gat1400Util::RegisterRet Gat1400Req::Register(Gat1400Util::RegisterAuthParam &au
         }
         // 其他失败场景： Ret = Gat1400Util::RegisterRet::RegisterError;
     } while(false);
-    curlClient.FreePostData(&data);
+    curlClient.FreePostData(data);
     return ret;
 }
 
@@ -190,27 +261,27 @@ bool Gat1400Req::UnRegister() {
     bodyJson["DeviceID"] = std::string(m_initParam->deviceId);
     dataJson["UnRegisterObject"] = bodyJson;
 
-    CurlClient::PostData data;
-    data.header = curl_slist_append(data.header, "Content-Type: application/viid+json");
+    auto *data = new CurlClient::PostData();
+    data->header = curl_slist_append(data->header, "Content-Type: application/viid+json");
     if (authHeader.size() != 0) {
-        data.header = curl_slist_append(data.header, authHeader.c_str());
+        data->header = curl_slist_append(data->header, authHeader.c_str());
     }
-    data.way = CurlClient::HttpPostWay::POST;
-    data.url = m_gateParam.host1400 + "/VIID/System/UnRegister";
-    data.timeout = m_gateParam.timeout;
-    data.param = dataJson.toStyledString();
-    data.cbWriteData = (CurlClient::CbWriteData*)OnUnRegisterWriteData;
+    data->way = CurlClient::HttpPostWay::POST;
+    data->url = m_gateParam.host1400 + "/VIID/System/UnRegister";
+    data->timeout = m_gateParam.timeout;
+    data->param = dataJson.toStyledString();
+    data->cbWriteData = (CurlClient::CbWriteData*)OnUnRegisterWriteData;
 
     CurlSyncClient curlClient;
     bool ret = false;
     do {
-        if(!curlClient.Post(&data)) {
+        if(!curlClient.Post(data)) {
             emxloge("UnRegister Post Failed!\n");
             break;
         }
-        emxlogi("UnRegister Post response data: %s\n", data.response.c_str());
+        emxlogi("UnRegister Post response data: %s\n", data->response.c_str());
         Json::Value ackJson;
-        if (EasyJson::Parse(data.response, ackJson) != ErrCodeE::Success) {
+        if (EasyJson::Parse(data->response, ackJson) != ErrCodeE::Success) {
             emxloge("UnRegister ackJson Parse Failed!\n");
             break;
         }
@@ -221,7 +292,7 @@ bool Gat1400Req::UnRegister() {
             break;
         }
     } while(false);
-    curlClient.FreePostData(&data);
+    curlClient.FreePostData(data);
     return ret;
 }
 
@@ -234,27 +305,27 @@ int Gat1400Req::KeepAlive() {
     bodyJson["DeviceID"] = std::string(m_initParam->deviceId);
     dataJson["KeepaliveObject"] = bodyJson;
 
-    CurlClient::PostData data;
-    data.header = curl_slist_append(data.header, "Content-Type: application/viid+json");
+    auto data = new CurlClient::PostData();
+    data->header = curl_slist_append(data->header, "Content-Type: application/viid+json");
     if (authHeader.size() != 0) {
-        data.header = curl_slist_append(data.header, authHeader.c_str());
+        data->header = curl_slist_append(data->header, authHeader.c_str());
     }
-    data.way = CurlClient::HttpPostWay::POST;
-    data.url = m_gateParam.host1400 + "/VIID/System/Keepalive";
-    data.timeout = m_gateParam.timeout;
-    data.param = dataJson.toStyledString();
-    data.cbWriteData = (CurlClient::CbWriteData*)OnKeepAliveWriteData;
+    data->way = CurlClient::HttpPostWay::POST;
+    data->url = m_gateParam.host1400 + "/VIID/System/Keepalive";
+    data->timeout = m_gateParam.timeout;
+    data->param = dataJson.toStyledString();
+    data->cbWriteData = (CurlClient::CbWriteData*)OnKeepAliveWriteData;
 
     CurlSyncClient curlClient;
     bool ret = 0;
     do {
-        if(!curlClient.Post(&data)) {
+        if(!curlClient.Post(data)) {
             emxloge("KeepAlive Post Failed!\n");
             break;
         }
-        emxlogi("KeepAlive Post response data: %s\n", data.response.c_str());
+        emxlogi("KeepAlive Post response data: %s\n", data->response.c_str());
         Json::Value ackJson;
-        if (EasyJson::Parse(data.response, ackJson) != ErrCodeE::Success) {
+        if (EasyJson::Parse(data->response, ackJson) != ErrCodeE::Success) {
             emxloge("KeepAlive ackJson Parse Failed!\n");
             break;
         }
@@ -268,7 +339,7 @@ int Gat1400Req::KeepAlive() {
             break;
         }
     } while(false);
-    curlClient.FreePostData(&data);
+    curlClient.FreePostData(data);
     return ret;
 }
 
@@ -291,21 +362,21 @@ bool Gat1400Req::GetGateWay(Gat1400Util::GateParam &gate_param) {
 	url.append(urlBuf);
     emxlogd("get platform config, url:%s\n", url.c_str());
 
-    CurlClient::PostData data;
-    data.way = CurlClient::HttpPostWay::GET;
-    data.url = url;
-    data.cbWriteData = (CurlClient::CbWriteData*)OnGetGateWayWriteData;
+    auto *data = new CurlClient::PostData();
+    data->way = CurlClient::HttpPostWay::GET;
+    data->url = url;
+    data->cbWriteData = (CurlClient::CbWriteData*)OnGetGateWayWriteData;
 
     CurlSyncClient curlClient;
     bool ret = false;
     do {
-        if(!curlClient.Post(&data)) {
+        if(!curlClient.Post(data)) {
             emxloge("GetGateWay Post Failed!\n");
             break;
         }
-        emxlogi("GetGateWay Post response data: %s\n", data.response.c_str());
+        emxlogi("GetGateWay Post response data: %s\n", data->response.c_str());
         Json::Value ackJson;
-        if (EasyJson::Parse(data.response, ackJson) != ErrCodeE::Success) {
+        if (EasyJson::Parse(data->response, ackJson) != ErrCodeE::Success) {
             emxloge("GetGateWay ackJson Parse Failed!\n");
             break;
         }
@@ -351,7 +422,7 @@ bool Gat1400Req::GetGateWay(Gat1400Util::GateParam &gate_param) {
         }
         m_gateParam = gate_param;
     } while(false);
-    curlClient.FreePostData(&data);
+    curlClient.FreePostData(data);
     return ret;
 }
 
@@ -361,26 +432,26 @@ bool Gat1400Req::GetTime() {
     authParam.httpMethod = "GET";
     std::string authHeader = PackAuthHeader(authParam);
 
-    CurlClient::PostData data;
-    data.header = curl_slist_append(data.header, "Content-Type: application/viid+json");
+    auto *data = new CurlClient::PostData();
+    data->header = curl_slist_append(data->header, "Content-Type: application/viid+json");
     if (authHeader.size() != 0) {
-        data.header = curl_slist_append(data.header, authHeader.c_str());
+        data->header = curl_slist_append(data->header, authHeader.c_str());
     }
-    data.way = CurlClient::HttpPostWay::GET;
-    data.url = m_gateParam.host1400 + "/VIID/System/Time";
-    data.timeout = m_gateParam.timeout;
-    data.cbWriteData = (CurlClient::CbWriteData*)OnGetTimeWriteData;
+    data->way = CurlClient::HttpPostWay::GET;
+    data->url = m_gateParam.host1400 + "/VIID/System/Time";
+    data->timeout = m_gateParam.timeout;
+    data->cbWriteData = (CurlClient::CbWriteData*)OnGetTimeWriteData;
 
     CurlSyncClient curlClient;
     bool ret = false;
     do {
-        if(!curlClient.Post(&data)) {
+        if(!curlClient.Post(data)) {
             emxloge("GetTime Post Failed!\n");
             break;
         }
-        emxlogi("GetTime Post response data: %s\n", data.response.c_str());
+        emxlogi("GetTime Post response data: %s\n", data->response.c_str());
         Json::Value ackJson;
-        if (EasyJson::Parse(data.response, ackJson) != ErrCodeE::Success) {
+        if (EasyJson::Parse(data->response, ackJson) != ErrCodeE::Success) {
             emxloge("GetTime ackJson Parse Failed!\n");
             break;
         }
@@ -401,12 +472,12 @@ bool Gat1400Req::GetTime() {
             m_sysTimeParam.TimeZone = ackJson["SystemTimeObject"]["TimeZone"].asString();
         }
     } while(false);
-    curlClient.FreePostData(&data);
+    curlClient.FreePostData(data);
     return ret;
 }
 
-bool Gat1400Req::UpLoadFace(const Gat1400Util::UploadDataParam &upload_param) {
-    if (m_faceAsyncCurlClient == nullptr) {
+bool Gat1400Req::UpLoadFace(const Gat1400Util::UploadFaceData &upload_param) {
+    if (m_AsyncCurlClient == nullptr) {
         emxloge("CurlAsyncClient is no Create!\n");
         return false;
     }
@@ -418,27 +489,176 @@ bool Gat1400Req::UpLoadFace(const Gat1400Util::UploadDataParam &upload_param) {
     if (!PackUploadFacesParam(upload_param, s_param)) {
         return false;
     }
-    CurlClient::PostData data;
-    data.header = curl_slist_append(data.header, "Content-Type: application/viid+json");
+    auto *data = new CurlClient::PostData();
+    data->header = curl_slist_append(data->header, "Content-Type: application/viid+json");
     if (authHeader.size() != 0) {
-        data.header = curl_slist_append(data.header, authHeader.c_str());
+        data->header = curl_slist_append(data->header, authHeader.c_str());
     }
-    data.way = CurlClient::HttpPostWay::POST;
-    data.url = m_gateParam.host1400 + "/VIID/Faces";
-    data.timeout = m_gateParam.timeout;
-    data.param = s_param;
-    data.cbWriteData = (CurlClient::CbWriteData*)OnUpLoadFaceWriteData;
-    data.userOperation = (UserOperation*)m_faceUploadUserOpera;
-    m_faceAsyncCurlClient->Post(&data);
-    m_faceAsyncCurlClient->FreePostData(&data);
+    data->way = CurlClient::HttpPostWay::POST;
+    data->url = m_gateParam.host1400 + "/VIID/Faces";
+    data->timeout = m_gateParam.timeout;
+    data->param = s_param;
+    m_faceUploadUserOpera->UpdateParams(m_initParam, &authParam);
+    data->cbWriteData = (CurlClient::CbWriteData*)OnUpLoadFaceWriteData;
+    data->userOperation = (UserOperation*)m_faceUploadUserOpera;
+    m_AsyncCurlClient->Post(data);
+    m_AsyncCurlClient->FreePostData(data);
     return true;
 }
 
-bool Gat1400Req::PackUploadFacesParam(const Gat1400Util::UploadDataParam &upload_param, std::string &param) {
-    bool ret = false, isHaveFullImg = false;
-    Json::Value SubImageInfoObjectArray, SubImageInfoObject, SubImageInfoObjectArrayFull;
+bool Gat1400Req::UpLoadMotorVehicles(const Gat1400Util::UploadMotorVehiclesData &upload_param) {
+    if (m_AsyncCurlClient == nullptr) {
+        emxloge("CurlAsyncClient is no Create!\n");
+        return false;
+    }
+    Gat1400Util::RegisterAuthParam authParam = m_regauthParam;
+    authParam.url = "/VIID/MotorVehicles";
+    authParam.httpMethod = "POST";
+    std::string authHeader = PackAuthHeader(authParam);
+    std::string s_param;
+    if (!PackUploadMotorVehiclesParam(upload_param, s_param)) {
+        return false;
+    }
+    auto *data = new CurlClient::PostData();
+    data->header = curl_slist_append(data->header, "Content-Type: application/viid+json");
+    if (authHeader.size() != 0) {
+        data->header = curl_slist_append(data->header, authHeader.c_str());
+    }
+    data->way = CurlClient::HttpPostWay::POST;
+    data->url = m_gateParam.host1400 + "/VIID/MotorVehicles";
+    data->timeout = m_gateParam.timeout;
+    data->param = s_param;
+    m_motorVehiclesUploadUserOpera->UpdateParams(m_initParam, &authParam);
+    data->cbWriteData = (CurlClient::CbWriteData*)OnUpLoadMotorVehiclesWriteData;
+    data->userOperation = (UserOperation*)m_motorVehiclesUploadUserOpera;
+    m_AsyncCurlClient->Post(data);
+    m_AsyncCurlClient->FreePostData(data);
+    return true;
+}
+
+bool Gat1400Req::UpLoadNonMotorVehicles(const Gat1400Util::UploadNonMotorVehiclesData &upload_param) {
+    if (m_AsyncCurlClient == nullptr) {
+        emxloge("CurlAsyncClient is no Create!\n");
+        return false;
+    }
+    Gat1400Util::RegisterAuthParam authParam = m_regauthParam;
+    authParam.url = "/VIID/NonMotorVehicles";
+    authParam.httpMethod = "POST";
+    std::string authHeader = PackAuthHeader(authParam);
+    std::string s_param;
+    if (!PackUploadNonMotorVehiclesParam(upload_param, s_param)) {
+        return false;
+    }
+    auto *data = new CurlClient::PostData();
+    data->header = curl_slist_append(data->header, "Content-Type: application/viid+json");
+    if (authHeader.size() != 0) {
+        data->header = curl_slist_append(data->header, authHeader.c_str());
+    }
+    data->way = CurlClient::HttpPostWay::POST;
+    data->url = m_gateParam.host1400 + "/VIID/NonMotorVehicles";
+    data->timeout = m_gateParam.timeout;
+    data->param = s_param;
+    m_nonMotorVehiclesUploadUserOpera->UpdateParams(m_initParam, &authParam);
+    data->cbWriteData = (CurlClient::CbWriteData*)OnUpLoadNonMotorVehiclesWriteData;
+    data->userOperation = (UserOperation*)m_nonMotorVehiclesUploadUserOpera;
+    m_AsyncCurlClient->Post(data);
+    m_AsyncCurlClient->FreePostData(data);
+    return true;
+}
+
+bool Gat1400Req::UploadTraffic(const Gat1400Util::UploadTrafficData &upload_param) {
+    if (m_AsyncCurlClient == nullptr) {
+        emxloge("CurlAsyncClient is no Create!\n");
+        return false;
+    }
+    Gat1400Util::RegisterAuthParam authParam = m_regauthParam;
+    authParam.url = "/VIID/Traffic";
+    authParam.httpMethod = "POST";
+    std::string authHeader = PackAuthHeader(authParam);
+    std::string s_param;
+    if (!PackUploadTrafficParam(upload_param, s_param)) {
+        return false;
+    }
+    auto *data = new CurlClient::PostData();
+    data->header = curl_slist_append(data->header, "Content-Type: application/viid+json");
+    if (authHeader.size() != 0) {
+        data->header = curl_slist_append(data->header, authHeader.c_str());
+    }
+    data->way = CurlClient::HttpPostWay::POST;
+    data->url = m_gateParam.host1400 + "/VIID/Traffic";
+    data->timeout = m_gateParam.timeout;
+    data->param = s_param;
+    m_trafficUploadUserOpera->UpdateParams(m_initParam, &authParam);
+    data->cbWriteData = (CurlClient::CbWriteData*)OnUpLoadTrafficWriteData;
+    data->userOperation = (UserOperation*)m_trafficUploadUserOpera;
+    m_AsyncCurlClient->Post(data);
+    m_AsyncCurlClient->FreePostData(data);
+    return true;
+}
+
+bool Gat1400Req::UploadRegion(const Gat1400Util::UploadRegionData &upload_param) {
+    if (m_AsyncCurlClient == nullptr) {
+        emxloge("CurlAsyncClient is no Create!\n");
+        return false;
+    }
+    Gat1400Util::RegisterAuthParam authParam = m_regauthParam;
+    authParam.url = "/VIID/Region";
+    authParam.httpMethod = "POST";
+    std::string authHeader = PackAuthHeader(authParam);
+    std::string s_param;
+    if (!PackUploadRegionParam(upload_param, s_param)) {
+        return false;
+    }
+    auto *data = new CurlClient::PostData();
+    data->header = curl_slist_append(data->header, "Content-Type: application/viid+json");
+    if (authHeader.size() != 0) {
+        data->header = curl_slist_append(data->header, authHeader.c_str());
+    }
+    data->way = CurlClient::HttpPostWay::POST;
+    data->url = m_gateParam.host1400 + "/VIID/Region";
+    data->timeout = m_gateParam.timeout;
+    data->param = s_param;
+    m_regionUploadUserOpera->UpdateParams(m_initParam, &authParam);
+    data->cbWriteData = (CurlClient::CbWriteData*)OnUpLoadRegionWriteData;
+    data->userOperation = (UserOperation*)m_regionUploadUserOpera;
+    m_AsyncCurlClient->Post(data);
+    m_AsyncCurlClient->FreePostData(data);
+    return true;
+}
+
+bool Gat1400Req::UploadOnLeave(const Gat1400Util::UploadOnLeaveData &upload_param) {
+    if (m_AsyncCurlClient == nullptr) {
+        emxloge("CurlAsyncClient is no Create!\n");
+        return false;
+    }
+    Gat1400Util::RegisterAuthParam authParam = m_regauthParam;
+    authParam.url = "/VIID/OnLeave";
+    authParam.httpMethod = "POST";
+    std::string authHeader = PackAuthHeader(authParam);
+    std::string s_param;
+    if (!PackUploadOnLeaveParam(upload_param, s_param)) {
+        return false;
+    }
+    auto *data = new CurlClient::PostData();
+    data->header = curl_slist_append(data->header, "Content-Type: application/viid+json");
+    if (authHeader.size() != 0) {
+        data->header = curl_slist_append(data->header, authHeader.c_str());
+    }
+    data->way = CurlClient::HttpPostWay::POST;
+    data->url = m_gateParam.host1400 + "/VIID/OnLeave";
+    data->timeout = m_gateParam.timeout;
+    data->param = s_param;
+    m_onLeaveUploadUserOpera->UpdateParams(m_initParam, &authParam);
+    data->cbWriteData = (CurlClient::CbWriteData*)OnUpLoadOnLeaveWriteData;
+    data->userOperation = (UserOperation*)m_onLeaveUploadUserOpera;
+    m_AsyncCurlClient->Post(data);
+    m_AsyncCurlClient->FreePostData(data);
+    return true;
+}
+
+bool Gat1400Req::PackUploadFacesParam(const Gat1400Util::UploadFaceData &upload_param, std::string &param) {
+    Json::Value SubImageInfoObjectArray, SubImageInfoObject;
     for(auto sub : upload_param.subImgList) {
-        ret = true;
         SubImageInfoObjectArray["ImageID"] = sub.ImageID;
         SubImageInfoObjectArray["EventSort"] = sub.EventSort;
         SubImageInfoObjectArray["DeviceID"] = upload_param.deviceId;
@@ -449,20 +669,27 @@ bool Gat1400Req::PackUploadFacesParam(const Gat1400Util::UploadDataParam &upload
         SubImageInfoObjectArray["Width"] = sub.Width;
         SubImageInfoObjectArray["Height"] = sub.Height;
         SubImageInfoObjectArray["Data"] = sub.Data;
-        if (!sub.isfullImg) {
-            SubImageInfoObject["SubImageInfoObject"].append(SubImageInfoObjectArray);
-        } else if (sub.isfullImg && isHaveFullImg && m_gateParam.postSceneImg) {
-            isHaveFullImg = true;
-            SubImageInfoObjectArrayFull = SubImageInfoObjectArray;
-        }
+        SubImageInfoObjectArray["FileSize"] = sub.FileSize;
+        SubImageInfoObject["SubImageInfoObject"].append(SubImageInfoObjectArray);
     }
-    if (isHaveFullImg && m_gateParam.postSceneImg) {
+    if (upload_param.isHaveFullImg && m_gateParam.postSceneImg) {
         // 大图数据追加到列表最后一个
-        SubImageInfoObject["SubImageInfoObject"].append(SubImageInfoObjectArrayFull);
+        SubImageInfoObjectArray["ImageID"] = upload_param.fullImg.ImageID;
+        SubImageInfoObjectArray["EventSort"] = upload_param.fullImg.EventSort;
+        SubImageInfoObjectArray["DeviceID"] = upload_param.deviceId;
+        SubImageInfoObjectArray["StoragePath"] = upload_param.fullImg.StoragePath;
+        SubImageInfoObjectArray["Type"] = upload_param.fullImg.Type;
+        SubImageInfoObjectArray["FileFormat"] = upload_param.fullImg.FileFormat;
+        SubImageInfoObjectArray["ShotTime"] = upload_param.fullImg.ShotTime;
+        SubImageInfoObjectArray["Width"] = upload_param.fullImg.Width;
+        SubImageInfoObjectArray["Height"] = upload_param.fullImg.Height;
+        SubImageInfoObjectArray["Data"] = upload_param.fullImg.Data;
+        SubImageInfoObjectArray["FileSize"] = upload_param.fullImg.FileSize;
+        SubImageInfoObject["SubImageInfoObject"].append(SubImageInfoObjectArray);
     }
     Json::Value FaceObjectArray, FaceObject;
     FaceObjectArray["FaceID"] = upload_param.Id;
-    FaceObjectArray["InfoKind"] = 1;
+    FaceObjectArray["InfoKind"] = upload_param.InfoKind;
     FaceObjectArray["SourceID"] = upload_param.SourceID;
     FaceObjectArray["DeviceID"] = upload_param.deviceId;
     FaceObjectArray["LeftTopX"] = upload_param.LeftTopX;
@@ -472,20 +699,210 @@ bool Gat1400Req::PackUploadFacesParam(const Gat1400Util::UploadDataParam &upload
     FaceObjectArray["LocationMarkTime"] = upload_param.LocationMarkTime;
     FaceObjectArray["FaceAppearTime"] = upload_param.AppearTime;
     FaceObjectArray["FaceDisAppearTime"] = upload_param.DisAppearTime;
-    FaceObjectArray["IsSuspectedTerrorist"] = 2;
-    FaceObjectArray["IsCriminalInvolved"] = 2;
-    FaceObjectArray["IsDetainees"] = 2;
-    FaceObjectArray["IsVictim"] = 2;
-    FaceObjectArray["IsSuspiciousPerson"] = 2;
+    FaceObjectArray["IsSuspectedTerrorist"] = upload_param.IsSuspectedTerrorist;
+    FaceObjectArray["IsCriminalInvolved"] = upload_param.IsCriminalInvolved;
+    FaceObjectArray["IsDetainees"] = upload_param.IsDetainees;
+    FaceObjectArray["IsVictim"] = upload_param.IsVictim;
+    FaceObjectArray["IsSuspiciousPerson"] = upload_param.IsSuspiciousPerson;
+    FaceObjectArray["RespiratorColor"] = upload_param.RespiratorColor; 
     FaceObjectArray["SubImageList"] = SubImageInfoObject;
     FaceObject["FaceObject"][0] = FaceObjectArray;
     Json::Value paramJson;
     paramJson["FaceListObject"] = FaceObject;
     param = paramJson.toStyledString();
-    return ret;
+    emxlogd("MarkTime[%s]\n, AppearTime[%s]\n"
+                , upload_param.LocationMarkTime.c_str()
+                , upload_param.AppearTime.c_str());
+    return true;
 }
 
-int Gat1400Req::m_index = 0;
+bool Gat1400Req::PackUploadMotorVehiclesParam(
+    const Gat1400Util::UploadMotorVehiclesData &upload_param, std::string &param) {
+    Json::Value SubImageInfoObjectArray, SubImageInfoObject;
+    Json::Value Object, ObjectArray;
+    for(auto sub : upload_param.subImgList) {
+        SubImageInfoObjectArray["ImageID"] = sub.Vehicle.ImageID;
+        SubImageInfoObjectArray["EventSort"] = sub.Vehicle.EventSort;
+        SubImageInfoObjectArray["DeviceID"] = upload_param.deviceId;
+        SubImageInfoObjectArray["Type"] = sub.Vehicle.Type;
+        SubImageInfoObjectArray["FileFormat"] = sub.Vehicle.FileFormat;
+        SubImageInfoObjectArray["ShotTime"] = sub.Vehicle.ShotTime;
+        SubImageInfoObjectArray["Width"] = sub.Vehicle.Width;
+        SubImageInfoObjectArray["Height"] = sub.Vehicle.Height;
+        SubImageInfoObjectArray["Data"] = sub.Vehicle.Data;
+        SubImageInfoObjectArray["FileSize"] = sub.Vehicle.FileSize;
+        SubImageInfoObject["SubImageInfoObject"].append(SubImageInfoObjectArray);
+        SubImageInfoObjectArray["ImageID"] = sub.Pl.ImageID;
+        SubImageInfoObjectArray["EventSort"] = sub.Pl.EventSort;
+        SubImageInfoObjectArray["DeviceID"] = upload_param.deviceId;
+        SubImageInfoObjectArray["Type"] = sub.Pl.Type;
+        SubImageInfoObjectArray["FileFormat"] = sub.Pl.FileFormat;
+        SubImageInfoObjectArray["ShotTime"] = sub.Pl.ShotTime;
+        SubImageInfoObjectArray["Width"] = sub.Pl.Width;
+        SubImageInfoObjectArray["Height"] = sub.Pl.Height;
+        SubImageInfoObjectArray["Data"] = sub.Pl.Data;
+        SubImageInfoObjectArray["FileSize"] = sub.Pl.FileSize;
+        SubImageInfoObject["SubImageInfoObject"].append(SubImageInfoObjectArray);
+        ObjectArray["MotorVehicleID"] = upload_param.Id;
+        ObjectArray["InfoKind"] = upload_param.InfoKind;
+        ObjectArray["SourceID"] = upload_param.SourceID;
+        ObjectArray["DeviceID"] = upload_param.deviceId;
+        ObjectArray["LeftTopX"] = upload_param.LeftTopX;
+        ObjectArray["LeftTopY"] = upload_param.LeftTopY;
+        ObjectArray["RightBtmX"] = upload_param.RightBtmX;
+        ObjectArray["RightBtmY"] = upload_param.RightBtmY;
+        ObjectArray["MarkTime"] = upload_param.LocationMarkTime;
+        ObjectArray["AppearTime"] = upload_param.AppearTime;
+        ObjectArray["LaneNo"] = sub.LaneNo;
+        ObjectArray["HasPlate"] = sub.HasPlate;
+        ObjectArray["PlateClass"] = sub.PlateClass;
+        ObjectArray["PlateColor"] = sub.PlateColor;
+        ObjectArray["PlateNo"] = sub.PlateNo;
+        ObjectArray["VehicleClass"] = sub.VehicleClass;
+        ObjectArray["Direction"] = sub.Direction; 
+        ObjectArray["VehicleColor"] = sub.VehicleColor; 
+        ObjectArray["PassTime"] = sub.PassTime;  
+        ObjectArray["StorageUrl1"] = sub.StorageUrl1;
+        ObjectArray["SubImageList"] = SubImageInfoObject;
+        Object["MotorVehicleObject"].append(ObjectArray);
+        emxlogd("MarkTime[%s]\n, AppearTime[%s]\n"
+                , upload_param.LocationMarkTime.c_str()
+                , upload_param.AppearTime.c_str());
+    }
+    Json::Value paramJson;
+    paramJson["MotorVehicleListObject"] = Object;
+    param = paramJson.toStyledString();
+    return true;
+}
+
+bool Gat1400Req::PackUploadNonMotorVehiclesParam(
+    const Gat1400Util::UploadNonMotorVehiclesData &upload_param, std::string &param) {
+    Json::Value SubImageInfoObjectArray, SubImageInfoObject;
+    for(auto sub : upload_param.subImgList) {
+        SubImageInfoObjectArray["ImageID"] = sub.ImageID;
+        SubImageInfoObjectArray["EventSort"] = sub.EventSort;
+        SubImageInfoObjectArray["DeviceID"] = upload_param.deviceId;
+        SubImageInfoObjectArray["StoragePath"] = sub.StoragePath;
+        SubImageInfoObjectArray["Type"] = sub.Type;
+        SubImageInfoObjectArray["FileFormat"] = sub.FileFormat;
+        SubImageInfoObjectArray["ShotTime"] = sub.ShotTime;
+        SubImageInfoObjectArray["Width"] = sub.Width;
+        SubImageInfoObjectArray["Height"] = sub.Height;
+        SubImageInfoObjectArray["Data"] = sub.Data;
+        SubImageInfoObjectArray["FileSize"] = sub.FileSize;
+        SubImageInfoObject["SubImageInfoObject"].append(SubImageInfoObjectArray);
+    }
+    Json::Value ObjectArray, Object;
+    ObjectArray["NonMotorVehicleID"] = upload_param.Id;
+    ObjectArray["InfoKind"] = upload_param.InfoKind;
+    ObjectArray["SourceID"] = upload_param.SourceID;
+    ObjectArray["DeviceID"] = upload_param.deviceId;
+    ObjectArray["LeftTopX"] = upload_param.LeftTopX;
+    ObjectArray["LeftTopY"] = upload_param.LeftTopY;
+    ObjectArray["RightBtmX"] = upload_param.RightBtmX;
+    ObjectArray["RightBtmY"] = upload_param.RightBtmY;
+    ObjectArray["MarkTime"] = upload_param.LocationMarkTime;
+    ObjectArray["AppearTime"] = upload_param.AppearTime;
+    ObjectArray["HasPlate"] = upload_param.HasPlate;
+    ObjectArray["PlateClass"] = upload_param.PlateClass;
+    ObjectArray["PlateNo"] = upload_param.PlateNo;
+    ObjectArray["PlateColor"] = upload_param.PlateColor;
+    ObjectArray["VehicleColor"] = upload_param.VehicleColor;
+    ObjectArray["SubImageList"] = SubImageInfoObject;
+    Object["NonMotorVehicleObject"][0] = ObjectArray;
+    Json::Value paramJson;
+    paramJson["NonMotorVehicleListObject"] = Object;
+    param = paramJson.toStyledString();
+    emxlogd("MarkTime[%s]\n, AppearTime[%s]\n"
+                , upload_param.LocationMarkTime.c_str()
+                , upload_param.AppearTime.c_str());
+    return true;
+}
+
+bool Gat1400Req::PackUploadTrafficParam(const Gat1400Util::UploadTrafficData &upload_param, std::string &param) {
+    Json::Value TrafficListObject;
+    TrafficListObject["TrafficObject"][0]["TrafficID"] = upload_param.trafficID;
+    TrafficListObject["TrafficObject"][0]["InfoKind"] = upload_param.InfoKind;
+    TrafficListObject["TrafficObject"][0]["SourceID"] = upload_param.SourceID;
+    TrafficListObject["TrafficObject"][0]["DeviceID"] = upload_param.deviceId;
+    TrafficListObject["TrafficObject"][0]["RightBtmX"] = upload_param.RightBtmX;
+    TrafficListObject["TrafficObject"][0]["LeftTopX"] = upload_param.LeftTopX;
+    TrafficListObject["TrafficObject"][0]["LeftTopY"] = upload_param.LeftTopY;
+    TrafficListObject["TrafficObject"][0]["RightBtmY"] = upload_param.RightBtmY;
+    TrafficListObject["TrafficObject"][0]["AppearTime"] = upload_param.AppearTime;
+    TrafficListObject["TrafficObject"][0]["BeginTime"] = upload_param.AppearTime;
+    TrafficListObject["TrafficObject"][0]["EndTime"] = upload_param.endTime;
+    TrafficListObject["TrafficObject"][0]["InCount"] = upload_param.inCount;
+    TrafficListObject["TrafficObject"][0]["OutCount"] = upload_param.outCount;
+    Json::Value paramJson;
+    paramJson["TrafficListObject"] = TrafficListObject;
+    param = paramJson.toStyledString();
+    return true;
+}
+
+bool Gat1400Req::PackUploadRegionParam(const Gat1400Util::UploadRegionData &upload_param, std::string &param) {
+    Json::Value RegionListObject;
+    RegionListObject["RegionObject"][0]["RegionID"] = upload_param.regionID;
+    RegionListObject["RegionObject"][0]["SourceID"] = upload_param.SourceID;
+    RegionListObject["RegionObject"][0]["DeviceID"] = upload_param.deviceId;
+    RegionListObject["RegionObject"][0]["AppearTime"] = upload_param.AppearTime;
+    RegionListObject["RegionObject"][0]["Type"] = upload_param.typeE;
+    RegionListObject["RegionObject"][0]["LeftTopX"] = upload_param.LeftTopX;
+    RegionListObject["RegionObject"][0]["LeftTopY"] = upload_param.LeftTopY;
+    RegionListObject["RegionObject"][0]["RightBtmX"] = upload_param.RightBtmX;
+    RegionListObject["RegionObject"][0]["RightBtmY"] = upload_param.RightBtmY;
+    RegionListObject["RegionObject"][0]["PeopleCount"] = upload_param.peopleCount;
+    RegionListObject["RegionObject"][0]["Cordon"] = upload_param.cordon;
+    RegionListObject["RegionObject"][0]["ScheduledTime"] = upload_param.scheduledTime;
+    Json::Value subImageList;
+    subImageList["SubImageInfoObject"][0]["ImageID"] = upload_param.img.ImageID;
+    subImageList["SubImageInfoObject"][0]["EventSort"] = upload_param.img.EventSort;
+    subImageList["SubImageInfoObject"][0]["DeviceID"] = upload_param.deviceId;
+    subImageList["SubImageInfoObject"][0]["StoragePath"] = upload_param.img.StoragePath;
+    subImageList["SubImageInfoObject"][0]["Type"] = upload_param.img.Type;
+    subImageList["SubImageInfoObject"][0]["FileFormat"] = upload_param.img.FileFormat;
+    subImageList["SubImageInfoObject"][0]["ShotTime"] = upload_param.img.ShotTime;
+    subImageList["SubImageInfoObject"][0]["Width"] = upload_param.img.Width;
+    subImageList["SubImageInfoObject"][0]["Height"] = upload_param.img.Height;
+    subImageList["SubImageInfoObject"][0]["FileSize"] = upload_param.img.FileSize;
+    subImageList["SubImageInfoObject"][0]["Data"] = upload_param.img.Data;
+    RegionListObject["RegionObject"][0]["SubImageList"] = subImageList;
+    Json::Value paramJson;
+    paramJson["RegionListObject"] = RegionListObject;
+    param = paramJson.toStyledString();
+    return true;
+}
+
+bool Gat1400Req::PackUploadOnLeaveParam(const Gat1400Util::UploadOnLeaveData &upload_param, std::string &param) {
+    Json::Value OnLeaveListObject;
+    OnLeaveListObject["OnLeaveObject"][0]["OnLeaveID"] = upload_param.onLeaveID;
+    OnLeaveListObject["OnLeaveObject"][0]["InfoKind"] = upload_param.InfoKind;
+    OnLeaveListObject["OnLeaveObject"][0]["SourceID"] = upload_param.SourceID;
+    OnLeaveListObject["OnLeaveObject"][0]["DeviceID"] = upload_param.deviceId;
+    OnLeaveListObject["OnLeaveObject"][0]["AppearTime"] = upload_param.AppearTime;
+    OnLeaveListObject["OnLeaveObject"][0]["EventType"] = upload_param.eventType;
+    OnLeaveListObject["OnLeaveObject"][0]["OnDutyCount"] = upload_param.onDutyCount;
+    OnLeaveListObject["OnLeaveObject"][0]["OffDutyDuration"] = upload_param.offDutyDuration;
+    OnLeaveListObject["OnLeaveObject"][0]["AlertTime"] = upload_param.alertTime;
+    OnLeaveListObject["OnLeaveObject"][0]["AlarmZone"] = upload_param.alarmZone;
+    Json::Value subImageList;
+    subImageList["SubImageInfoObject"][0]["ImageID"] = "";
+    subImageList["SubImageInfoObject"][0]["EventSort"] = 106;
+    subImageList["SubImageInfoObject"][0]["DeviceID"] = "";
+    subImageList["SubImageInfoObject"][0]["StoragePath"] = "";
+    subImageList["SubImageInfoObject"][0]["Type"] = "106";
+    subImageList["SubImageInfoObject"][0]["FileFormat"] = "Png";
+    subImageList["SubImageInfoObject"][0]["ShotTime"] = "";
+    subImageList["SubImageInfoObject"][0]["Width"] = 0;
+    subImageList["SubImageInfoObject"][0]["Height"] = 0;
+    subImageList["SubImageInfoObject"][0]["FileSize"] = 0;
+    subImageList["SubImageInfoObject"][0]["Data"] = "";
+    OnLeaveListObject["OnLeaveObject"][0]["SubImageList"] = subImageList;
+    Json::Value paramJson;
+    paramJson["RegionListObject"] = OnLeaveListObject;
+    param = paramJson.toStyledString();
+    return true;
+}
 
 std::string Gat1400Req::PackAuthHeader(const Gat1400Util::RegisterAuthParam &param) {
     std::string authheaderStr = "";
@@ -498,7 +915,7 @@ std::string Gat1400Req::PackAuthHeader(const Gat1400Util::RegisterAuthParam &par
         std::string ha1 = "", ha2 = "", response = "";
         char buffer[1024] = { 0 };
         char nonceCount[16] = { 0 };
-        snprintf(nonceCount, sizeof(nonceCount) - 1, "%08d", ++m_index);
+        snprintf(nonceCount, sizeof(nonceCount) - 1, "%08d", ++Gat1400Util::m_index);
 
         // ha1=MD5(username:realm:password)
         snprintf(buffer, sizeof(buffer) - 1, "%s:%s:%s"

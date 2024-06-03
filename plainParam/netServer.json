@@ -1,19 +1,21 @@
 {
   "main": "eth",
   "internetCheck": {
-    "intervalS": 6,
+    "intervalS": 691200,
     "addr": [
       {"addr": "www.baidu.com", "port": 80},
       {"addr": "www.taobao.com", "port": 80}
     ]
   },
   "dns": {
-    "manual": true,
-    "server": [
-      "61.139.2.69",
-      "8.8.8.8"
-    ],
-    "append": ["114.114.114.114"]
+    "manual": false,
+    "server": [],
+    "append": [
+      "223.5.5.5",
+      "223.6.6.6", 
+      "2400:3200:baba::1", 
+      "2400:3200::1"
+    ]
   },
   "dev": [
     {

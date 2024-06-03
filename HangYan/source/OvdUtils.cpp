@@ -327,6 +327,8 @@ int OvdUtils::https_download_file_func(const char *url, const char *file_name, l
     curl_easy_setopt(curl, CURLOPT_POST, 0);
 
     CURLcode res = curl_easy_perform(curl);
+    fflush(fd);
+    fsync(fileno(fd));
     fclose(fd);
 
     curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, http_code);

@@ -206,6 +206,7 @@ ErrCodeE EmxRtspServer::ReStart() {
         m_rtsp.reset();
     }
     MediaSourceManager::Instance().removeAllMedia();
+    m_mediaArray.clear();
     Param param = {};
     if (GetParam(param) != ErrCodeE::Success) {
         return ErrCodeE::Failure;

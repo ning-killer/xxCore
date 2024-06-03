@@ -5,7 +5,7 @@ using namespace Emx;
 ErrCodeE AlarmFace::Create() {
     m_ai = new MediaClientAiDataAsync(m_ctx->loop);
     m_ai->Start(nullptr, [this](MediaAi::AiInfoHeader &header) {
-        if (header.type != MediaAi::AiTypeE::FaceSnap) {
+        if (header.type != MediaAi::AiTypeE::FaceDetection) {
             return;
         }
         if (!m_ctx->env.face.ena) {
@@ -17,39 +17,71 @@ ErrCodeE AlarmFace::Create() {
         if (header.data == nullptr) {
             return;
         }
-        auto *data = reinterpret_cast<MediaAi::AiInfoFaceDetectionData*> (header.data);
-        int headerLen = sizeof(MediaAi::AiInfoFaceDetectionData);
-        int imgsLen = header.size - headerLen;
-        // 数据正确性校验
-        int checkImgsLen = 0;
-        for (auto img : data->faceMsg) {
-            checkImgsLen += img.imgSize;
-        }
-        if (checkImgsLen !=  imgsLen) {
-            emxloge("facedata is error, imgslen(%d) != checklen(%d)", imgsLen, checkImgsLen);
+        if (!CheckHeadSrcSize(header.srcPicSize)) {
+            emxloge("header.srcPicSize.h[%d];header.srcPicSize.w[%d]\n", header.srcPicSize.h, header.srcPicSize.w);
             return;
         }
-        // 区域检查，筛选出匹配区域内人脸信息。这里只做浅拷贝赋值(减少拷贝次数)
-        std::map<int/*img偏移量*/, MediaAi::facePicMsg> match_data; 
-        bool isTrigger = false;
-        int offLen = headerLen;
-        for (int i = 0; i < data->toTalPic; i++) {
-            if (!data->faceMsg[i].isFullPic && AlarmInZone(header.srcPicSize, data->faceMsg[i].rect, m_ctx->env.face.zone)) {
-                isTrigger = true;
-                match_data[offLen] = data->faceMsg[i];
+        MediaAi::AiInfoFaceDetectionData faceData;
+        if (!MediaAiUtils::UnPackFaceDetectionData(header.data, faceData, header.size)) {
+            emxloge("unpack face detection data failed.\n");
+            for (auto &img : faceData.imgs) {
+                if (img.data != nullptr) {
+                    free(img.data);
+                    img.data = nullptr;
+                }
             }
-            offLen += data->faceMsg[i].imgSize;
+            return;
         }
+        bool isTrigger = false;
+        bool isMasked = true; //是否存在戴口罩的人员
+        for (auto face : faceData.imgs) {
+            if (face.type == MediaAi::ImgTypeE::Panorama) {
+                emxlogd("check face img is panorama\n");
+                // 全景图跳过
+                continue;
+            }
+            if (AlarmInZone(header.srcPicSize, face.rect, m_ctx->env.face.zone)) {
+                isTrigger = true;
+                isMasked = face.isMask;
+                if (!isMasked) {
+                    // 只要检测到未戴口罩的人员就跳出
+                    break;
+                }
+            }
+        }
+        emxlogt("check face isTrigger[%d],is masked[%d]\n", isTrigger, isMasked);
+        // m_type = OVD_FACE;
         if (isTrigger) {
-            // ovd告警
-            bool started = m_started;
+            // if (m_ctx->env.cap.info.ovdAICapInfo.AIface.mask_detection 
+            //     && m_ctx->env.face.mask_detection) {
+            //     // 未戴口罩需要告警
+            //     if (!isMasked) {
+            //         bool started = m_started;
+            //         m_type = OVD_FACE_MASK;
+            //         AlarmTrigger();
+            //         if (m_started && !started) {
+            //             Strategy(&m_ctx->env.face.strategy, &m_ctx->env.face.mask_detection, "maskAlarmVoice");
+            //         }
+            //     }
+            // } else {
+            //     AlarmTrigger();
+            // }
             AlarmTrigger();
-            if (m_started && !started) {
-                // 深拷贝出数据用于gat1400数据上传
-                Gat1400Util::UploadDataParam param;
-                Clone(param, match_data, header.data);
+            // 深拷贝出数据用于gat1400数据上传
+            auto *param = new Gat1400Util::UploadFaceData();
+            if (Clone(*param, faceData)) {
                 // gat1400上传
                 Gat1400Client::Instance()->Upload(param);
+            }
+            delete param;
+            param = nullptr;
+        }
+        // 手动释放深拷贝的数据
+        // MediaAiUtils::FreeFaceDetectionData(&faceData);
+        for (auto &img : faceData.imgs) {
+            if (img.data != nullptr) {
+                free(img.data);
+                img.data = nullptr;
             }
         }
     });
@@ -64,9 +96,8 @@ void AlarmFace::Destroy() {
     }
 }
 
-void AlarmFace::Clone(Gat1400Util::UploadDataParam &param
-                , const std::map<int/*img偏移量*/, MediaAi::facePicMsg> &match_data
-                , const uint8_t *face_data) {
+bool AlarmFace::Clone(Gat1400Util::UploadFaceData &param, 
+    const MediaAi::AiInfoFaceDetectionData& faceData) {
     param.type = Gat1400Util::UploadType::Faces;
     param.InfoKind = 1;
     param.LeftTopX = 0;
@@ -74,37 +105,84 @@ void AlarmFace::Clone(Gat1400Util::UploadDataParam &param
     param.RightBtmX = 0;
     param.RightBtmY = 0;
     param.deviceId = Gat1400Client::Instance()->GetDeviceId();
-    param.LocationMarkTime = Gat1400Util::GetTimeStr(Gat1400Util::TimePrecision::MS);
-    param.AppearTime = Gat1400Util::GetTimeStr(Gat1400Util::TimePrecision::MS);
-    param.DisAppearTime = Gat1400Util::GetTimeStr(Gat1400Util::TimePrecision::MS);
+    param.LocationMarkTime = Gat1400Util::GetTimeStr(Gat1400Util::TimePrecision::S);
+    param.AppearTime = Gat1400Util::GetTimeStr(Gat1400Util::TimePrecision::S);
+    param.DisAppearTime = Gat1400Util::GetTimeStr(Gat1400Util::TimePrecision::S);
     param.SourceID = Gat1400Client::Instance()->GetGetSourceId(param.deviceId, param.AppearTime);
     param.Id = Gat1400Client::Instance()->GetFaceId(param.SourceID);
-    for (auto sub : match_data) {
+    param.IsSuspectedTerrorist = 2;
+    param.IsCriminalInvolved = 2;
+    param.IsDetainees = 2;
+    param.IsVictim = 2;
+    param.IsSuspiciousPerson = 2;
+    param.RespiratorColor = "5";
+    param.isHaveFullImg = faceData.isHavePanorama;
+
+    bool isNeedCheckFullImg = true;
+    if (!param.isHaveFullImg) {
+        isNeedCheckFullImg = false;
+    }
+    for (auto sub : faceData.imgs) {
         Gat1400Util::SubImgDataParam faceImg;
-        faceImg.isfullImg = sub.second.isFullPic;
+        if (isNeedCheckFullImg) {
+            emxlogd("this face detect exit full img, check firt sub img!\n");
+            isNeedCheckFullImg = false;
+            if (sub.type != MediaAi::ImgTypeE::Panorama) {
+                return false;
+            }
+            faceImg.Type = "11";
+            faceImg.StoragePath = "";
+            faceImg.ImageID = Gat1400Client::Instance()->GetGetSourceId(param.deviceId, param.AppearTime);
+            faceImg.EventSort = 10;
+            faceImg.FileFormat = Gat1400Util::GetImgType((Gat1400Util::ImgType)sub.encode);
+            faceImg.ShotTime = Gat1400Util::GetTimeStr(Gat1400Util::TimePrecision::S);
+            faceImg.Width = sub.rect.w; 
+            faceImg.Height = sub.rect.h;
+            std::string inData = std::string((char*)sub.data , sub.size);
+            Base64::Encode(inData, faceImg.Data);
+            faceImg.FileSize = sub.size;
+            param.subImgList.push_back(faceImg);
+        }
+        faceImg.Type = "11";
+        faceImg.StoragePath = "";
         faceImg.ImageID = Gat1400Client::Instance()->GetGetSourceId(param.deviceId, param.AppearTime);
         faceImg.EventSort = 10;
-        faceImg.FileFormat = Gat1400Util::GetImgType((Gat1400Util::ImgType)sub.second.imgType);
+        faceImg.FileFormat = Gat1400Util::GetImgType((Gat1400Util::ImgType)sub.encode);
         faceImg.ShotTime = Gat1400Util::GetTimeStr(Gat1400Util::TimePrecision::S);
-        faceImg.Width = sub.second.Width; 
-        faceImg.Height = sub.second.Height;
-        emxlogd("headersize(%d)\n", sizeof(MediaAi::AiInfoFaceDetectionData));
-        emxlogd("off(%d)\n", sub.first);
-        std::string inData = std::string((char*)(face_data + sub.first), sub.second.imgSize);
+        faceImg.Width = sub.rect.w; 
+        faceImg.Height = sub.rect.h;
+        std::string inData = std::string((char*)sub.data , sub.size);
         Base64::Encode(inData, faceImg.Data);
+        faceImg.FileSize = sub.size;
         param.subImgList.push_back(faceImg);
-#if 0
-        char path[128] = { 0 };
-        snprintf(path, sizeof(path) - 1
-                    , "/root/configs/normal/face_%d_%d.jpg"
-                    , (int)sub.second.isFullPic
-                    , (int)sub.second.imgSize);
-        FILE* fp = fopen(path, "w");
-        if (fp != nullptr) {
-            fwrite(face_data + sub.first, sub.second.imgSize, 1, fp);
-            fclose(fp);
-            fp = nullptr;
+#if 1
+        if (File::Exist("/mnt/sdcard/algtest")) {
+            char currentTime[64] = { 0 };
+            int timeNow = Time::GetS();
+            Gat1400Util::GetTimeStr(timeNow, currentTime,sizeof(currentTime));
+            emxlogd("check face img\n");
+            char path[128] = { 0 };
+            snprintf(path, sizeof(path) - 1
+                        , "/mnt/sdcard/face_%s_%d_%d.jpg"
+                        , currentTime
+                        , (int)sub.type
+                        , (int)sub.size);
+            FILE* fp = fopen(path, "w");
+            emxlogd("path:%s\n", path);
+            if (fp != nullptr) {
+                fwrite(sub.data, sub.size, 1, fp);
+                fflush(fp);
+                fsync(fileno(fp));
+                fclose(fp);
+                fp = nullptr;
+            }  else {
+                emxloge("1111111111\n");
+            }
+        } else {
+            emxlogd("no flag\n");
         }
 #endif
     }
+
+    return true;
 }

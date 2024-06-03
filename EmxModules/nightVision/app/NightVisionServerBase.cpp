@@ -180,6 +180,7 @@ ErrCodeE NightVisionServerBase::GetParamTemp(NightVision::Param &param) {
 
 ErrCodeE NightVisionServerBase::SetParamTemp(const NightVision::Param &param) {
     m_running = param;
+    PublishReset();
     if (param.manual)
         Switch(param.manualMode);
     return ErrCodeE::Success;

@@ -3,6 +3,8 @@
     "mountPoint": "/mnt/sdcard",
     "devPart": "mmcblk0p1",
     "devPartBak": "mmcblk0",
-    "devMajor": "mmcblk0"
+    "devMajor": "mmcblk0",
+    "forceMount": false,
+    "forceMerge": false
   }
 ]

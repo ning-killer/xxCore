@@ -61,25 +61,12 @@ void Gat1400Mgr::Create(EuvLoop *loop) {
 }
 
 void Gat1400Mgr::Start() {
+    emxlogd("Start\n");
     if (!m_runWork.IsWorking()) {
+        emxlogd("run Work\n");
         m_isRun = true;
         m_runWork.Run((void*)&m_isRunRet);
     }
-    // m_runTimer.Start(0, 1000, [this]() {
-    //     if (!IsSyncTime()) {
-    //         emxlogd("gat1400 run wait for time sync.\n");
-    //         return;
-    //     }
-    //     if (!GetNetState()) {
-    //         emxlogd("gat1400 run wait for net connect.\n");
-    //         return;
-    //     }
-    //     if (!m_runWork.IsWorking()) {
-    //         m_isRun = true;
-    //         m_runWork.Run((void*)&m_isRunRet);
-    //     }
-    //     m_runTimer.Stop();
-    // });
 }
 
 void Gat1400Mgr::Stop() {
@@ -87,16 +74,13 @@ void Gat1400Mgr::Stop() {
     m_isRun = false;
     m_isGttRun = false;
     m_isAliveRun = false;
+    emxlogd("Stop\n");
 }
 
 void Gat1400Mgr::ReStart() {
     Stop();
-    while (m_runWork.IsWorking() 
-        || m_ggtWork.IsWorking() 
-        || m_aliveWork.IsWorking()) {
-        // stop 阻塞等待工作线程退出
-        usleep(200 * 1000);
-    }
+    usleep(1000 * 1000);
+    emxlogd("ReStart\n");
     Start();
 }
 
@@ -149,15 +133,11 @@ void Gat1400Mgr::RunDone(Emx::ErrCodeE e, void *arg) {
     emxlogd("gat1400 rundone ret: %d\n", *runRet);
     if (*runRet) {
         // 开启定时平台信息获取工作线程
-        if (!m_ggtWork.IsWorking()) {
-            m_isGttRun = true;
-            m_ggtWork.Run(&m_isGttRunRet);
-        }
+        m_isGttRun = true;
+        m_ggtWork.Run(&m_isGttRunRet);
         // 保活工作线程
-        if (!m_aliveWork.IsWorking()) {
-            m_isAliveRun = true;
-            m_aliveWork.Run(&m_isAliveRunRet);
-        }
+        m_isAliveRun = true;
+        m_aliveWork.Run(&m_isAliveRunRet);
     }
     m_isRun = false;
 }
@@ -176,7 +156,7 @@ void Gat1400Mgr::Ggt(void *arg) {
             ret = TryGetGateWay(m_isGttRun);
             if (ret == Gat1400Util::GateWayRet::AddrChanged) {
                 emxlogd("gat1400 gate way is changed, restart task\n");
-                m_isRegistOk = false;
+                // m_isRegistOk = false;
                 *GgtRet = true;
                 break;
             } else if (ret == Gat1400Util::GateWayRet::ReqSuccess) {
@@ -227,7 +207,7 @@ void Gat1400Mgr::Alive(void *arg) {
         do {
             usleep(500 * 1000);
             count--;
-        } while (count > 0 && m_isAliveRun);
+        } while (count > 20 && m_isAliveRun);
 
         //当前时间减去请求最后的成功请求时间大于规定的保活时间，则需要保活
         currentTime = Time::GetS();
@@ -260,9 +240,10 @@ void Gat1400Mgr::Alive(void *arg) {
 }
 
 void Gat1400Mgr::AliveDone(Emx::ErrCodeE e, void *arg) {
-    emxlogd("gat1400 ggt work done.\n");
+    emxlogd("gat1400 alive work done.\n");
     bool* AliveRet = (bool*)arg;
     CHECK_GAT1400_PTR2(AliveRet);
+    emxlogd("gat1400 alive work done. AliveRet[%d]\n", *AliveRet);
     if (!*AliveRet) {
         // 正常控制退出
         return;
@@ -278,6 +259,7 @@ bool Gat1400Mgr::TryUnRegister() {
             emxloge("gat1400req unregister failed.\n");
             return false;
         }
+        emxloge("TryUnRegister ok.\n");
         m_isRegistOk = false;
 	}
 	return true;
@@ -328,14 +310,11 @@ Gat1400Util::GateWayRet Gat1400Mgr::TryGetGateWay(bool &isRun) {
 }
 
 bool Gat1400Mgr::TryRegster(bool &isRun) {
-    if (m_isRegistOk) {
-        emxlogd("gat1400 is Registeed.\n");
-        return true;
-    }
+    emxlogd("Gat1400Mgr::TryRegster\n");
     Gat1400Util::RegisterAuthParam regauth_param;
     Gat1400Util::RegisterRet register_ret = Gat1400Util::RegisterRet::RegisterError;
     int failedCount = 0, sleepTime = 30;
-
+    m_isRegistOk = false;
     while(isRun) {
         register_ret = m_gat1400Req->Register(regauth_param);
         if (register_ret == Gat1400Util::RegisterRet::Authorized) {
@@ -377,23 +356,80 @@ bool Gat1400Mgr::TryGetTime() {
     return false;
 }
 
-bool Gat1400Mgr::Upload(const Gat1400Util::UploadDataParam &upload_param) {
+bool Gat1400Mgr::Upload(const Gat1400Util::UploadDataParam *upload_param) {
     if (!m_isRegistOk || !m_isGetgateOk) {
-        emxloge("gat1400 no regist or no getgateinfo\n");
+        emxloge("gat1400 no regist or no getgateinfo: m_isRegistOk[%d];m_isGetgateOk[%d]\n", m_isRegistOk, m_isGetgateOk);
         return false;
     }
     if (m_gat1400Req == nullptr) {
         return false;
     }
+    if (upload_param == nullptr) {
+        return false;
+    }
     bool ret = true;
-    switch (upload_param.type) {
-    case Gat1400Util::UploadType::Faces:
-        m_gat1400Req->UpLoadFace(upload_param);
-        break;
-    default:
-        emxloge("gat1400 unsupport type(%d) upload!\n", upload_param.type);
-        ret = false;
-        break;
+    Gat1400Util::UploadFaceData* faceParam = nullptr;
+    Gat1400Util::UploadMotorVehiclesData* MVParam = nullptr;
+    Gat1400Util::UploadNonMotorVehiclesData* NMVParam = nullptr;
+    Gat1400Util::UploadTrafficData* trafficParam = nullptr;
+    Gat1400Util::UploadRegionData* regionParam = nullptr;
+    Gat1400Util::UploadOnLeaveData* onLeaveParam = nullptr;
+    switch (upload_param->type) {
+        case Gat1400Util::UploadType::Faces:
+            faceParam = dynamic_cast<Gat1400Util::UploadFaceData*>((Gat1400Util::UploadDataParam*)upload_param);
+            if (faceParam != nullptr) {
+                m_gat1400Req->UpLoadFace(*faceParam);
+                m_reqLastTime = Time::GetS();
+            }
+            break;
+        case Gat1400Util::UploadType::Persons:
+            emxloge("unsupport persons upload\n");
+            break;
+        case Gat1400Util::UploadType::MotorVehicles:
+            MVParam = dynamic_cast<Gat1400Util::UploadMotorVehiclesData*>((Gat1400Util::UploadDataParam*)upload_param);
+            if (MVParam != nullptr) {
+                m_gat1400Req->UpLoadMotorVehicles(*MVParam);
+                m_reqLastTime = Time::GetS();
+            }
+            break;
+        case Gat1400Util::UploadType::NonMotorVehicles:
+            NMVParam = dynamic_cast<Gat1400Util::UploadNonMotorVehiclesData*>((Gat1400Util::UploadDataParam*)upload_param);
+            if (NMVParam != nullptr) {
+                m_gat1400Req->UpLoadNonMotorVehicles(*NMVParam);
+                m_reqLastTime = Time::GetS();
+            }
+            break;
+        case Gat1400Util::UploadType::Kitchen:
+            emxloge("unsupport kitchen upload\n");
+            break;
+        case Gat1400Util::UploadType::Falling:
+            emxloge("unsupport falling upload\n");
+            break;
+        case Gat1400Util::UploadType::Region:
+            regionParam = dynamic_cast<Gat1400Util::UploadRegionData*>((Gat1400Util::UploadDataParam*)upload_param);
+            if (regionParam != nullptr) {
+                m_gat1400Req->UploadRegion(*regionParam);
+                m_reqLastTime = Time::GetS();
+            }
+            break;
+        case Gat1400Util::UploadType::Traffic:
+            trafficParam = dynamic_cast<Gat1400Util::UploadTrafficData*>((Gat1400Util::UploadDataParam*)upload_param);
+            if (trafficParam != nullptr) {
+                m_gat1400Req->UploadTraffic(*trafficParam);
+                m_reqLastTime = Time::GetS();
+            }
+            break;
+        case Gat1400Util::UploadType::OnLeave:
+            onLeaveParam = dynamic_cast<Gat1400Util::UploadOnLeaveData*>((Gat1400Util::UploadDataParam*)upload_param);
+            if (onLeaveParam != nullptr) {
+                m_gat1400Req->UploadOnLeave(*onLeaveParam);
+                m_reqLastTime = Time::GetS();
+            }
+            break;
+        default:
+            emxloge("gat1400 unsupport type(%d) upload!\n", upload_param->type);
+            ret = false;
+            break;
     }
     return ret;
 }

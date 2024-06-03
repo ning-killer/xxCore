@@ -16,7 +16,9 @@ using namespace Emx;
 UpdateServer::UpdateServer(): 
     m_updateWay(Burn_After_Downloading)
     , m_deBlockSize(EMX_UPDATE_DEFAULT_BLOCK_SIZE)
-    , m_burnBlockSize(EMX_UPDATE_DEFAULT_BLOCK_SIZE) {
+    , m_burnBlockSize(EMX_UPDATE_DEFAULT_BLOCK_SIZE)
+    , m_partitionEnvName("partition")
+    , m_eraseallFlash(false) {
 }
 
 void UpdateServer::Create(bool newThread) {
@@ -96,7 +98,7 @@ static unsigned long long ParseSize(const char *ptr, char **retptr) {
 
 ErrCodeE UpdateServer::GetBootEnvInfo() {
     std::string partitionString;
-    if (BootEnv::GetEnv("partition", partitionString) != ErrCodeE::Success) {
+    if (BootEnv::GetEnv(m_partitionEnvName.c_str(), partitionString) != ErrCodeE::Success) {
         emxlogc("cannot found partition in boot env\n");
         return ErrCodeE::ResNotExist;
     }
@@ -194,7 +196,18 @@ ErrCodeE UpdateServer::ParseConfig() {
         m_burnBlockSize = json["BlockSize"].asInt();
         m_deBlockSize = m_burnBlockSize;
     }
+
+    m_partitionEnvName = "partition";
+    if (json["partitionEnvName"].isString()) {
+        m_partitionEnvName = json["partitionEnvName"].asString();
+    }
+    m_eraseallFlash = false;
+    if (json["eraseallFlash"].isBool()) {
+        m_eraseallFlash = json["eraseallFlash"].asBool();
+    }
     emxlogd("update way: %d; block size: %d\n", m_updateWay, m_burnBlockSize);
+    emxlogd("partition Env Name: %s\n", m_partitionEnvName.c_str());
+    emxlogd("eraseallFlash: %d\n", m_eraseallFlash);
     return ErrCodeE::Success;
 }
 
@@ -880,11 +893,22 @@ ErrCodeE UpdateServer::StreamingBurn() {
         if (m_flash->GetInfo(mtd_info) != ErrCodeE::Success) {
             goto ERROR;
         }
-        emxlogd("mtd erasesize: %d; writesize: %d\n", mtd_info.erasesize, mtd_info.writesize);
         int splitSize = mtd_info.erasesize;
+        if ((imgSize + img.imgOff) == img.size && m_eraseallFlash) {
+            int ubi_last_splitSize = img.partSize - img.imgOff;
+            emxlogd("ubi last split size = 0x%x\n", ubi_last_splitSize);
+            // while (ubi_last_splitSize % splitSize) ubi_last_splitSize = ubi_last_splitSize >> 1;
+            if (m_flash->Erase(img.partOff, ubi_last_splitSize) != ErrCodeE::Success) {
+                emxlogd("ubi last split size erase failed\n");
+                m_flash->Close();
+                goto ERROR;
+            }
+            img.partOff += ubi_last_splitSize;
+        }
         int imgOff = 0;
-        while (img.partSize % splitSize)splitSize = splitSize >> 1;
+        // while (img.partSize % splitSize)splitSize = splitSize >> 1;
         emxlogd("split size = 0x%x\n", splitSize);
+        emxlogd("mtd erasesize: %d; writesize: %d\n", mtd_info.erasesize, mtd_info.writesize);
         uint8_t *endbuf = nullptr; //未数据需要补oxFF操作
         while (imgSize > 0) {
             uint8_t *tmpbuf = (uint8_t *)m_cipherBlock.data.data();
@@ -906,6 +930,7 @@ ErrCodeE UpdateServer::StreamingBurn() {
                 n = (int) sizeof(m_buffer);
                 emxlogd("imgSize: %d\n", imgSize);
             }
+
             if (endbuf == nullptr) {
                 if (m_flash->Write(tmpbuf + imgOff, n) != ErrCodeE::Success) {
                     m_flash->Close();
@@ -1011,7 +1036,6 @@ void UpdateServer::ResetContext() {
     memset(&m_fileHeader, 0, sizeof(m_fileHeader));
     m_updating = false;
     m_waitHeader = true;
-    m_session = 0;
     m_header.clear();
     m_data.clear();
     m_data.reserve(0);
@@ -1021,9 +1045,16 @@ void UpdateServer::ResetContext() {
     m_romInfo.postScriptSize = 0;
     if (m_event.stat != UpdateEvent::StatE::Idle) {
         if (m_rebootAfterComplete) {
-            Reboot::DoReboot(m_rebootDelayS);
+            emxlogd("m_session:%d, m_sdcardUpdateSession:%d\n", m_session, m_sdcardUpdateSession);
+            //SDCardUpdate定义的升级session，用于判断设备升级完成后，不要重启，卡刷由用户自己重启
+            if (m_session != m_sdcardUpdateSession) {
+                Reboot::DoReboot(m_rebootDelayS);
+            }else {
+                emxlogw("m_session:%d, use sdcard to update, wait user operation!\n", m_session);
+            }
         }
     }
+    m_session = 0;
     memset(&m_event, 0, sizeof(m_event));
 }
 

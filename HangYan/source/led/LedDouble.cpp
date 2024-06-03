@@ -18,14 +18,25 @@ void LedDouble::OnLedStatusChange() {
     } else if (m_stat[StatE::Rebooting]) {
         //reset and reboot
         m_blinkInvert = false;
-        m_blinkTimer.Start(0, 200, [this]() {
+        emxlogd("test1 rebooting\n");
+        for(int i = 0;i < 10;i++){
             if (m_blinkInvert) {
                 SetOff();
             } else {
                 SetNo1();
             }
+            sleep(1);
             m_blinkInvert = !m_blinkInvert;
-        });
+        }
+
+        // m_blinkTimer.Start(0, 200, [this]() {
+        //     if (m_blinkInvert) {
+        //         SetOff();
+        //     } else {
+        //         SetNo1();
+        //     }
+        //     m_blinkInvert = !m_blinkInvert;
+        // });
     } else if (m_stat[StatE::Sleeping]) {
         SetOff();
     } else if (m_stat[StatE::WifiConfiguring]) {
@@ -39,7 +50,18 @@ void LedDouble::OnLedStatusChange() {
             }
             m_blinkInvert = !m_blinkInvert;
         });
-    } else if (!m_stat[StatE::OvdConnected] || !m_stat[StatE::NetConnected]) {
+    } else if (!m_stat[StatE::NetConnected]){
+        //net or ovd con mode
+        m_blinkInvert = false;
+        m_blinkTimer.Start(0, 1000, [this]() {
+            if (m_blinkInvert) {
+                SetOff();
+            } else {
+                SetNo1();
+            }
+            m_blinkInvert = !m_blinkInvert;
+        });
+    } else if (!m_stat[StatE::OvdConnected]) {
         //net or ovd con mode
         m_blinkInvert = false;
         m_blinkTimer.Start(0, 1000, [this]() {
@@ -50,6 +72,15 @@ void LedDouble::OnLedStatusChange() {
             }
             m_blinkInvert = !m_blinkInvert;
         });
+    } else if (!m_stat[StatE::ManualLedEna]) {
+        //net or ovd con mode
+        m_blinkInvert = true;
+            if (m_blinkInvert) {
+                SetOff();
+            } else {
+                SetNo2();
+            }
+            m_blinkInvert = !m_blinkInvert;
     } else {
         //normal running
         SetNo2();

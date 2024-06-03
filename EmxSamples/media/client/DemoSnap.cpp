@@ -57,14 +57,14 @@ class DemoSaveSnap {
         // 将缩略图保存下来
         char file[128] = { 0 };
         static int num = 0;
-        snprintf(file, sizeof(file) - 1, "/customer/nfs/code-projects/Platform/MMC233Z/%d_snap.jpg", num);
+        snprintf(file, sizeof(file) - 1, "/mnt/nfs/%d_snap.jpg", num);
         FILE *fp = fopen(file, "wb+");
         if (!fp) {
             emxloge("open snap failed\n");
             snap.Close();
             return;
         }
-        fwrite(frame.data, 1, frame.size, fp);
+        fwrite(frame.data, 2, frame.size, fp);
         emxlogd("file(%s) snap ok.\n", file);
         num++;
 

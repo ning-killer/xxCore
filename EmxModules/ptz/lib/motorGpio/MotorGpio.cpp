@@ -64,6 +64,8 @@ ErrCodeE MotorGpio::Init() {
         return ErrCodeE::OpenFailed;
     }
     // 初始化驱动
+    m_Vertical = root["VerticalDir"].asBool();
+    m_Horizon = root["HorizonDir"].asBool();
     auto ret = ioctl(m_fd, MOTOR_GPIO_IOCTL_INIT, &m_arg);
     return ret == 0 ? ErrCodeE::Success : ErrCodeE::Failure;
 }
@@ -79,6 +81,11 @@ ErrCodeE MotorGpio::MoveStep(Ptz::TypeE type, bool block, int step, int speed) {
         emxloge("type %d not found\n", (int) type);
         return ErrCodeE::ResNotExist;
     }
+
+    if (m_Vertical && type == Ptz::TypeE::Vertical)
+        step*=-1;
+    else if (m_Horizon && type == Ptz::TypeE::Horizon)
+        step*=-1;
     auto &cfg = m_map[type];
     auto &arg = m_arg.arg[cfg.chn];
     MotorArgSet set = {};

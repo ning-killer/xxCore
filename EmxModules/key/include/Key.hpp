@@ -15,13 +15,20 @@ namespace Emx {
         enum class EventE : uint8_t {
             Click,
             LongPress,
+            Up,
+            Down,
+        };
+
+        enum class ModeE : uint8_t {
+            Key,
+            Check,
         };
 
         using OnKeyEvent = std::function<void(const char *name, EventE e)>;
 
-        Key(const char *name, EuvLoop &loop, Bsp::GpioLike *key, int longPressTimeMs) :
+        Key(const char *name, EuvLoop &loop, Bsp::GpioLike *key, int longPressTimeMs,ModeE mode) :
                 m_name(name), m_loop(loop), m_key(key), m_longPressTime(longPressTimeMs),
-                m_pressTime(0) {}
+                m_pressTime(0),m_mode(mode),m_checkStatus(false){}
 
         virtual ~Key() {}
 
@@ -40,6 +47,8 @@ namespace Emx {
         OnKeyEvent m_cb;
         EuvTimer m_timer;
         int m_pressTime;
+        ModeE m_mode;
+        bool m_checkStatus;
     };
 
 }

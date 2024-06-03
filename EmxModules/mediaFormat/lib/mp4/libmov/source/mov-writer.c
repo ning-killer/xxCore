@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <errno.h>
 #include <time.h>
+#include <stdio.h>
 
 struct mov_writer_t
 {
@@ -259,9 +260,18 @@ int mov_writer_write(struct mov_writer_t* writer, int track, const void* data, s
 		mov->track->samples = ptr;
 		mov->track->sample_offset += 1024;
 	}
+	
 
 	pts = pts * mov->track->mdhd.timescale / 1000;
 	dts = dts * mov->track->mdhd.timescale / 1000;
+
+	if (mov->track->sample_count == 0) {
+		mov->track->first_frame_pts = pts;
+		mov->track->first_frame_dts = dts;
+	}
+	pts = pts - mov->track->first_frame_pts;
+	dts = dts - mov->track->first_frame_dts;
+	// printf("pts:%d<->dts:%d\n", (int)pts, (int)dts);
 
 	sample = &mov->track->samples[mov->track->sample_count++];
 	sample->sample_description_index = 1;

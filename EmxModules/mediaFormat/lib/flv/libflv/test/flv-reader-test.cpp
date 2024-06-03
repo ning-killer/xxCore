@@ -111,7 +111,11 @@ void flv_reader_test(const char* file)
 
 	flv_demuxer_destroy(flv);
 	flv_reader_destroy(reader);
-
+	
+	fflush(aac);
+    fsync(fileno(aac));
 	fclose(aac);
+	fflush(h264);
+    fsync(fileno(h264));
 	fclose(h264);
 }

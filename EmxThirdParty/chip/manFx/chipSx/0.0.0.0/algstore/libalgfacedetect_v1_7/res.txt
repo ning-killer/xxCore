@@ -1,0 +1,66 @@
+======================2022/12/27=========================
+memtool md 0xf0ea3200
+f0ea3200: 0d946c04 aaa75200 80000101 00000001                .l...R..........
+f0ea3210: 00003fff 000003ff 00000000 00000000                .?..............
+f0ea3220: 00000000 00000000 00000000 00000000                ................
+f0ea3230: 00000000 00000000 00000000 00000000                ................
+f0ea3240: 00000000 00000000 00000000 00000000                ................
+f0ea3250: 00000000 00000000 00000000 00000000                ................
+f0ea3260: 00000000 00000000 00000000 00000000                ................
+f0ea3270: 00000000 00000000 00000000 00000000                ................
+f0ea3280: 88d50c11 aaa75200 00000008 00000008                .....R..........
+f0ea3290: 00000000 00000000 00000000 00000000                ................
+f0ea32a0: 00000000 00000000 00000000 00000000                ................
+f0ea32b0: 00000000 00000000 00000000 00000000                ................
+f0ea32c0: 00000000 00000000 00000000 00000000                ................
+f0ea32d0: 00000000 00000000 00000000 00000000                ................
+f0ea32e0: 00000000 00000000 00000000 00000000                ................
+f0ea32f0: 00000000 00000000 00000000 00000000                ................
+#
+#
+# ./algfacedetect.elf
+13:09:10-[INFO]: rne log level : 1
+13:09:10-[INFO]: rne lib version :2.0.0.8
+/dev/rnemain mmap 64!
+sh: write error: Device or resource busy
+13:09:10-[DEBUG]:  weight addr: 0x448055
+13:09:10-[DEBUG]:  weight aligned addr: 0x7fa087d004
+13:09:10-[INFO]: heap size is 2273280
+13:09:10-[DEBUG]: version: faceDetect_v1.7_model_1210
+13:09:10-[DEBUG]: total time:21957 us
+13:09:10-[DEBUG]: forward time:9843 us
+13:09:10-[DEBUG]: hw layer time:9843 us
+13:09:10-[DEBUG]: gp layer time:0 us
+DetectProcess : 2 ms, postProcess : 15 ms, nonMaxSuppression : 3 ms, scaleCoords : 0 ms,
+13:09:11-[DEBUG]: algo face process:44 ms
+13:09:11-[DEBUG]: face:0 --score:0.869776 xmin:0.263360 ymin:0.640380 xmax:0.333036 ymax:0.781983
+13:09:11-[DEBUG]: face:1 --score:0.768367 xmin:0.000859 ymin:0.531065 xmax:0.023672 ymax:0.586806
+13:09:11-[DEBUG]: face:2 --score:0.604553 xmin:0.472132 ymin:0.502810 xmax:0.486528 ymax:0.535228
+13:09:11-[DEBUG]: face:3 --score:0.591694 xmin:0.719679 ymin:0.639118 xmax:0.745643 ymax:0.714447
+13:09:11-[DEBUG]: face:4 --score:0.573350 xmin:0.496072 ymin:0.473580 xmax:0.511021 ymax:0.507125
+13:09:11-[DEBUG]: face:5 --score:0.573350 xmin:0.055423 ymin:0.498078 xmax:0.067737 ymax:0.527072
+
+
+//20230526
+# chmod +x algfacedetect.elf                                                    
+# ./algfacedetect.elf                                                           
+08:06:09-[INFO]: rne log level : 1                                              
+08:06:09-[INFO]: rne lib version :2.0.0.9                                       
+/dev/rnemain mmap 120!                                                          
+08:06:09-[DEBUG]:  weight addr: 0x4e7f1d                                        
+08:06:09-[DEBUG]:  weight aligned addr: 0x7faf8de004                            
+08:06:09-[INFO]: heap size is 2273280                                           
+08:06:09-[INFO]: algo heap size is 362880                                       
+08:06:09-[DEBUG]: version: faceDetect_v1.7_model_0512                           
+08:06:09-[DEBUG]: algo face process:27 ms                                       
+08:06:09-[DEBUG]: face:0 --score:0.877519 xmin:0.312877 ymin:0.230296 xmax:0.526
+282 ymax:0.551303                                                               
+08:06:09-[DEBUG]: face:1 --score:0.877519 xmin:0.503388 ymin:0.622755 xmax:0.657
+480 ymax:0.999492                                                               
+08:06:09-[DEBUG]: face:2 --score:0.854527 xmin:0.696293 ymin:0.402560 xmax:0.859
+923 ymax:0.723568                                                               
+08:06:09-[DEBUG]: face:3 --score:0.854527 xmin:0.178771 ymin:0.640972 xmax:0.392
+176 ymax:0.961979                                                               
+08:06:09-[DEBUG]: face:4 --score:0.801902 xmin:0.568922 ymin:0.185994 xmax:0.727
+327 ymax:0.496826                                                               
+#                                                    

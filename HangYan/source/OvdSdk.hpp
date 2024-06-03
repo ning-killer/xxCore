@@ -20,6 +20,8 @@ namespace Emx {
 
         void DeInit();
 
+        void makeSdkPath(OvdCtx *ctx);
+
     private:
         struct InitSDKArg {
             OVDCapInfo capInfo;
@@ -29,6 +31,9 @@ namespace Emx {
             std::string jsonParam;
             int logContrl;
             int ret;
+#ifdef OVDSDK1_38_1
+            ovd_reboot_param_t rebootParam;
+#endif
         };
         bool m_inited;
         OnInitDone m_onInitDone;

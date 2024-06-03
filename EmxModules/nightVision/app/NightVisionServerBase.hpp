@@ -32,6 +32,8 @@ namespace Emx {
 
         virtual void DoSwitch(ModeE mode) = 0;
 
+        virtual void PublishReset() = 0;
+
         void PublishSwitching();
 
     private:

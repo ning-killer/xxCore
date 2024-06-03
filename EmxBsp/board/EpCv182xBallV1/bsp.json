@@ -1,0 +1,149 @@
+{
+  "led": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 1,
+        "active": true,
+        "default": true,
+        "num": 402
+      }
+    ]
+  },
+  "updateIndicator": {
+    "invMs": 300,
+    "allChannels": [
+      {
+        "dir": 1,
+        "active": true,
+        "default": true,
+        "num": 402
+      }
+    ],
+    "channelsCycleIdx": [
+      0,
+      -1
+    ]
+  },
+  "keyReset": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 0,
+        "active": false,
+        "default": false,
+        "num": 510
+      }
+    ]
+  },
+  "keyCall": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 0,
+        "active": false,
+        "default": false,
+        "num": 0
+      }
+    ]
+  },
+  "irLight": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 1,
+        "active": true,
+        "default": false,
+        "num": 381
+      }
+    ]
+  },
+  "whiteLightCvitek": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "chipNum": 8,
+        "pwmNum": 0,
+        "period": 50000,
+        "dutyMin": 500,
+        "dutyMax": 50000,
+        "system": "devmem 0x30010a4 32 4"
+      }
+    ]
+  },
+  "spk": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 1,
+        "active": true,
+        "default": false,
+        "num": 495
+      }
+    ]
+  },
+  "wifi": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 1,
+        "active": false,
+        "default": false,
+        "num": 0
+      }
+    ]
+  },
+  "mobile": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 1,
+        "active": false,
+        "default": true,
+        "num": 454
+      }
+    ]
+  },
+  "irCut2Wire": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "delayMs": 200,
+        "wire0": {
+          "dir": 1,
+          "active": true,
+          "default": false,
+          "num": 398
+        },
+        "wire1": {
+          "dir": 1,
+          "active": true,
+          "default": false,
+          "num": 403
+        }
+      }
+    ]
+  },
+  "irCut1Wire": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "dir": 1,
+        "active": false,
+        "default": true,
+        "num": 418
+      }
+    ]
+  },
+  "adcCvitek": {
+    "defaultChnIdx": 0,
+    "channels": [
+      {
+        "chnNum": 0,
+        "reference": 1,
+        "adcValueAtMaxLuma": 4096,
+        "adcValueAtMinLuma": 0
+      }
+    ]
+  }
+}

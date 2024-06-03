@@ -1,5 +1,7 @@
 {
   "timeDivision": true,
+  "VerticalDir": false,
+  "HorizonDir": false,
   "map": [
     {
       "type": 0,

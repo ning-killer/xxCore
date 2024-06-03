@@ -34,5 +34,45 @@
         }
       ]
     }
-  ]
+  ],
+  "mask_detection": {
+    "on": false,
+    "schedule": {
+      "endTime": "23:59:00",
+      "manual": false,
+      "manualTime": "1970-00-00T00:00:00",
+      "onOff": true,
+      "once": false,
+      "onceEndTime": "1970-00-00T00:00:00",
+      "onceStartTime": "1970-00-00T00:00:00",
+      "repeat": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "startTime": "00:00:00"
+    },
+    "strategy": {
+      "speech": {
+        "ena": false,
+        "volume": 60,
+        "repeat": 3,
+        "url": "https://oss4.komect.com/voicelib/default/5AlertAreaLeaveAsSoonAsPossible.wav?voiceId=1",
+        "playVoiceA": true
+      },
+      "light": {
+        "ena": false,
+        "mode": 1,
+        "duration": 3
+      },
+      "buzz": {
+        "ena": false,
+        "duration": 0
+      }
+    }
+  }
 }

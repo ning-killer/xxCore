@@ -42,7 +42,7 @@ namespace Emx {
         NetServerLib m_netServer;
         // NtpClientLib m_ntpClient;
         SDCardServerLib m_sdcardServer;
-        RtspServerLib m_rtspServer;
+        // RtspServerLib m_rtspServer;
         UpdateServerLib m_updateServer;
         NightVisionServerLib m_nightServer;
         SDCardUpdateLib m_sdcardUpdate;
