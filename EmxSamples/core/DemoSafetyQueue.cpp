@@ -49,6 +49,7 @@ void ConsumeB() {
     g_bTimer.Start(0,2000,[](){
         DataItem *data = g_queue.Get();
         emxlogi("current size[%d]; get data[%p, %d]\n", g_queue.Size(), data->data, data->size);
+        FreeCb(data);
     });
 }
 
@@ -61,6 +62,7 @@ void ConsumeC() {
     g_cTimer.Start(0,2000,[](){
         DataItem *data = g_queue.Get();
         emxlogi("current size[%d]; get data[%p, %d]\n", g_queue.Size(), data->data, data->size);
+        FreeCb(data);
     });
 }
 

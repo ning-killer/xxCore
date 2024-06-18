@@ -47,11 +47,11 @@ class SafetyQueue {
          */
         void Put(const T& data) {
             std::unique_lock<std::mutex> locker(m_mtx);
-            if (m_clonedCb != nullptr) {
-                m_queue.emplace_back(m_clonedCb(data));
-            } else {
-                m_queue.emplace_back(data);
+            T clonedData = (m_clonedCb) ? m_clonedCb(data) : data;
+            if (clonedData == nullptr) {
+                return;
             }
+            m_queue.emplace_back(std::move(m_clonedCb(data)));
 
             while ((int)m_queue.size() > m_total) {
                 if (m_freedCb != nullptr) {
@@ -73,6 +73,7 @@ class SafetyQueue {
          * @brief 从队列中get数据
          * @return T 数据
          * @note 队列为空的时候，阻塞线程等待队列非空状态通知解锁。
+         * @note 注意Get()所获取的数据由外部进行释放维护。
          */
         T Get() {
             std::unique_lock<std::mutex> locker(m_mtx);
@@ -83,7 +84,7 @@ class SafetyQueue {
                 m_waitQueue.emplace_back(std::make_pair(is_empty, cv));
                 cv->wait(locker, [is_empty]() { return !(*is_empty); });
             }
-            T data = m_queue.front();
+            T data = std::move(m_queue.front());
             m_queue.pop_front();
             return data;
         }
