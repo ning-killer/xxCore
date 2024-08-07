@@ -7,6 +7,12 @@ set(CROSS arm-cvitek-linux-uclibcgnueabihf)
 set(CMAKE_C_COMPILER ${CROSS_PATH}${CROSS}-gcc)
 set(CMAKE_CXX_COMPILER ${CROSS_PATH}${CROSS}-g++)
 set(CMAKE_STRIP ${CROSS_PATH}${CROSS}-strip)
+set(CROSS arm-cvitek-linux-uclibcgnueabihf)
+
+# set(CROSS x86_64)
+# set(CMAKE_C_COMPILER gcc)
+# set(CMAKE_CXX_COMPILER g++)
+# set(CMAKE_STRIP strip)
 
 # app安装目录
 if (NOT INSTALL_APP_DIR)
