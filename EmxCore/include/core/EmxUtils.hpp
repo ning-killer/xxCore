@@ -20,6 +20,7 @@
 #include "utils/Time.hpp"
 #include "utils/Singleton.hpp"
 #include "utils/SafetyQueue.hpp"
+#include "utils/MemPool.hpp"
 
 #endif //EMX_EmxUtils_HPP
 

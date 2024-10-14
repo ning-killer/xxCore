@@ -36,6 +36,8 @@ class DerivedCV : public DerivedAV, public DerivedBV {
 public:
     void display() const {
         std::cout << "Base value: " << baseValue << std::endl;
+        std::cout << "Base value: " << DerivedAV::baseValue << std::endl;
+        std::cout << "Base value: " << DerivedBV::baseValue << std::endl;
     }
 }; 
 

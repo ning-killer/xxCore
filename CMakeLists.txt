@@ -3,16 +3,16 @@ cmake_minimum_required(VERSION 3.10)
 project(CMSXJ40H)
 
 # 编译链
-set(CROSS arm-cvitek-linux-uclibcgnueabihf)
-set(CMAKE_C_COMPILER ${CROSS_PATH}${CROSS}-gcc)
-set(CMAKE_CXX_COMPILER ${CROSS_PATH}${CROSS}-g++)
-set(CMAKE_STRIP ${CROSS_PATH}${CROSS}-strip)
-set(CROSS arm-cvitek-linux-uclibcgnueabihf)
+# set(CROSS arm-cvitek-linux-uclibcgnueabihf)
+# set(CMAKE_C_COMPILER ${CROSS_PATH}${CROSS}-gcc)
+# set(CMAKE_CXX_COMPILER ${CROSS_PATH}${CROSS}-g++)
+# set(CMAKE_STRIP ${CROSS_PATH}${CROSS}-strip)
+# set(CROSS arm-cvitek-linux-uclibcgnueabihf)
 
-# set(CROSS x86_64)
-# set(CMAKE_C_COMPILER gcc)
-# set(CMAKE_CXX_COMPILER g++)
-# set(CMAKE_STRIP strip)
+set(CROSS x86_64)
+set(CMAKE_C_COMPILER gcc)
+set(CMAKE_CXX_COMPILER g++)
+set(CMAKE_STRIP strip)
 
 # app安装目录
 if (NOT INSTALL_APP_DIR)
@@ -39,7 +39,7 @@ include(depend.cmake)
 
 # add_subdirectory
 add_subdirectory(EmxCore)
-add_subdirectory(EmxMedia)
+# add_subdirectory(EmxMedia)
 if (MergeProcess MATCHES ON)
     SET(modules_server
         modulesServer
@@ -78,10 +78,10 @@ set(ModuleList
         # webserver
         ${modules_server}
         )
-add_subdirectory(EmxModules)
-add_subdirectory(EmxBsp)
+# add_subdirectory(EmxModules)
+# add_subdirectory(EmxBsp)
 # add_subdirectory(HangYan)
-add_subdirectory(EmxFactoryToolsV1)
+# add_subdirectory(EmxFactoryToolsV1)
 add_subdirectory(EmxSamples)
 
 
